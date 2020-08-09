@@ -7,23 +7,23 @@ sptbl["reson"] = {
     },
     
     func = {
-        create = "sp_reson_create",
-        destroy = "sp_reson_destroy",
-        init = "sp_reson_init",
-        compute = "sp_reson_compute",
+        create = "ut_reson_create",
+        destroy = "ut_reson_destroy",
+        init = "ut_reson_init",
+        compute = "ut_reson_compute",
     },
     
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Center frequency of the filter, or frequency position of the peak response.",
                 default = 4000
             },
             {
                 name = "bw",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Bandwidth of the filter.",
                 default = 1000
             }

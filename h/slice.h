@@ -1,12 +1,12 @@
 typedef struct {
-    sp_ftbl *vals;
-    sp_ftbl *buf;
+    ut_ftbl *vals;
+    ut_ftbl *buf;
     uint32_t id;
     uint32_t pos;
     uint32_t nextpos;
-} sp_slice;
+} ut_slice;
 
-int sp_slice_create(sp_slice **p);
-int sp_slice_destroy(sp_slice **p);
-int sp_slice_init(sp_data *sp, sp_slice *p, sp_ftbl *vals, sp_ftbl *buf);
-int sp_slice_compute(sp_data *sp, sp_slice *p, SPFLOAT *in, SPFLOAT *out);
+int ut_slice_create(ut_slice **p);
+int ut_slice_destroy(ut_slice **p);
+int ut_slice_init(ut_data *ut, ut_slice *p, ut_ftbl *vals, ut_ftbl *buf);
+int ut_slice_compute(ut_data *ut, ut_slice *p, UTFLOAT *in, UTFLOAT *out);

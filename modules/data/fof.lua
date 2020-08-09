@@ -7,23 +7,23 @@ sptbl["fof"] = {
     },
 
     func = {
-        create = "sp_fof_create",
-        destroy = "sp_fof_destroy",
-        init = "sp_fof_init",
-        compute = "sp_fof_compute",
+        create = "ut_fof_create",
+        destroy = "ut_fof_destroy",
+        init = "ut_fof_init",
+        compute = "ut_fof_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "sine",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "ftable for sine wave.",
                 default = "N/A"
             },
             {
                 name = "win",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "Ftable for envelope function (use either gen_line or gen_sinecomp)",
                 default = "N/A"
             },
@@ -35,7 +35,7 @@ sptbl["fof"] = {
             },
             {
                 name = "iphs",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Phase",
                 default = 0
             }
@@ -44,49 +44,49 @@ sptbl["fof"] = {
         optional = {
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Overall amplitude",
                 default = 0.5
             },
             {
                 name = "fund",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Fundamental frequency",
                 default = 100
             },
             {
                 name = "form",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Formant frequency.",
                 default = 500
             },
             {
                 name = "oct",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Octaviation index, if greater than zero, lowers the effective fund frequency by attenuating odd-numbered sine bursts. whole numbers are full octaves. fractions transpositional.",
                 default = 0
             },
             {
                 name = "band",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Bandwidth (in -6db) expressed in Hz. The bandwidth determines the rate of exponential decay throughout the sineburst, before the enveloping is applied.",
                 default = 50
             },
             {
                 name = "ris",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Rise of sinusoid burst (in seconds)",
                 default = 0.003
             },
             {
                 name = "dec",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Decay of the sinusoid burst (in seconds).",
                 default = 0.0007
             },
             {
                 name = "dur",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "OVerall duration of sinusoid burst (in seconds).",
                 default = 0.02
             },

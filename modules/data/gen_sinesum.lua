@@ -7,7 +7,7 @@ sptbl["gen_sinesum"] = {
     },
 
     func = {
-        name = "sp_gen_sinesum",
+        name = "ut_gen_sinesum",
     },
 
     params = {

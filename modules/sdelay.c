@@ -1,40 +1,40 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_sdelay_create(sp_sdelay **p)
+int ut_sdelay_create(ut_sdelay **p)
 {
-    *p = malloc(sizeof(sp_sdelay));
-    sp_sdelay *pp = *p;
+    *p = malloc(sizeof(ut_sdelay));
+    ut_sdelay *pp = *p;
     pp->size = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_sdelay_destroy(sp_sdelay **p)
+int ut_sdelay_destroy(ut_sdelay **p)
 {
-    sp_sdelay *pp = *p;
+    ut_sdelay *pp = *p;
 
     if(pp->size > 0) {
         free(pp->buf);
     }
 
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_sdelay_init(sp_data *sp, sp_sdelay *p, int size)
+int ut_sdelay_init(ut_data *ut, ut_sdelay *p, int size)
 {
     int n;
     p->size = size;
-    p->buf = malloc(size * sizeof(SPFLOAT));
+    p->buf = malloc(size * sizeof(UTFLOAT));
     for(n = 0; n < p->size; n++) p->buf[n] = 0;
     p->pos = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_sdelay_compute(sp_data *sp, sp_sdelay *p, SPFLOAT *in, SPFLOAT *out)
+int ut_sdelay_compute(ut_data *ut, ut_sdelay *p, UTFLOAT *in, UTFLOAT *out)
 {
     *out = p->buf[p->pos];
     p->buf[p->pos] = *in;
     p->pos = (p->pos + 1) % p->size;
-    return SP_OK;
+    return UT_OK;
 }

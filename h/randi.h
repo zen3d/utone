@@ -1,13 +1,13 @@
 typedef struct {
-    SPFLOAT min, max, cps, mode, fstval;
+    UTFLOAT min, max, cps, mode, fstval;
     int16_t cpscod;
     int32_t phs;
-    SPFLOAT num1, num2, dfdmax;
+    UTFLOAT num1, num2, dfdmax;
     int holdrand;
-    SPFLOAT sicvt;
-} sp_randi;
+    UTFLOAT sicvt;
+} ut_randi;
 
-int sp_randi_create(sp_randi **p);
-int sp_randi_destroy(sp_randi **p);
-int sp_randi_init(sp_data *sp, sp_randi *p);
-int sp_randi_compute(sp_data *sp, sp_randi *p, SPFLOAT *in, SPFLOAT *out);
+int ut_randi_create(ut_randi **p);
+int ut_randi_destroy(ut_randi **p);
+int ut_randi_init(ut_data *ut, ut_randi *p);
+int ut_randi_compute(ut_data *ut, ut_randi *p, UTFLOAT *in, UTFLOAT *out);

@@ -7,23 +7,23 @@ sptbl["pitchamdf"] = {
     },
 
     func = {
-        create = "sp_pitchamdf_create",
-        destroy = "sp_pitchamdf_destroy",
-        init = "sp_pitchamdf_init",
-        compute = "sp_pitchamdf_compute",
+        create = "ut_pitchamdf_create",
+        destroy = "ut_pitchamdf_destroy",
+        init = "ut_pitchamdf_init",
+        compute = "ut_pitchamdf_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "min",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Minimum expected frequency to detect",
                 default = 200
             },
             {
                 name = "max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Maximum expected frequency to detect",
                 default = 500
             }

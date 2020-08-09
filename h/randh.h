@@ -1,11 +1,11 @@
 typedef struct {
-    SPFLOAT freq;
-    SPFLOAT min, max;
-    SPFLOAT val;
+    UTFLOAT freq;
+    UTFLOAT min, max;
+    UTFLOAT val;
     uint32_t counter, dur;
-} sp_randh;
+} ut_randh;
 
-int sp_randh_create(sp_randh **p);
-int sp_randh_destroy(sp_randh **p);
-int sp_randh_init(sp_data *sp, sp_randh *p);
-int sp_randh_compute(sp_data *sp, sp_randh *p, SPFLOAT *in, SPFLOAT *out);
+int ut_randh_create(ut_randh **p);
+int ut_randh_destroy(ut_randh **p);
+int ut_randh_init(ut_data *ut, ut_randh *p);
+int ut_randh_compute(ut_data *ut, ut_randh *p, UTFLOAT *in, UTFLOAT *out);

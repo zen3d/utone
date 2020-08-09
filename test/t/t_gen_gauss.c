@@ -1,17 +1,17 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
-int t_gen_gauss(sp_test *tst, sp_data *sp, const char *hash) 
+int t_gen_gauss(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT out = 0;
+    UTFLOAT out = 0;
 
-    sp_ftbl *ft;
-    sp_ftbl_create(sp, &ft, 4096);
-    sp_gen_gauss(sp, ft, 1, 123456);
+    ut_ftbl *ft;
+    ut_ftbl_create(ut, &ft, 4096);
+    ut_gen_gauss(ut, ft, 1, 123456);
 
     for(n = 0; n < tst->size; n++) {
         if(n < ft->size) {
@@ -19,13 +19,13 @@ int t_gen_gauss(sp_test *tst, sp_data *sp, const char *hash)
         } else {
             out = 0;
         }
-        sp_test_add_sample(tst, out);
+        ut_test_add_sample(tst, out);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_ftbl_destroy(&ft);
+    ut_ftbl_destroy(&ft);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

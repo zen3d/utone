@@ -10,53 +10,53 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_oscmorph *oscmorph;
-    sp_ftbl *wt1;
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_oscmorph *oscmorph;
+    ut_ftbl *wt1;
+    ut_osc *osc;
+    ut_ftbl *ft; 
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, oscmorph = 0;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
+    UTFLOAT osc = 0, oscmorph = 0;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
     osc = (1 + osc) * 0.5;
     ud->oscmorph->wtpos = osc;
-    sp_oscmorph_compute(sp, ud->oscmorph, NULL, &oscmorph);
-    sp->out[0] = oscmorph;
+    ut_oscmorph_compute(ut, ud->oscmorph, NULL, &oscmorph);
+    ut->out[0] = oscmorph;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_oscmorph_create(&ud.oscmorph);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_ftbl_create(sp, &ud.wt1, 2048);
+    ut_oscmorph_create(&ud.oscmorph);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_ftbl_create(ut, &ud.wt1, 2048);
 
-    sp_gen_line(sp, ud.wt1, "0 1 2048 -1");
-    sp_gen_sine(sp, ud.ft);
+    ut_gen_line(ut, ud.wt1, "0 1 2048 -1");
+    ut_gen_sine(ut, ud.ft);
 
-    sp_ftbl *ft_array[] = {ud.wt1, ud.ft};
-    sp_oscmorph_init(sp, ud.oscmorph, ft_array, 2, 0);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_ftbl *ft_array[] = {ud.wt1, ud.ft};
+    ut_oscmorph_init(ut, ud.oscmorph, ft_array, 2, 0);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
     ud.osc->freq = 1;
     ud.osc->amp = 1;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_oscmorph_destroy(&ud.oscmorph);
-    sp_ftbl_destroy(&ud.ft);
-    sp_ftbl_destroy(&ud.wt1);
-    sp_osc_destroy(&ud.osc);
+    ut_oscmorph_destroy(&ud.oscmorph);
+    ut_ftbl_destroy(&ud.ft);
+    ut_ftbl_destroy(&ud.wt1);
+    ut_osc_destroy(&ud.osc);
     
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

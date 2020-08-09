@@ -1,11 +1,11 @@
 typedef struct {
-  SPFLOAT freq, bw, gain;
-  SPFLOAT z1,z2, sr;
-  SPFLOAT frv, bwv;
-  SPFLOAT c,d;
-} sp_eqfil;
+  UTFLOAT freq, bw, gain;
+  UTFLOAT z1,z2, sr;
+  UTFLOAT frv, bwv;
+  UTFLOAT c,d;
+} ut_eqfil;
 
-int sp_eqfil_create(sp_eqfil **p);
-int sp_eqfil_destroy(sp_eqfil **p);
-int sp_eqfil_init(sp_data *sp, sp_eqfil *p);
-int sp_eqfil_compute(sp_data *sp, sp_eqfil *p, SPFLOAT *in, SPFLOAT *out);
+int ut_eqfil_create(ut_eqfil **p);
+int ut_eqfil_destroy(ut_eqfil **p);
+int ut_eqfil_init(ut_data *ut, ut_eqfil *p);
+int ut_eqfil_compute(ut_data *ut, ut_eqfil *p, UTFLOAT *in, UTFLOAT *out);

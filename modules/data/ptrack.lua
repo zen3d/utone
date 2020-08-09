@@ -7,10 +7,10 @@ sptbl["ptrack"] = {
     },
 
     func = {
-        create = "sp_ptrack_create",
-        destroy = "sp_ptrack_destroy",
-        init = "sp_ptrack_init",
-        compute = "sp_ptrack_compute",
+        create = "ut_ptrack_create",
+        destroy = "ut_ptrack_destroy",
+        init = "ut_ptrack_init",
+        compute = "ut_ptrack_compute",
     },
 
     params = {

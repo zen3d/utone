@@ -8,14 +8,14 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "CUI.h"
 
 #define max(a,b) ((a < b) ? b : a)
 #define min(a,b) ((a < b) ? a : b)
 
 #ifndef FAUSTFLOAT
-#define FAUSTFLOAT SPFLOAT
+#define FAUSTFLOAT UTFLOAT
 #endif
 
 typedef struct {
@@ -290,38 +290,38 @@ void computejcrev(jcrev* dsp, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outpu
 }
 
 
-int sp_jcrev_create(sp_jcrev **p)
+int ut_jcrev_create(ut_jcrev **p)
 {
-    *p = malloc(sizeof(sp_jcrev));
-    return SP_OK;
+    *p = malloc(sizeof(ut_jcrev));
+    return UT_OK;
 }
 
-int sp_jcrev_destroy(sp_jcrev **p)
+int ut_jcrev_destroy(ut_jcrev **p)
 {
-    sp_jcrev *pp = *p;
+    ut_jcrev *pp = *p;
     jcrev *dsp = pp->ud;
     deletejcrev(dsp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_jcrev_init(sp_data *sp, sp_jcrev *p)
+int ut_jcrev_init(ut_data *ut, ut_jcrev *p)
 {
     jcrev *dsp = newjcrev();
-    initjcrev(dsp, sp->sr);
+    initjcrev(dsp, ut->sr);
     p->ud = dsp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_jcrev_compute(sp_data *sp, sp_jcrev *p, SPFLOAT *in, SPFLOAT *out)
+int ut_jcrev_compute(ut_data *ut, ut_jcrev *p, UTFLOAT *in, UTFLOAT *out)
 {
 
     jcrev *dsp = p->ud;
-    SPFLOAT out1 = 0, out2 = 0, out3 = 0, out4 = 0;
-    SPFLOAT *faust_out[] = {&out1, &out2, &out3, &out4};
+    UTFLOAT out1 = 0, out2 = 0, out3 = 0, out4 = 0;
+    UTFLOAT *faust_out[] = {&out1, &out2, &out3, &out4};
     computejcrev(dsp, 1, &in, faust_out);
 
     /* As you can see, only 1 out of the 4 channels are being used */
     *out = out1;
-    return SP_OK;
+    return UT_OK;
 }

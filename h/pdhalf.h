@@ -1,8 +1,8 @@
 typedef struct {
-    SPFLOAT amount, ibipolar, ifullscale;
-} sp_pdhalf;
+    UTFLOAT amount, ibipolar, ifullscale;
+} ut_pdhalf;
 
-int sp_pdhalf_create(sp_pdhalf **p);
-int sp_pdhalf_destroy(sp_pdhalf **p);
-int sp_pdhalf_init(sp_data *sp, sp_pdhalf *p);
-int sp_pdhalf_compute(sp_data *sp, sp_pdhalf *p, SPFLOAT *in, SPFLOAT *out);
+int ut_pdhalf_create(ut_pdhalf **p);
+int ut_pdhalf_destroy(ut_pdhalf **p);
+int ut_pdhalf_init(ut_data *ut, ut_pdhalf *p);
+int ut_pdhalf_compute(ut_data *ut, ut_pdhalf *p, UTFLOAT *in, UTFLOAT *out);

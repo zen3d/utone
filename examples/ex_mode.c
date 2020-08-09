@@ -1,37 +1,37 @@
 #include <stdlib.h>
-#include <soundpipe.h>
+#include <utone.h>
 
 typedef struct {
-    sp_mode *mode[4];
-    SPFLOAT *mfreq[4];
-    SPFLOAT *Q[4];
-    SPFLOAT amp;
-    SPFLOAT *freq;
-    SPFLOAT lfreq;
+    ut_mode *mode[4];
+    UTFLOAT *mfreq[4];
+    UTFLOAT *Q[4];
+    UTFLOAT amp;
+    UTFLOAT *freq;
+    UTFLOAT lfreq;
 } modal;
 
 typedef struct {
     modal *mod;
-    sp_metro *met;
-    sp_ftbl *notes;
-    sp_tseq *seq;
+    ut_metro *met;
+    ut_ftbl *notes;
+    ut_tseq *seq;
 } UserData;
 
 int modal_create(modal **md)
 {
     *md = malloc(sizeof(modal));
-    return SP_OK;
+    return UT_OK;
 }
 
-int modal_init(sp_data *sp, modal *md)
+int modal_init(ut_data *ut, modal *md)
 {
     int i;
     md->amp = 0.5;
 
 
     for(i = 0; i < 4; i++) {
-        sp_mode_create(&md->mode[i]);
-        sp_mode_init(sp, md->mode[i]);
+        ut_mode_create(&md->mode[i]);
+        ut_mode_init(ut, md->mode[i]);
         md->mfreq[i] = &md->mode[i]->freq;
         md->Q[i] = &md->mode[i]->q;
     }
@@ -48,21 +48,21 @@ int modal_init(sp_data *sp, modal *md)
 
     md->freq = md->mfreq[2];
     md->lfreq = *md->freq;
-    return SP_OK;
+    return UT_OK;
 }
 
-int modal_compute(sp_data *sp, modal *md, SPFLOAT *in, SPFLOAT *out)
+int modal_compute(ut_data *ut, modal *md, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT exc1, exc2, exc;
-    SPFLOAT res1, res2, res;
+    UTFLOAT exc1, exc2, exc;
+    UTFLOAT res1, res2, res;
 
     if(*md->freq != md->lfreq) {
         *md->mfreq[3] = *md->freq * 2.01081;
         md->lfreq = *md->freq;
     }
 
-    sp_mode_compute(sp, md->mode[0], in, &exc1);
-    sp_mode_compute(sp, md->mode[1], in, &exc2);
+    ut_mode_compute(ut, md->mode[0], in, &exc1);
+    ut_mode_compute(ut, md->mode[1], in, &exc2);
     exc = (exc1 + exc2) * 0.5;
 
     if(exc > md->amp) {
@@ -71,14 +71,14 @@ int modal_compute(sp_data *sp, modal *md, SPFLOAT *in, SPFLOAT *out)
         exc = 0;
     }
 
-    sp_mode_compute(sp, md->mode[2], &exc, &res1);
-    sp_mode_compute(sp, md->mode[3], &exc, &res2);
+    ut_mode_compute(ut, md->mode[2], &exc, &res1);
+    ut_mode_compute(ut, md->mode[3], &exc, &res2);
     res = (res1 + res2) * 0.5;
 
 
     *out = (exc + res) * md->amp;
 
-    return SP_OK;
+    return UT_OK;
 }
 
 int modal_destroy(modal **md)
@@ -86,52 +86,52 @@ int modal_destroy(modal **md)
     int i;
     modal *mdp = *md;
     for(i = 0; i < 4; i++) {
-        sp_mode_destroy(&mdp->mode[i]);
+        ut_mode_destroy(&mdp->mode[i]);
     }
 
     free(*md);
-    return SP_OK;
+    return UT_OK;
 }
 
-void process(sp_data *sp, void *udata)
+void process(ut_data *ut, void *udata)
 {
     UserData *ud = udata;
-    SPFLOAT met = 0, mod = 0, nn;
-    sp_metro_compute(sp, ud->met, NULL, &met);
-    sp_tseq_compute(sp, ud->seq, &met, &nn);
-    *ud->mod->freq = sp_midi2cps(nn);
-    modal_compute(sp, ud->mod, &met, &mod);
-    sp->out[0] = mod;
+    UTFLOAT met = 0, mod = 0, nn;
+    ut_metro_compute(ut, ud->met, NULL, &met);
+    ut_tseq_compute(ut, ud->seq, &met, &nn);
+    *ud->mod->freq = ut_midi2cps(nn);
+    modal_compute(ut, ud->mod, &met, &mod);
+    ut->out[0] = mod;
 }
 
 int main()
 {
     UserData ud;
-    sp_data *sp;
+    ut_data *ut;
 
-    sp_create(&sp);
-    sp->len = sp->sr * 10;
+    ut_create(&ut);
+    ut->len = ut->sr * 10;
 
     modal_create(&ud.mod);
-    modal_init(sp, ud.mod);
+    modal_init(ut, ud.mod);
 
-    sp_metro_create(&ud.met);
-    sp_metro_init(sp, ud.met);
+    ut_metro_create(&ud.met);
+    ut_metro_init(ut, ud.met);
     ud.met->freq = 3.0;
 
-    sp_ftbl_create(sp, &ud.notes, 1);
-    sp_gen_vals(sp, ud.notes, "60 67 62 69 76");
+    ut_ftbl_create(ut, &ud.notes, 1);
+    ut_gen_vals(ut, ud.notes, "60 67 62 69 76");
 
-    sp_tseq_create(&ud.seq);
-    sp_tseq_init(sp, ud.seq, ud.notes);
+    ut_tseq_create(&ud.seq);
+    ut_tseq_init(ut, ud.seq, ud.notes);
 
-    sp_process(sp, &ud, process);
+    ut_process(ut, &ud, process);
 
     modal_destroy(&ud.mod);
-    sp_metro_destroy(&ud.met);
-    sp_ftbl_destroy(&ud.notes);
-    sp_tseq_destroy(&ud.seq);
+    ut_metro_destroy(&ud.met);
+    ut_ftbl_destroy(&ud.notes);
+    ut_tseq_destroy(&ud.seq);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

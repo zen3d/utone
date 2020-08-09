@@ -7,35 +7,35 @@ sptbl["rspline"] = {
     },
 
     func = {
-        create = "sp_rspline_create",
-        destroy = "sp_rspline_destroy",
-        init = "sp_rspline_init",
-        compute = "sp_rspline_compute",
+        create = "ut_rspline_create",
+        destroy = "ut_rspline_destroy",
+        init = "ut_rspline_init",
+        compute = "ut_rspline_compute",
     },
 
     params = {
         optional = {
             {
                 name = "min",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Minimum range.",
                 default = 0
             },
             {
                 name = "max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Maximum range",
                 default = 1 
             },
             {
                 name = "cps_min",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "",
                 default = 0.1
             },
             {
                 name = "cps_max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="",
                 default = 3 
             },

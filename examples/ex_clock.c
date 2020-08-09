@@ -10,55 +10,55 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_clock *clock;
-    sp_osc *osc;
-    sp_ftbl *ft; 
-    sp_tenv *te;
+    ut_clock *clock;
+    ut_osc *osc;
+    ut_ftbl *ft; 
+    ut_tenv *te;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, clock = 0, env = 0;
-    SPFLOAT trig = 0;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp_clock_compute(sp, ud->clock, &trig, &clock);
-    sp_tenv_compute(sp, ud->te, &clock, &env);
-    sp_out(sp, 0, env * osc);
+    UTFLOAT osc = 0, clock = 0, env = 0;
+    UTFLOAT trig = 0;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut_clock_compute(ut, ud->clock, &trig, &clock);
+    ut_tenv_compute(ut, ud->te, &clock, &env);
+    ut_out(ut, 0, env * osc);
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_clock_create(&ud.clock);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_tenv_create(&ud.te);
+    ut_clock_create(&ud.clock);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_tenv_create(&ud.te);
 
-    sp_clock_init(sp, ud.clock);
+    ut_clock_init(ut, ud.clock);
     ud.clock->bpm = 130;
     ud.clock->subdiv = 4;
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
-    sp_tenv_init(sp, ud.te);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
+    ut_tenv_init(ut, ud.te);
     ud.te->atk = 0.001;
     ud.te->hold = 0.001;
     ud.te->rel = 0.001;
     
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_clock_destroy(&ud.clock);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_tenv_destroy(&ud.te);
+    ut_clock_destroy(&ud.clock);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_tenv_destroy(&ud.te);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

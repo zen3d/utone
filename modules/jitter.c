@@ -11,69 +11,69 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 /* the randgabs are essentially magic incantations from Csound */
 
-static SPFLOAT sp_jitter_randgab(sp_data *sp) 
+static UTFLOAT ut_jitter_randgab(ut_data *ut) 
 {
-    SPFLOAT out = (SPFLOAT) ((sp_rand(sp) >> 1) & 0x7fffffff) *
+    UTFLOAT out = (UTFLOAT) ((ut_rand(ut) >> 1) & 0x7fffffff) *
     (4.656612875245796924105750827168e-10);
     return out;
 }
 
-static SPFLOAT sp_jitter_birandgab(sp_data *sp) 
+static UTFLOAT ut_jitter_birandgab(ut_data *ut) 
 {
-    SPFLOAT out = (SPFLOAT) (sp_rand(sp) & 0x7fffffff) *
+    UTFLOAT out = (UTFLOAT) (ut_rand(ut) & 0x7fffffff) *
     (4.656612875245796924105750827168e-10);
     return out;
 }
 
-int sp_jitter_create(sp_jitter **p)
+int ut_jitter_create(ut_jitter **p)
 {
-    *p = malloc(sizeof(sp_jitter));
-    return SP_OK;
+    *p = malloc(sizeof(ut_jitter));
+    return UT_OK;
 }
 
-int sp_jitter_destroy(sp_jitter **p)
+int ut_jitter_destroy(ut_jitter **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_jitter_init(sp_data *sp, sp_jitter *p)
+int ut_jitter_init(ut_data *ut, ut_jitter *p)
 {
     p->amp = 0.5;
     p->cpsMin = 0.5;
     p->cpsMax = 4; 
-    p->num2 = sp_jitter_birandgab(sp);
+    p->num2 = ut_jitter_birandgab(ut);
     p->initflag = 1;
     p->phs=0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_jitter_compute(sp_data *sp, sp_jitter *p, SPFLOAT *in, SPFLOAT *out)
+int ut_jitter_compute(ut_data *ut, ut_jitter *p, UTFLOAT *in, UTFLOAT *out)
 {
     if (p->initflag) {
       p->initflag = 0;
       *out = p->num2 * p->amp;
-      p->cps = sp_jitter_randgab(sp) * (p->cpsMax - p->cpsMin) + p->cpsMin;
-      p->phs &= SP_FT_PHMASK;
+      p->cps = ut_jitter_randgab(ut) * (p->cpsMax - p->cpsMin) + p->cpsMin;
+      p->phs &= UT_FT_PHMASK;
       p->num1 = p->num2;
-      p->num2 = sp_jitter_birandgab(sp);
-      p->dfdmax = 1.0 * (p->num2 - p->num1) / SP_FT_MAXLEN;
-      return SP_OK;
+      p->num2 = ut_jitter_birandgab(ut);
+      p->dfdmax = 1.0 * (p->num2 - p->num1) / UT_FT_MAXLEN;
+      return UT_OK;
     }
     
-    *out = (p->num1 + (SPFLOAT)p->phs * p->dfdmax) * p->amp;
-    p->phs += (int32_t)(p->cps * (SPFLOAT)(SP_FT_MAXLEN / sp->sr));
+    *out = (p->num1 + (UTFLOAT)p->phs * p->dfdmax) * p->amp;
+    p->phs += (int32_t)(p->cps * (UTFLOAT)(UT_FT_MAXLEN / ut->sr));
 
-    if (p->phs >= SP_FT_MAXLEN) {
-      p->cps   = sp_jitter_randgab(sp) * (p->cpsMax - p->cpsMin) + p->cpsMin;
-      p->phs   &= SP_FT_PHMASK;
+    if (p->phs >= UT_FT_MAXLEN) {
+      p->cps   = ut_jitter_randgab(ut) * (p->cpsMax - p->cpsMin) + p->cpsMin;
+      p->phs   &= UT_FT_PHMASK;
       p->num1   = p->num2;
-      p->num2 =  sp_jitter_birandgab(sp);
-      p->dfdmax = 1.0 * (p->num2 - p->num1) / SP_FT_MAXLEN;
+      p->num2 =  ut_jitter_birandgab(ut);
+      p->dfdmax = 1.0 * (p->num2 - p->num1) / UT_FT_MAXLEN;
     }
-    return SP_OK;
+    return UT_OK;
 }

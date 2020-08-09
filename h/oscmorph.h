@@ -1,13 +1,13 @@
 typedef struct {
-    SPFLOAT freq, amp, iphs;
+    UTFLOAT freq, amp, iphs;
     int32_t lphs;
-    sp_ftbl **tbl;
+    ut_ftbl **tbl;
     int inc;
-    SPFLOAT wtpos;
+    UTFLOAT wtpos;
     int nft;
-} sp_oscmorph;
+} ut_oscmorph;
 
-int sp_oscmorph_create(sp_oscmorph **p);
-int sp_oscmorph_destroy(sp_oscmorph **p);
-int sp_oscmorph_init(sp_data *sp, sp_oscmorph *osc, sp_ftbl **ft, int nft, SPFLOAT iphs);
-int sp_oscmorph_compute(sp_data *sp, sp_oscmorph *p, SPFLOAT *in, SPFLOAT *out);
+int ut_oscmorph_create(ut_oscmorph **p);
+int ut_oscmorph_destroy(ut_oscmorph **p);
+int ut_oscmorph_init(ut_data *ut, ut_oscmorph *osc, ut_ftbl **ft, int nft, UTFLOAT iphs);
+int ut_oscmorph_compute(ut_data *ut, ut_oscmorph *p, UTFLOAT *in, UTFLOAT *out);

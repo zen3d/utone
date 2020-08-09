@@ -35,7 +35,7 @@ typedef struct {
     uint32_t tmp;
     uint32_t cons_mul;
     uint32_t cons_div;
-    SPFLOAT scale;
+    UTFLOAT scale;
     int mode;
     uint32_t pos;
     prop_list top;
@@ -48,12 +48,12 @@ typedef struct {
    prop_data *prp;
    prop_event evt;
    uint32_t count;
-   SPFLOAT bpm;
-   SPFLOAT lbpm;
-} sp_prop;
+   UTFLOAT bpm;
+   UTFLOAT lbpm;
+} ut_prop;
 
-int sp_prop_create(sp_prop **p);
-int sp_prop_destroy(sp_prop **p);
-int sp_prop_reset(sp_data *sp, sp_prop *p);
-int sp_prop_init(sp_data *sp, sp_prop *p, const char *str);
-int sp_prop_compute(sp_data *sp, sp_prop *p, SPFLOAT *in, SPFLOAT *out);
+int ut_prop_create(ut_prop **p);
+int ut_prop_destroy(ut_prop **p);
+int ut_prop_reset(ut_data *ut, ut_prop *p);
+int ut_prop_init(ut_data *ut, ut_prop *p, const char *str);
+int ut_prop_compute(ut_data *ut, ut_prop *p, UTFLOAT *in, UTFLOAT *out);

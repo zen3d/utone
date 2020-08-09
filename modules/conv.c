@@ -13,23 +13,23 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-static void multiply_fft_buffers(SPFLOAT *outBuf, SPFLOAT *ringBuf,
-                                 SPFLOAT *IR_Data, int partSize, int nPartitions,
+static void multiply_fft_buffers(UTFLOAT *outBuf, UTFLOAT *ringBuf,
+                                 UTFLOAT *IR_Data, int partSize, int nPartitions,
                                  int ringBuf_startPos)
 {
-    SPFLOAT   re, im, re1, re2, im1, im2;
-    SPFLOAT   *rbPtr, *irPtr, *outBufPtr, *outBufEndPm2, *rbEndP;
+    UTFLOAT   re, im, re1, re2, im1, im2;
+    UTFLOAT   *rbPtr, *irPtr, *outBufPtr, *outBufEndPm2, *rbEndP;
 
     /* note: partSize must be at least 2 samples */
     partSize <<= 1;
-    outBufEndPm2 = (SPFLOAT*) outBuf + (int) (partSize - 2);
-    rbEndP = (SPFLOAT*) ringBuf + (int) (partSize * nPartitions);
+    outBufEndPm2 = (UTFLOAT*) outBuf + (int) (partSize - 2);
+    rbEndP = (UTFLOAT*) ringBuf + (int) (partSize * nPartitions);
     rbPtr = &(ringBuf[ringBuf_startPos]);
     irPtr = IR_Data;
     outBufPtr = outBuf;
-    memset(outBuf, 0, sizeof(SPFLOAT)*(partSize));
+    memset(outBuf, 0, sizeof(UTFLOAT)*(partSize));
     do {
       /* wrap ring buffer position */
       if (rbPtr >= rbEndP)
@@ -79,16 +79,16 @@ static int buf_bytes_alloc(int nChannels, int partSize, int nPartitions)
     nSmps += ((partSize << 1) * nChannels * nPartitions);   /* IR_Data    */
     nSmps += ((partSize << 1) * nChannels);                 /* outBuffers */
 
-    return ((int) sizeof(SPFLOAT) * nSmps);
+    return ((int) sizeof(UTFLOAT) * nSmps);
 }
 
-static void set_buf_pointers(sp_conv *p,
+static void set_buf_pointers(ut_conv *p,
                              int nChannels, int partSize, int nPartitions)
 {
-    SPFLOAT *ptr;
+    UTFLOAT *ptr;
     int   i;
 
-    ptr = (SPFLOAT *) (p->auxData.ptr);
+    ptr = (UTFLOAT *) (p->auxData.ptr);
     p->tmpBuf = ptr;
     ptr += (partSize << 1);
     p->ringBuf = ptr;
@@ -103,25 +103,25 @@ static void set_buf_pointers(sp_conv *p,
     }
 }
 
-int sp_conv_create(sp_conv **p)
+int ut_conv_create(ut_conv **p)
 {
-    *p = malloc(sizeof(sp_conv));
-    return SP_OK;
+    *p = malloc(sizeof(ut_conv));
+    return UT_OK;
 }
 
-int sp_conv_destroy(sp_conv **p)
+int ut_conv_destroy(ut_conv **p)
 {
-    sp_conv *pp = *p;
-    sp_auxdata_free(&pp->auxData);
-    sp_fft_destroy(&pp->fft);
+    ut_conv *pp = *p;
+    ut_auxdata_free(&pp->auxData);
+    ut_fft_destroy(&pp->fft);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_conv_init(sp_data *sp, sp_conv *p, sp_ftbl *ft, SPFLOAT iPartLen)
+int ut_conv_init(ut_data *ut, ut_conv *p, ut_ftbl *ft, UTFLOAT iPartLen)
 {
     int     i, j, k, n, nBytes, skipSamples;
-    SPFLOAT FFTscale;
+    UTFLOAT FFTscale;
 
     p->iTotLen = ft->size;
     p->iSkipSamples = 0;
@@ -132,10 +132,10 @@ int sp_conv_init(sp_data *sp, sp_conv *p, sp_ftbl *ft, SPFLOAT iPartLen)
     p->partSize = (int)lrintf(p->iPartLen);
     if (p->partSize < 4 || (p->partSize & (p->partSize - 1)) != 0) {
         fprintf(stderr, "conv: invalid partition size.\n");
-        return SP_NOT_OK;  
+        return UT_NOT_OK;  
     }
 
-    sp_fft_init(&p->fft, (int)log2(p->partSize << 1));
+    ut_fft_init(&p->fft, (int)log2(p->partSize << 1));
     n = (int) ft->size / p->nChannels;
     skipSamples = (int)lrintf(p->iSkipSamples);
     n -= skipSamples;
@@ -146,19 +146,19 @@ int sp_conv_init(sp_data *sp, sp_conv *p, sp_ftbl *ft, SPFLOAT iPartLen)
 
     if (n <= 0) {
         fprintf(stderr, "uh oh.\n");
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }
 
     p->nPartitions = (n + (p->partSize - 1)) / p->partSize;
     /* calculate the amount of aux space to allocate (in bytes) */
     nBytes = buf_bytes_alloc(p->nChannels, p->partSize, p->nPartitions);
-    sp_auxdata_alloc(&p->auxData, nBytes);
+    ut_auxdata_alloc(&p->auxData, nBytes);
     /* if skipping samples: check for possible truncation of IR */
     /* initialise buffer pointers */
     set_buf_pointers(p, p->nChannels, p->partSize, p->nPartitions);
     /* clear ring buffer to zero */
     n = (p->partSize << 1) * p->nPartitions;
-    memset(p->ringBuf, 0, n*sizeof(SPFLOAT));
+    memset(p->ringBuf, 0, n*sizeof(UTFLOAT));
     p->cnt = 0;
     p->rbCnt = 0;
     FFTscale = 1.0;
@@ -181,7 +181,7 @@ int sp_conv_init(sp_data *sp, sp_conv *p, sp_ftbl *ft, SPFLOAT iPartLen)
                 p->IR_Data[j][n + k] = 0.0;
             }
             /* calculate FFT */
-            sp_fftr(&p->fft, &(p->IR_Data[j][n]), (p->partSize << 1));
+            ut_fftr(&p->fft, &(p->IR_Data[j][n]), (p->partSize << 1));
             n -= (p->partSize << 1);
         } while (n >= 0);
     }
@@ -192,12 +192,12 @@ int sp_conv_init(sp_data *sp, sp_conv *p, sp_ftbl *ft, SPFLOAT iPartLen)
     }
     p->initDone = 1;
 
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_conv_compute(sp_data *sp, sp_conv *p, SPFLOAT *in, SPFLOAT *out)
+int ut_conv_compute(ut_data *ut, ut_conv *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT *x, *rBuf;
+    UTFLOAT *x, *rBuf;
     int i, n, nSamples, rBufPos;
 
     nSamples = p->partSize;
@@ -209,7 +209,7 @@ int sp_conv_compute(sp_data *sp, sp_conv *p, SPFLOAT *in, SPFLOAT *out)
 
     /* is input buffer full ? */
     if (++p->cnt < nSamples) {
-        return SP_OK;                   
+        return UT_OK;                   
     }
     /* reset buffer position */
     p->cnt = 0;
@@ -218,7 +218,7 @@ int sp_conv_compute(sp_data *sp, sp_conv *p, SPFLOAT *in, SPFLOAT *out)
         /* Zero padding */
         rBuf[i] = 0.0;
     }
-    sp_fftr(&p->fft, rBuf, (nSamples << 1));
+    ut_fftr(&p->fft, rBuf, (nSamples << 1));
     /* update ring buffer position */
     p->rbCnt++;
 
@@ -234,7 +234,7 @@ int sp_conv_compute(sp_data *sp, sp_conv *p, SPFLOAT *in, SPFLOAT *out)
         multiply_fft_buffers(p->tmpBuf, p->ringBuf, p->IR_Data[n],
                      nSamples, p->nPartitions, rBufPos);
         /* inverse FFT */
-        sp_ifftr(&p->fft, p->tmpBuf, (nSamples << 1));
+        ut_ifftr(&p->fft, p->tmpBuf, (nSamples << 1));
         /* copy to output buffer, overlap with "tail" of previous block */
         x = &(p->outBuffers[n][0]);
         for (i = 0; i < nSamples; i++) {
@@ -242,5 +242,5 @@ int sp_conv_compute(sp_data *sp, sp_conv *p, SPFLOAT *in, SPFLOAT *out)
             x[i + nSamples] = p->tmpBuf[i + nSamples];
         }
     }
-    return SP_OK;
+    return UT_OK;
 }

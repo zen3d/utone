@@ -1,24 +1,24 @@
-typedef struct sp_fof_overlap {
-        struct sp_fof_overlap *nxtact, *nxtfree;
+typedef struct ut_fof_overlap {
+        struct ut_fof_overlap *nxtact, *nxtfree;
         int32_t timrem, dectim, formphs, forminc, risphs, risinc, decphs, decinc;
-        SPFLOAT curamp, expamp;
-        SPFLOAT glissbas;
+        UTFLOAT curamp, expamp;
+        UTFLOAT glissbas;
         int32_t sampct;
-} sp_fof_overlap;
+} ut_fof_overlap;
 
 typedef struct {
-    SPFLOAT amp, fund, form, oct, band, ris, dur, dec;
-    SPFLOAT iolaps, iphs;
+    UTFLOAT amp, fund, form, oct, band, ris, dur, dec;
+    UTFLOAT iolaps, iphs;
     int32_t durtogo, fundphs, fofcount, prvsmps;
-    SPFLOAT prvband, expamp, preamp;
+    UTFLOAT prvband, expamp, preamp;
     int16_t foftype;        
     int16_t xincod, ampcod, fundcod, formcod, fmtmod;
-    sp_auxdata auxch;
-    sp_ftbl *ftp1, *ftp2;
-    sp_fof_overlap basovrlap;
-} sp_fof;
+    ut_auxdata auxch;
+    ut_ftbl *ftp1, *ftp2;
+    ut_fof_overlap basovrlap;
+} ut_fof;
 
-int sp_fof_create(sp_fof **p);
-int sp_fof_destroy(sp_fof **p);
-int sp_fof_init(sp_data *sp, sp_fof *p, sp_ftbl *sine, sp_ftbl *win, int iolaps, SPFLOAT iphs);
-int sp_fof_compute(sp_data *sp, sp_fof *p, SPFLOAT *in, SPFLOAT *out);
+int ut_fof_create(ut_fof **p);
+int ut_fof_destroy(ut_fof **p);
+int ut_fof_init(ut_data *ut, ut_fof *p, ut_ftbl *sine, ut_ftbl *win, int iolaps, UTFLOAT iphs);
+int ut_fof_compute(ut_data *ut, ut_fof *p, UTFLOAT *in, UTFLOAT *out);

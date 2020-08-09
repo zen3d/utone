@@ -16,26 +16,26 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846	
 #endif
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_mincer_create(sp_mincer **p)
+int ut_mincer_create(ut_mincer **p)
 {
-    *p = malloc(sizeof(sp_mincer));
-    return SP_OK;
+    *p = malloc(sizeof(ut_mincer));
+    return UT_OK;
 }
 
-int sp_mincer_destroy(sp_mincer **p)
+int ut_mincer_destroy(ut_mincer **p)
 {
-    sp_mincer *pp = *p;
-    sp_fft_destroy(&pp->fft);
-    sp_auxdata_free(&pp->fwin);
-    sp_auxdata_free(&pp->bwin);
-    sp_auxdata_free(&pp->prev);
-    sp_auxdata_free(&pp->framecount);
-    sp_auxdata_free(&pp->outframe);
-    sp_auxdata_free(&pp->win);
+    ut_mincer *pp = *p;
+    ut_fft_destroy(&pp->fft);
+    ut_auxdata_free(&pp->fwin);
+    ut_auxdata_free(&pp->bwin);
+    ut_auxdata_free(&pp->prev);
+    ut_auxdata_free(&pp->framecount);
+    ut_auxdata_free(&pp->outframe);
+    ut_auxdata_free(&pp->win);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
 static int find_power(int n) {
@@ -47,7 +47,7 @@ static int find_power(int n) {
     return pow;
 }
 
-int sp_mincer_init(sp_data *sp, sp_mincer *p, sp_ftbl *ft, int winsize)
+int ut_mincer_init(ut_data *ut, ut_mincer *p, ut_ftbl *ft, int winsize)
 {
     p->ft = ft;
     p->idecim = 4;
@@ -65,7 +65,7 @@ int sp_mincer_init(sp_data *sp, sp_mincer *p, sp_ftbl *ft, int winsize)
     
     pow = find_power(winsize);
     /* 2^11 = 2048, the default fftsize, will probably not change */
-    sp_fft_init(&p->fft, pow);
+    ut_fft_init(&p->fft, pow);
 
 
     if (decim == 0) decim = 4;
@@ -75,51 +75,51 @@ int sp_mincer_init(sp_data *sp, sp_mincer *p, sp_ftbl *ft, int winsize)
     p->curframe = 0;
     p->pos = 0;
 
-    size = (N+2)*sizeof(SPFLOAT);
-    sp_auxdata_alloc(&p->fwin, size);
-    sp_auxdata_alloc(&p->bwin, size);
-    sp_auxdata_alloc(&p->prev, size);
+    size = (N+2)*sizeof(UTFLOAT);
+    ut_auxdata_alloc(&p->fwin, size);
+    ut_auxdata_alloc(&p->bwin, size);
+    ut_auxdata_alloc(&p->prev, size);
     size = decim*sizeof(int);
-    sp_auxdata_alloc(&p->framecount, size);
+    ut_auxdata_alloc(&p->framecount, size);
     {
       int k=0;
         for (k=0; k < decim; k++) {
             ((int *)(p->framecount.ptr))[k] = k*N;
         }
     }
-    size = decim*sizeof(SPFLOAT)*N;
-    sp_auxdata_alloc(&p->outframe, size);
+    size = decim*sizeof(UTFLOAT)*N;
+    ut_auxdata_alloc(&p->outframe, size);
     
-    size = N*sizeof(SPFLOAT);
-    sp_auxdata_alloc(&p->win, size);
+    size = N*sizeof(UTFLOAT);
+    ut_auxdata_alloc(&p->win, size);
     {
-        SPFLOAT x = 2.0 * M_PI/N;
+        UTFLOAT x = 2.0 * M_PI/N;
         for (ui=0; ui < N; ui++)
-        ((SPFLOAT *)p->win.ptr)[ui] = 0.5 - 0.5 * cos((SPFLOAT)ui*x);
+        ((UTFLOAT *)p->win.ptr)[ui] = 0.5 - 0.5 * cos((UTFLOAT)ui*x);
     }
 
     p->N = N;
     p->decim = decim;
 
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_mincer_compute(sp_data *sp, sp_mincer *p, SPFLOAT *in2, SPFLOAT *out)
+int ut_mincer_compute(ut_data *ut, ut_mincer *p, UTFLOAT *in2, UTFLOAT *out)
 {
-    SPFLOAT pitch = p->pitch, time = p->time, lock = p->lock, amp =p->amp;
-    SPFLOAT *tab, frac;
-    sp_ftbl *ft = p->ft;
+    UTFLOAT pitch = p->pitch, time = p->time, lock = p->lock, amp =p->amp;
+    UTFLOAT *tab, frac;
+    ut_ftbl *ft = p->ft;
     int N = p->N, hsize = p->hsize, cnt = p->cnt;
     int sizefrs, size, post, i;
     long spos = p->pos;
-    SPFLOAT pos;
-    SPFLOAT *fwin, *bwin, insig = 0,
-    *prev, *win = (SPFLOAT *) p->win.ptr;
-    SPFLOAT *outframe;
-    SPFLOAT ph_real, ph_im, tmp_real, tmp_im, divi;
+    UTFLOAT pos;
+    UTFLOAT *fwin, *bwin, insig = 0,
+    *prev, *win = (UTFLOAT *) p->win.ptr;
+    UTFLOAT *outframe;
+    UTFLOAT ph_real, ph_im, tmp_real, tmp_im, divi;
     int *framecnt;
     int curframe = p->curframe, decim = p->decim;
-    SPFLOAT scaling = (8./decim)/3.;
+    UTFLOAT scaling = (8./decim)/3.;
 
     if (cnt == hsize) {
         tab = ft->tbl;
@@ -129,18 +129,18 @@ int sp_mincer_compute(sp_data *sp, sp_mincer *p, SPFLOAT *in2, SPFLOAT *out)
         time[n] is current read position in secs
         esr is sampling rate
         */
-        spos  = hsize*(long)((time)*sp->sr/hsize);
+        spos  = hsize*(long)((time)*ut->sr/hsize);
         sizefrs = size;
         while(spos > sizefrs) spos -= sizefrs;
         while(spos <= 0)  spos += sizefrs;
 
 
         pos = spos;
-        bwin = (SPFLOAT *) p->bwin.ptr;
-        fwin = (SPFLOAT *) p->fwin.ptr;
-        prev = (SPFLOAT *)p->prev.ptr;
+        bwin = (UTFLOAT *) p->bwin.ptr;
+        fwin = (UTFLOAT *) p->fwin.ptr;
+        prev = (UTFLOAT *)p->prev.ptr;
         framecnt  = (int *)p->framecount.ptr;
-        outframe= (SPFLOAT *) p->outframe.ptr;
+        outframe= (UTFLOAT *) p->outframe.ptr;
         /* this loop fills two frames/windows with samples from table,
         reading is linearly-interpolated,
         frames are separated by 1 hopsize
@@ -174,10 +174,10 @@ int sp_mincer_compute(sp_data *sp, sp_mincer *p, SPFLOAT *in2, SPFLOAT *out)
         /* take the FFT of both frames
         re-order Nyquist bin from pos 1 to N
         */
-        sp_fftr(&p->fft, bwin, N);
+        ut_fftr(&p->fft, bwin, N);
         bwin[N] = bwin[1];
         bwin[N+1] = 0.0;
-        sp_fftr(&p->fft, fwin, N);
+        ut_fftr(&p->fft, fwin, N);
         fwin[N] = fwin[1];
         fwin[N+1] = 0.0;
 
@@ -235,7 +235,7 @@ int sp_mincer_compute(sp_data *sp, sp_mincer *p, SPFLOAT *in2, SPFLOAT *out)
         }
         /* re-order bins and take inverse FFT */
         fwin[1] = fwin[N];
-        sp_ifftr(&p->fft, fwin, N);
+        ut_ifftr(&p->fft, fwin, N);
         /* frame counter */
         framecnt[curframe] = curframe*N;
         /* write to overlapped output frames */
@@ -247,8 +247,8 @@ int sp_mincer_compute(sp_data *sp, sp_mincer *p, SPFLOAT *in2, SPFLOAT *out)
     }
 
     framecnt  = (int *) p->framecount.ptr;
-    outframe  = (SPFLOAT *) p->outframe.ptr;
-    *out = (SPFLOAT)0;
+    outframe  = (UTFLOAT *) p->outframe.ptr;
+    *out = (UTFLOAT)0;
     /* write output */
     for (i = 0; i < decim; i++) {
         *out += outframe[framecnt[i]];
@@ -261,5 +261,5 @@ int sp_mincer_compute(sp_data *sp, sp_mincer *p, SPFLOAT *in2, SPFLOAT *out)
     p->cnt = cnt;
     p->curframe = curframe;
 
-    return SP_OK;
+    return UT_OK;
 }

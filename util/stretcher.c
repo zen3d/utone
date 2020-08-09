@@ -1,25 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 
-sp_data *sp;
-sp_ftbl *ft;
-sp_paulstretch *ps;
+ut_data *sp;
+ut_ftbl *ft;
+ut_paulstretch *ps;
 
-static void process(sp_data *sp, void *ud)
+static void process(ut_data *sp, void *ud)
 {
-    SPFLOAT out;
-    sp_paulstretch_compute(sp, ps, NULL, &out);
-    sp_out(sp, 0, out);
+    UTFLOAT out;
+    ut_paulstretch_compute(sp, ps, NULL, &out);
+    ut_out(sp, 0, out);
 }
 
 
 int main(int argc, char *argv[])
 {
-    SPFLOAT stretch;
-    SPFLOAT window;
+    UTFLOAT stretch;
+    UTFLOAT window;
 
     if(argc < 7) {
         fprintf(stderr, 
@@ -29,12 +29,12 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    sp_create(&sp);
+    ut_create(&sp);
 
     printf("samplerate = %d\n", atoi(argv[1]));
     sp->sr = atoi(argv[1]);
 
-    sp_paulstretch_create(&ps);
+    ut_paulstretch_create(&ps);
 
     printf("window = %g\n", atof(argv[2]));
     window = atof(argv[2]);
@@ -43,20 +43,20 @@ int main(int argc, char *argv[])
     printf("out_dur = %g\n", atof(argv[4]));
     sp->len = sp->sr * atof(argv[4]);
     printf("input = %s\n", argv[5]);
-    sp_ftbl_loadfile(sp, &ft, argv[5]);
+    ut_ftbl_loadfile(sp, &ft, argv[5]);
     printf("output = %s\n", argv[6]);
 
     strncpy(sp->filename, argv[6], 60);
 
     ps->wrap = 0;
 
-    sp_paulstretch_init(sp, ps, ft, window, stretch);
+    ut_paulstretch_init(sp, ps, ft, window, stretch);
 
 
-    sp_process(sp, NULL, process);
+    ut_process(sp, NULL, process);
 
-    sp_ftbl_destroy(&ft);
-    sp_paulstretch_destroy(&ps);
-    sp_destroy(&sp);
+    ut_ftbl_destroy(&ft);
+    ut_paulstretch_destroy(&ps);
+    ut_destroy(&sp);
     return 0;
 }

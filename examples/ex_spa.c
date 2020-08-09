@@ -1,34 +1,34 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_spa *spa;
+    ut_uta *uta;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT spa = 0;
-    sp_spa_compute(sp, ud->spa, NULL, &spa);
-    sp->out[0] = spa;
+    UTFLOAT uta = 0;
+    ut_uta_compute(ut, ud->uta, NULL, &uta);
+    ut->out[0] = uta;
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_spa_create(&ud.spa);
+    ut_uta_create(&ud.uta);
 
-    sp_spa_init(sp, ud.spa, "oneart.spa");
+    ut_uta_init(ut, ud.uta, "oneart.uta");
 
-    sp->len = 44100 * 10;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 10;
+    ut_process(ut, &ud, process);
 
-    sp_spa_destroy(&ud.spa);
+    ut_uta_destroy(&ud.uta);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

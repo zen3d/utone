@@ -8,22 +8,22 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif
 
-static void update(sp_data *sp, sp_wpkorg35 *wpk)
+static void update(ut_data *ut, ut_wpkorg35 *wpk)
 {
 	/* prewarp for BZT */
-	SPFLOAT wd = 2*M_PI*wpk->cutoff;          
-	SPFLOAT T  = 1.0/(SPFLOAT)sp->sr;             
-	SPFLOAT wa = (2/T)*tan(wd*T/2); 
-	SPFLOAT g  = wa*T/2.0;    
+	UTFLOAT wd = 2*M_PI*wpk->cutoff;          
+	UTFLOAT T  = 1.0/(UTFLOAT)ut->sr;             
+	UTFLOAT wa = (2/T)*tan(wd*T/2); 
+	UTFLOAT g  = wa*T/2.0;    
 
 	/* the feedforward coeff in the VA One Pole */
-	SPFLOAT G = g/(1.0 + g);
+	UTFLOAT G = g/(1.0 + g);
 
     /* set alphas */
     wpk->lpf1_a = G;
@@ -37,24 +37,24 @@ static void update(sp_data *sp, sp_wpkorg35 *wpk)
 	wpk->alpha = 1.0/(1.0 - wpk->res*G + wpk->res*G*G); ;
 }
 
-SPFLOAT wpk_doFilter(sp_wpkorg35 *wpk)
+UTFLOAT wpk_doFilter(ut_wpkorg35 *wpk)
 {
     return 0.0;
 }
 
-int sp_wpkorg35_create(sp_wpkorg35 **p)
+int ut_wpkorg35_create(ut_wpkorg35 **p)
 {
-    *p = malloc(sizeof(sp_wpkorg35));
-    return SP_OK;
+    *p = malloc(sizeof(ut_wpkorg35));
+    return UT_OK;
 }
 
-int sp_wpkorg35_destroy(sp_wpkorg35 **p)
+int ut_wpkorg35_destroy(ut_wpkorg35 **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_wpkorg35_init(sp_data *sp, sp_wpkorg35 *p)
+int ut_wpkorg35_init(ut_data *ut, ut_wpkorg35 *p)
 {
     p->alpha = 0.0;
     p->pcutoff = p->cutoff = 1000; 
@@ -81,22 +81,22 @@ int sp_wpkorg35_init(sp_data *sp, sp_wpkorg35 *p)
     p->saturation = 0;
 
     /* update filters */
-    update(sp, p);
-    return SP_OK;
+    update(ut, p);
+    return UT_OK;
 }
 
-int sp_wpkorg35_compute(sp_data *sp, sp_wpkorg35 *p, SPFLOAT *in, SPFLOAT *out)
+int ut_wpkorg35_compute(ut_data *ut, ut_wpkorg35 *p, UTFLOAT *in, UTFLOAT *out)
 {
     /* TODO: add previous values */
 
-    if(p->pcutoff != p->cutoff || p->pres != p->res) update(sp, p);
+    if(p->pcutoff != p->cutoff || p->pres != p->res) update(ut, p);
 
     /* initialize variables */
-    SPFLOAT y1 = 0.0;
-    SPFLOAT S35 = 0.0;
-    SPFLOAT u = 0.0;
-    SPFLOAT y = 0.0;
-    SPFLOAT vn = 0.0;
+    UTFLOAT y1 = 0.0;
+    UTFLOAT S35 = 0.0;
+    UTFLOAT u = 0.0;
+    UTFLOAT y = 0.0;
+    UTFLOAT vn = 0.0;
 
     /* process input through LPF1 */
     vn = (*in - p->lpf1_z) * p->lpf1_a;
@@ -137,5 +137,5 @@ int sp_wpkorg35_compute(sp_data *sp, sp_wpkorg35 *p, SPFLOAT *in, SPFLOAT *out)
 
     p->pcutoff = p->cutoff;
     p->pres = p->res;
-    return SP_OK;
+    return UT_OK;
 }

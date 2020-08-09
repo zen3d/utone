@@ -1,41 +1,41 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_autowah *autowah;
-    sp_spa *disk;
+    ut_autowah *autowah;
+    ut_uta *disk;
 } UserData;
 
-int t_autowah(sp_test *tst, sp_data *sp, const char *hash) 
+int t_autowah(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT disk = 0, autowah = 0;
+    UTFLOAT disk = 0, autowah = 0;
 
     UserData ud;
 
-    sp_autowah_create(&ud.autowah);
-    sp_spa_create(&ud.disk);
+    ut_autowah_create(&ud.autowah);
+    ut_uta_create(&ud.disk);
 
-    sp_spa_init(sp, ud.disk, SAMPDIR "oneart.spa");
-    sp_autowah_init(sp, ud.autowah);
+    ut_uta_init(ut, ud.disk, SAMPDIR "oneart.uta");
+    ut_autowah_init(ut, ud.autowah);
     *ud.autowah->wah = 1.0;
     
     for(n = 0; n < tst->size; n++) {
         disk = 0; 
         autowah = 0;
-        sp_spa_compute(sp, ud.disk, NULL, &disk);
-        sp_autowah_compute(sp, ud.autowah, &disk, &autowah);
-        sp_test_add_sample(tst, autowah);
+        ut_uta_compute(ut, ud.disk, NULL, &disk);
+        ut_autowah_compute(ut, ud.autowah, &disk, &autowah);
+        ut_test_add_sample(tst, autowah);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_autowah_destroy(&ud.autowah);
-    sp_spa_destroy(&ud.disk);
+    ut_autowah_destroy(&ud.autowah);
+    ut_uta_destroy(&ud.disk);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

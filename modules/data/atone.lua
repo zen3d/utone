@@ -7,17 +7,17 @@ sptbl["atone"] = {
 	},
 
 	func = {
-	    create = "sp_atone_create",
-	    destroy = "sp_atone_destroy",
-	    init = "sp_atone_init",
-	    compute = "sp_atone_compute",
+	    create = "ut_atone_create",
+	    destroy = "ut_atone_destroy",
+	    init = "ut_atone_init",
+	    compute = "ut_atone_compute",
 	},
 
 	params = {
 	    optional = {
 	        {
 	            name = "hp",
-	            type = "SPFLOAT",
+	            type = "UTFLOAT",
 	            description = "The response curve's half power point (cutoff frequency).",
 	            default = "1000"
 	        },

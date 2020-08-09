@@ -1,20 +1,20 @@
 typedef struct {
-    SPFLOAT value;
-    SPFLOAT target;
-    SPFLOAT rate;
+    UTFLOAT value;
+    UTFLOAT target;
+    UTFLOAT rate;
     int state;
-    SPFLOAT attackRate;
-    SPFLOAT decayRate;
-    SPFLOAT sustainLevel;
-    SPFLOAT releaseRate;
-    SPFLOAT atk;
-    SPFLOAT rel;
-    SPFLOAT sus;
-    SPFLOAT dec;
+    UTFLOAT attackRate;
+    UTFLOAT decayRate;
+    UTFLOAT sustainLevel;
+    UTFLOAT releaseRate;
+    UTFLOAT atk;
+    UTFLOAT rel;
+    UTFLOAT sus;
+    UTFLOAT dec;
     int mode;
-} sp_tadsr;
+} ut_tadsr;
 
-int sp_tadsr_create(sp_tadsr **p);
-int sp_tadsr_destroy(sp_tadsr **p);
-int sp_tadsr_init(sp_data *sp, sp_tadsr *p);
-int sp_tadsr_compute(sp_data *sp, sp_tadsr *p, SPFLOAT *trig, SPFLOAT *out);
+int ut_tadsr_create(ut_tadsr **p);
+int ut_tadsr_destroy(ut_tadsr **p);
+int ut_tadsr_init(ut_data *ut, ut_tadsr *p);
+int ut_tadsr_compute(ut_data *ut, ut_tadsr *p, UTFLOAT *trig, UTFLOAT *out);

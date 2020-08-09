@@ -1,9 +1,9 @@
 typedef struct {
-    SPFLOAT time;
+    UTFLOAT time;
     uint32_t counter;
-} sp_dmetro;
+} ut_dmetro;
 
-int sp_dmetro_create(sp_dmetro **p);
-int sp_dmetro_destroy(sp_dmetro **p);
-int sp_dmetro_init(sp_data *sp, sp_dmetro *p);
-int sp_dmetro_compute(sp_data *sp, sp_dmetro *p, SPFLOAT *in, SPFLOAT *out);
+int ut_dmetro_create(ut_dmetro **p);
+int ut_dmetro_destroy(ut_dmetro **p);
+int ut_dmetro_init(ut_data *ut, ut_dmetro *p);
+int ut_dmetro_compute(ut_data *ut, ut_dmetro *p, UTFLOAT *in, UTFLOAT *out);

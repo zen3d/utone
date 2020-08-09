@@ -7,23 +7,23 @@ sptbl["bar"] = {
     },
 
     func = {
-        create = "sp_bar_create",
-        destroy = "sp_bar_destroy",
-        init = "sp_bar_init",
-        compute = "sp_bar_compute",
+        create = "ut_bar_create",
+        destroy = "ut_bar_destroy",
+        init = "ut_bar_init",
+        compute = "ut_bar_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "iK",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Dimensionless stiffness parameter",
                 default = 3
             },
             {
                 name = "ib",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "High-frequency loss parameter. Keep this small",
                 default = 0.001
             }
@@ -32,43 +32,43 @@ sptbl["bar"] = {
         optional = {
             {
                 name = "bcL",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Boundary condition at left end of bar. 1 = clamped, 2 = pivoting, 3 = free",
                 default = 1
             },
             {
                 name = "bcR",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Boundary condition at right end of bar. 1 = clamped, 2 = pivoting, 3 = free",
                 default = 1
             },
             {
                 name = "T30",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="30db decay time (in seconds).",
                 default = 3
             },
             {
                 name = "scan",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Speed of scanning the output location.",
                 default = 0.25
             },
             {
                 name = "pos",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Position along bar that strike occurs.",
                 default = 0.2
             },
             {
                 name = "vel",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Normalized strike velocity",
                 default = 500
             },
             {
                 name = "wid",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Spatial width of strike.",
                 default = 0.05
             },

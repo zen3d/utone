@@ -12,46 +12,46 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif 
 
-int sp_atone_create(sp_atone **p)
+int ut_atone_create(ut_atone **p)
 {
-    *p = malloc(sizeof(sp_atone));
-    return SP_OK;
+    *p = malloc(sizeof(ut_atone));
+    return UT_OK;
 }
 
-int sp_atone_destroy(sp_atone **p)
+int ut_atone_destroy(ut_atone **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_atone_init(sp_data *sp, sp_atone *p)
+int ut_atone_init(ut_data *ut, ut_atone *p)
 {
     p->hp = 1000;
-    SPFLOAT b;
-    p->tpidsr = (2.0 * M_PI) / sp->sr * 1.0;
-    p->prvhp = (SPFLOAT)p->hp;
-    b = 2.0 - cos((SPFLOAT)(p->prvhp * p->tpidsr));
+    UTFLOAT b;
+    p->tpidsr = (2.0 * M_PI) / ut->sr * 1.0;
+    p->prvhp = (UTFLOAT)p->hp;
+    b = 2.0 - cos((UTFLOAT)(p->prvhp * p->tpidsr));
     p->c2 = b - sqrt(b * b - 1.0);
     p->c1 = 1.0 - p->c2;
     p->yt1 = 0.0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_atone_compute(sp_data *sp, sp_atone *p, SPFLOAT *in, SPFLOAT *out)
+int ut_atone_compute(ut_data *ut, ut_atone *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT c2 = p->c2, yt1 = p->yt1;
-    SPFLOAT x;
+    UTFLOAT c2 = p->c2, yt1 = p->yt1;
+    UTFLOAT x;
 
     if (p->hp != p->prvhp) {
-      SPFLOAT b;
+      UTFLOAT b;
       p->prvhp = p->hp;
-      b = 2.0 - cos((SPFLOAT)(p->hp * p->tpidsr));
+      b = 2.0 - cos((UTFLOAT)(p->hp * p->tpidsr));
       p->c2 = c2 = b - sqrt(b * b - 1.0);
     }
 
@@ -59,5 +59,5 @@ int sp_atone_compute(sp_data *sp, sp_atone *p, SPFLOAT *in, SPFLOAT *out)
     *out = x;
     yt1 -= *in;
     p->yt1 = yt1;
-    return SP_OK;
+    return UT_OK;
 }

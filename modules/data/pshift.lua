@@ -7,29 +7,29 @@ sptbl["pshift"] = {
     },
 
     func = {
-        create = "sp_pshift_create",
-        destroy = "sp_pshift_destroy",
-        init = "sp_pshift_init",
-        compute = "sp_pshift_compute",
+        create = "ut_pshift_create",
+        destroy = "ut_pshift_destroy",
+        init = "ut_pshift_init",
+        compute = "ut_pshift_compute",
     },
 
     params = {
         optional = {
             {
                 name = "shift",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description = "Pitch shift (in semitones), range -24/24.",
                 default = 0
             },
             {
                 name = "window",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Window size (in samples), max 10000",
                 default = 1000
             },
             {
                 name = "xfade",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Crossfade (in samples), max 10000",
                 default = 10
             },

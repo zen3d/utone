@@ -7,17 +7,17 @@ sptbl["mincer"] = {
     },
 
     func = {
-        create = "sp_mincer_create",
-        destroy = "sp_mincer_destroy",
-        init = "sp_mincer_init",
-        compute = "sp_mincer_compute",
+        create = "ut_mincer_create",
+        destroy = "ut_mincer_destroy",
+        init = "ut_mincer_init",
+        compute = "ut_mincer_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "ft",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "ftable containing an audio file.",
                 default = "N/A"
             },
@@ -32,19 +32,19 @@ sptbl["mincer"] = {
         optional = {
             {
                 name = "time",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Position in time. When non-changing it will do a spectral freeze of a the current point in time.",
                 default = 0
             },
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Amplitude.",
                 default = 1
             },
             {
                 name = "pitch",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Pitch ratio. A value of. 1  normal, 2 is double speed, 0.5 is halfspeed, etc.",
                 default = 1
             },

@@ -12,34 +12,34 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_dist_create(sp_dist **p)
+int ut_dist_create(ut_dist **p)
 {
-    *p = malloc(sizeof(sp_dist));
-    return SP_OK;
+    *p = malloc(sizeof(ut_dist));
+    return UT_OK;
 }
 
-int sp_dist_destroy(sp_dist **p)
+int ut_dist_destroy(ut_dist **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_dist_init(sp_data *sp, sp_dist *p)
+int ut_dist_init(ut_data *ut, ut_dist *p)
 {
     p->pregain = 2.0;
     p->postgain = 0.5;
     p->shape1 = 0;
     p->shape2 = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_dist_compute(sp_data *sp, sp_dist *p, SPFLOAT *in, SPFLOAT *out)
+int ut_dist_compute(ut_data *ut, ut_dist *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT pregain = p->pregain, postgain  = p->postgain;
-    SPFLOAT shape1 = p->shape1, shape2 = p->shape2;
-    SPFLOAT sig;
+    UTFLOAT pregain = p->pregain, postgain  = p->postgain;
+    UTFLOAT shape1 = p->shape1, shape2 = p->shape2;
+    UTFLOAT sig;
     
     pregain   *=  6.5536;
     postgain  *=  0.61035156;
@@ -56,5 +56,5 @@ int sp_dist_compute(sp_data *sp, sp_dist *p, SPFLOAT *in, SPFLOAT *out)
     ((exp(sig * shape1) - exp(sig * shape2))
              / cosh(sig * pregain))
     * postgain;
-    return SP_OK;
+    return UT_OK;
 }

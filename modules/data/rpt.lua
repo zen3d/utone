@@ -7,17 +7,17 @@ sptbl["rpt"] = {
     },
 
     func = {
-        create = "sp_rpt_create",
-        destroy = "sp_rpt_destroy",
-        init = "sp_rpt_init",
-        compute = "sp_rpt_compute",
+        create = "ut_rpt_create",
+        destroy = "ut_rpt_destroy",
+        init = "ut_rpt_init",
+        compute = "ut_rpt_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "maxdur",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Maximum delay duration in seconds. This will set the buffer size.",
                 default = "0.7"
             }
@@ -28,7 +28,7 @@ sptbl["rpt"] = {
 
     description = [[Trigger based beat-repeat stuttering effect
 
-    When the input is a non-zero value, rpt will load up the buffer and loop a certain number of times. Speed and repeat amounts can be set with the sp_rpt_set function.]],
+    When the input is a non-zero value, rpt will load up the buffer and loop a certain number of times. Speed and repeat amounts can be set with the ut_rpt_set function.]],
 
     ninputs = 2,
     noutputs = 1,

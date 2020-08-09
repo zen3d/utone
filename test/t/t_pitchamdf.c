@@ -1,62 +1,62 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_pitchamdf *pitchamdf;
-    sp_osc *osc;
-    sp_ftbl *ft;
-    sp_blsaw *blsaw;
-    sp_randh *randh;
+    ut_pitchamdf *pitchamdf;
+    ut_osc *osc;
+    ut_ftbl *ft;
+    ut_blsaw *blsaw;
+    ut_randh *randh;
 } UserData;
 
-int t_pitchamdf(sp_test *tst, sp_data *sp, const char *hash) 
+int t_pitchamdf(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT freq = 0, amp = 0, blsaw = 0, randh = 0, osc = 0;
+    UTFLOAT freq = 0, amp = 0, blsaw = 0, randh = 0, osc = 0;
 
-    sp_srand(sp, 1234567);
+    ut_srand(ut, 1234567);
     UserData ud;
 
-    sp_pitchamdf_create(&ud.pitchamdf);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_blsaw_create(&ud.blsaw);
-    sp_randh_create(&ud.randh);
+    ut_pitchamdf_create(&ud.pitchamdf);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_blsaw_create(&ud.blsaw);
+    ut_randh_create(&ud.randh);
 
-    sp_pitchamdf_init(sp, ud.pitchamdf, 200, 500);
-    sp_randh_init(sp, ud.randh);
+    ut_pitchamdf_init(ut, ud.pitchamdf, 200, 500);
+    ut_randh_init(ut, ud.randh);
     ud.randh->max = 500;
     ud.randh->min = 200;
     ud.randh->freq = 6;
 
-    sp_blsaw_init(sp, ud.blsaw);
+    ut_blsaw_init(ut, ud.blsaw);
 
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
 
 
     for(n = 0; n < tst->size; n++) {
         freq = 0, amp = 0, blsaw = 0, randh = 0, osc = 0;
-        sp_randh_compute(sp, ud.randh, NULL, &randh);
+        ut_randh_compute(ut, ud.randh, NULL, &randh);
         *ud.blsaw->freq = randh;
-        sp_blsaw_compute(sp, ud.blsaw, NULL, &blsaw);
-        sp_pitchamdf_compute(sp, ud.pitchamdf, &blsaw, &freq, &amp);
+        ut_blsaw_compute(ut, ud.blsaw, NULL, &blsaw);
+        ut_pitchamdf_compute(ut, ud.pitchamdf, &blsaw, &freq, &amp);
         ud.osc->freq = freq;
-        sp_osc_compute(sp, ud.osc, NULL, &osc);
-        sp_test_add_sample(tst, osc);
+        ut_osc_compute(ut, ud.osc, NULL, &osc);
+        ut_test_add_sample(tst, osc);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_blsaw_destroy(&ud.blsaw);
-    sp_randh_destroy(&ud.randh);
-    sp_pitchamdf_destroy(&ud.pitchamdf);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
+    ut_blsaw_destroy(&ud.blsaw);
+    ut_randh_destroy(&ud.randh);
+    ut_pitchamdf_destroy(&ud.pitchamdf);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

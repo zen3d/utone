@@ -7,29 +7,29 @@ sptbl["expon"] = {
     },
 
     func = {
-        create = "sp_expon_create",
-        destroy = "sp_expon_destroy",
-        init = "sp_expon_init",
-        compute = "sp_expon_compute",
+        create = "ut_expon_create",
+        destroy = "ut_expon_destroy",
+        init = "ut_expon_init",
+        compute = "ut_expon_compute",
     },
 
     params = {
         optional = {
             {
                 name = "a",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Inital point.",
                 default = 1.0
             },
             {
                 name = "dur",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Duration (in seconds)",
                 default = 1.0
             },
             {
                 name = "b",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "End point",
                 default = 1.0
             }

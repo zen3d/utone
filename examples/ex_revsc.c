@@ -1,45 +1,45 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_noise *ns;
-    sp_revsc *rev;
+    ut_noise *ns;
+    ut_revsc *rev;
     int counter;
 } UserData;
 
-void process(sp_data *data, void *ud) {
+void process(ut_data *data, void *ud) {
     UserData *udata = ud;
-    SPFLOAT in = 0;
-    SPFLOAT out = 0;
-    SPFLOAT foo = 0;
-    sp_noise_compute(data, udata->ns, NULL, &in);
+    UTFLOAT in = 0;
+    UTFLOAT out = 0;
+    UTFLOAT foo = 0;
+    ut_noise_compute(data, udata->ns, NULL, &in);
     
     if(udata->counter < 2000) {
         udata->counter = (udata->counter + 1) % 5000;
     }else{
         in = 0;
     }
-    sp_revsc_compute(data, udata->rev, &in, &in, &data->out[0], &foo); 
+    ut_revsc_compute(data, udata->rev, &in, &in, &data->out[0], &foo); 
 }
 
 int main() {
     srand(time(NULL));
     UserData ud;
     ud.counter = 0;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_noise_create(&ud.ns);
-    sp_revsc_create(&ud.rev);
-    sp_noise_init(sp, ud.ns);
-    sp_revsc_init(sp, ud.rev);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_noise_create(&ud.ns);
+    ut_revsc_create(&ud.rev);
+    ut_noise_init(ut, ud.ns);
+    ut_revsc_init(ut, ud.rev);
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_noise_destroy(&ud.ns);
-    sp_revsc_destroy(&ud.rev);
-    sp_destroy(&sp);
+    ut_noise_destroy(&ud.ns);
+    ut_revsc_destroy(&ud.rev);
+    ut_destroy(&ut);
     return 0;
 }

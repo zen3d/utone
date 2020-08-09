@@ -11,21 +11,21 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_fosc_create(sp_fosc **p)
+int ut_fosc_create(ut_fosc **p)
 {
-    *p = malloc(sizeof(sp_fosc));
-    return SP_OK;
+    *p = malloc(sizeof(ut_fosc));
+    return UT_OK;
 }
 
-int sp_fosc_destroy(sp_fosc **p)
+int ut_fosc_destroy(ut_fosc **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_fosc_init(sp_data *sp, sp_fosc *p, sp_ftbl *ft)
+int ut_fosc_init(ut_data *ut, ut_fosc *p, ut_ftbl *ft)
 {
     p->freq = 440;
     p->amp = 0.4;
@@ -36,21 +36,21 @@ int sp_fosc_init(sp_data *sp, sp_fosc *p, sp_ftbl *ft)
     p->car = 1.0;
     p->indx = 1.0;
 
-    p->cphs = p->mphs = (int32_t)(p->iphs * SP_FT_MAXLEN);
+    p->cphs = p->mphs = (int32_t)(p->iphs * UT_FT_MAXLEN);
 
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_fosc_compute(sp_data *sp, sp_fosc *p, SPFLOAT *in, SPFLOAT *out)
+int ut_fosc_compute(ut_data *ut, ut_fosc *p, UTFLOAT *in, UTFLOAT *out)
 {
 
-    sp_ftbl *ftp;
+    ut_ftbl *ftp;
 
-    SPFLOAT  amp, cps, fract, v1, v2, car, fmod, cfreq, mod;
-    SPFLOAT  xcar, xmod, ndx, *ftab;
+    UTFLOAT  amp, cps, fract, v1, v2, car, fmod, cfreq, mod;
+    UTFLOAT  xcar, xmod, ndx, *ftab;
     int32_t  mphs, cphs, minc, cinc, lobits;
-    SPFLOAT  sicvt = p->ft->sicvt;
-    SPFLOAT  *ft;
+    UTFLOAT  sicvt = p->ft->sicvt;
+    UTFLOAT  *ft;
 
     ftp = p->ft;
     ft = ftp->tbl;
@@ -66,7 +66,7 @@ int sp_fosc_compute(sp_data *sp, sp_fosc *p, SPFLOAT *in, SPFLOAT *out)
     mod = cps * xmod;
     ndx = p->indx * mod;
     minc = (int32_t)(mod * sicvt);
-    mphs &= SP_FT_PHMASK;
+    mphs &= UT_FT_PHMASK;
     fract = ((mphs) & ftp->lomask) * ftp->lodiv;
     ftab = ft + (mphs >> lobits);
     v1 = ftab[0];
@@ -81,7 +81,7 @@ int sp_fosc_compute(sp_data *sp, sp_fosc *p, SPFLOAT *in, SPFLOAT *out)
     mphs += minc;
     cfreq = car + fmod;
     cinc = (int32_t)(cfreq * sicvt);
-    cphs &= SP_FT_PHMASK;
+    cphs &= UT_FT_PHMASK;
     fract = ((cphs) & ftp->lomask) * ftp->lodiv;
     ftab = ft + (cphs >>lobits);
     v1 = ftab[0];
@@ -97,5 +97,5 @@ int sp_fosc_compute(sp_data *sp, sp_fosc *p, SPFLOAT *in, SPFLOAT *out)
     p->mphs = mphs;
     p->cphs = cphs;
 
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,8 +1,8 @@
 typedef struct {
-    SPFLOAT brown;
-} sp_brown;
+    UTFLOAT brown;
+} ut_brown;
 
-int sp_brown_create(sp_brown **p);
-int sp_brown_destroy(sp_brown **p);
-int sp_brown_init(sp_data *sp, sp_brown *p);
-int sp_brown_compute(sp_data *sp, sp_brown *p, SPFLOAT *in, SPFLOAT *out);
+int ut_brown_create(ut_brown **p);
+int ut_brown_destroy(ut_brown **p);
+int ut_brown_init(ut_data *ut, ut_brown *p);
+int ut_brown_compute(ut_data *ut, ut_brown *p, UTFLOAT *in, UTFLOAT *out);

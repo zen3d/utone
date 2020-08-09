@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #define DEFAULT_SRATE   44100.0
 #define MIN_SRATE       5000.0
@@ -33,7 +33,7 @@
 /* reverbParams[n][2] = random variation frequency (in 1/sec)       */
 /* reverbParams[n][3] = random seed (0 - 32767)                     */
 
-static const SPFLOAT reverbParams[8][4] = {
+static const UTFLOAT reverbParams[8][4] = {
     { (2473.0 / DEFAULT_SRATE), 0.0010, 3.100,  1966.0 },
     { (2767.0 / DEFAULT_SRATE), 0.0011, 3.500, 29491.0 },
     { (3217.0 / DEFAULT_SRATE), 0.0017, 1.110, 22937.0 },
@@ -44,20 +44,20 @@ static const SPFLOAT reverbParams[8][4] = {
     { (1933.0 / DEFAULT_SRATE), 0.0006, 3.221, 14417.0 }
 };
 
-static int delay_line_max_samples(SPFLOAT sr, SPFLOAT iPitchMod, int n);
-static int init_delay_line(sp_revsc *p, sp_revsc_dl *lp, int n);
-static int delay_line_bytes_alloc(SPFLOAT sr, SPFLOAT iPitchMod, int n);
-static const SPFLOAT outputGain  = 0.35;
-static const SPFLOAT jpScale     = 0.25;
-int sp_revsc_create(sp_revsc **p){
-    *p = malloc(sizeof(sp_revsc));
-    return SP_OK;
+static int delay_line_max_samples(UTFLOAT sr, UTFLOAT iPitchMod, int n);
+static int init_delay_line(ut_revsc *p, ut_revsc_dl *lp, int n);
+static int delay_line_bytes_alloc(UTFLOAT sr, UTFLOAT iPitchMod, int n);
+static const UTFLOAT outputGain  = 0.35;
+static const UTFLOAT jpScale     = 0.25;
+int ut_revsc_create(ut_revsc **p){
+    *p = malloc(sizeof(ut_revsc));
+    return UT_OK;
 }
 
-int sp_revsc_init(sp_data *sp, sp_revsc *p)
+int ut_revsc_init(ut_data *ut, ut_revsc *p)
 {
-    p->iSampleRate = sp->sr;
-    p->sampleRate = sp->sr;
+    p->iSampleRate = ut->sr;
+    p->sampleRate = ut->sr;
     p->feedback = 0.97;
     p->lpfreq = 10000;
     p->iPitchMod = 1;
@@ -67,48 +67,48 @@ int sp_revsc_init(sp_data *sp, sp_revsc *p)
     p->initDone = 1;
     int i, nBytes = 0;
     for(i = 0; i < 8; i++){
-        nBytes += delay_line_bytes_alloc(sp->sr, 1, i);
+        nBytes += delay_line_bytes_alloc(ut->sr, 1, i);
     }
-    sp_auxdata_alloc(&p->aux, nBytes);
+    ut_auxdata_alloc(&p->aux, nBytes);
     nBytes = 0;
     for (i = 0; i < 8; i++) {
         p->delayLines[i].buf = (p->aux.ptr) + nBytes;
         init_delay_line(p, &p->delayLines[i], i);
-        nBytes += delay_line_bytes_alloc(sp->sr, 1, i);
+        nBytes += delay_line_bytes_alloc(ut->sr, 1, i);
     }
 
-    return SP_OK;
+    return UT_OK;
 }
 
 
-int sp_revsc_destroy(sp_revsc **p)
+int ut_revsc_destroy(ut_revsc **p)
 {
-    sp_revsc *pp = *p;
-    sp_auxdata_free(&pp->aux);
+    ut_revsc *pp = *p;
+    ut_auxdata_free(&pp->aux);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-static int delay_line_max_samples(SPFLOAT sr, SPFLOAT iPitchMod, int n)
+static int delay_line_max_samples(UTFLOAT sr, UTFLOAT iPitchMod, int n)
 {
-    SPFLOAT maxDel;
+    UTFLOAT maxDel;
 
     maxDel = reverbParams[n][0];
-    maxDel += (reverbParams[n][1] * (SPFLOAT) iPitchMod * 1.125);
+    maxDel += (reverbParams[n][1] * (UTFLOAT) iPitchMod * 1.125);
     return (int) (maxDel * sr + 16.5);
 }
 
-static int delay_line_bytes_alloc(SPFLOAT sr, SPFLOAT iPitchMod, int n)
+static int delay_line_bytes_alloc(UTFLOAT sr, UTFLOAT iPitchMod, int n)
 {
     int nBytes = 0;
 
-    nBytes += (delay_line_max_samples(sr, iPitchMod, n) * (int) sizeof(SPFLOAT));
+    nBytes += (delay_line_max_samples(sr, iPitchMod, n) * (int) sizeof(UTFLOAT));
     return nBytes;
 }
 
-static void next_random_lineseg(sp_revsc *p, sp_revsc_dl *lp, int n)
+static void next_random_lineseg(ut_revsc *p, ut_revsc_dl *lp, int n)
 {
-    SPFLOAT prvDel, nxtDel, phs_incVal;
+    UTFLOAT prvDel, nxtDel, phs_incVal;
 
     /* update random seed */
     if (lp->seedVal < 0)
@@ -118,24 +118,24 @@ static void next_random_lineseg(sp_revsc *p, sp_revsc_dl *lp, int n)
       lp->seedVal -= 0x10000;
     /* length of next segment in samples */
     lp->randLine_cnt = (int) ((p->sampleRate / reverbParams[n][2]) + 0.5);
-    prvDel = (SPFLOAT) lp->writePos;
-    prvDel -= ((SPFLOAT) lp->readPos
-               + ((SPFLOAT) lp->readPosFrac / (SPFLOAT) DELAYPOS_SCALE));
+    prvDel = (UTFLOAT) lp->writePos;
+    prvDel -= ((UTFLOAT) lp->readPos
+               + ((UTFLOAT) lp->readPosFrac / (UTFLOAT) DELAYPOS_SCALE));
     while (prvDel < 0.0)
       prvDel += lp->bufferSize;
     prvDel = prvDel / p->sampleRate;    /* previous delay time in seconds */
-    nxtDel = (SPFLOAT) lp->seedVal * reverbParams[n][1] / 32768.0;
+    nxtDel = (UTFLOAT) lp->seedVal * reverbParams[n][1] / 32768.0;
     /* next delay time in seconds */
-    nxtDel = reverbParams[n][0] + (nxtDel * (SPFLOAT) p->iPitchMod);
+    nxtDel = reverbParams[n][0] + (nxtDel * (UTFLOAT) p->iPitchMod);
     /* calculate phase increment per sample */
-    phs_incVal = (prvDel - nxtDel) / (SPFLOAT) lp->randLine_cnt;
+    phs_incVal = (prvDel - nxtDel) / (UTFLOAT) lp->randLine_cnt;
     phs_incVal = phs_incVal * p->sampleRate + 1.0;
     lp->readPosFrac_inc = (int) (phs_incVal * DELAYPOS_SCALE + 0.5);
 }
 
-static int init_delay_line(sp_revsc *p, sp_revsc_dl *lp, int n)
+static int init_delay_line(ut_revsc *p, ut_revsc_dl *lp, int n)
 {
-    SPFLOAT readPos;
+    UTFLOAT readPos;
     /* int     i; */
 
     /* calculate length of delay line */
@@ -145,32 +145,32 @@ static int init_delay_line(sp_revsc *p, sp_revsc_dl *lp, int n)
     /* set random seed */
     lp->seedVal = (int) (reverbParams[n][3] + 0.5);
     /* set initial delay time */
-    readPos = (SPFLOAT) lp->seedVal * reverbParams[n][1] / 32768;
-    readPos = reverbParams[n][0] + (readPos * (SPFLOAT) p->iPitchMod);
-    readPos = (SPFLOAT) lp->bufferSize - (readPos * p->sampleRate);
+    readPos = (UTFLOAT) lp->seedVal * reverbParams[n][1] / 32768;
+    readPos = reverbParams[n][0] + (readPos * (UTFLOAT) p->iPitchMod);
+    readPos = (UTFLOAT) lp->bufferSize - (readPos * p->sampleRate);
     lp->readPos = (int) readPos;
-    readPos = (readPos - (SPFLOAT) lp->readPos) * (SPFLOAT) DELAYPOS_SCALE;
+    readPos = (readPos - (UTFLOAT) lp->readPos) * (UTFLOAT) DELAYPOS_SCALE;
     lp->readPosFrac = (int) (readPos + 0.5);
     /* initialise first random line segment */
     next_random_lineseg(p, lp, n);
     /* clear delay line to zero */
     lp->filterState = 0.0;
-    memset(lp->buf, 0, sizeof(SPFLOAT) * lp->bufferSize);
-    return SP_OK;
+    memset(lp->buf, 0, sizeof(UTFLOAT) * lp->bufferSize);
+    return UT_OK;
 }
 
 
-int sp_revsc_compute(sp_data *sp, sp_revsc *p, SPFLOAT *in1, SPFLOAT *in2, SPFLOAT *out1, SPFLOAT *out2)
+int ut_revsc_compute(ut_data *ut, ut_revsc *p, UTFLOAT *in1, UTFLOAT *in2, UTFLOAT *out1, UTFLOAT *out2)
 {
-    SPFLOAT ainL, ainR, aoutL, aoutR;
-    SPFLOAT vm1, v0, v1, v2, am1, a0, a1, a2, frac;
-    sp_revsc_dl *lp;
+    UTFLOAT ainL, ainR, aoutL, aoutR;
+    UTFLOAT vm1, v0, v1, v2, am1, a0, a1, a2, frac;
+    ut_revsc_dl *lp;
     int readPos;
     uint32_t n;
     int bufferSize; /* Local copy */
-    SPFLOAT dampFact = p->dampFact;
+    UTFLOAT dampFact = p->dampFact;
 
-    if (p->initDone <= 0) return SP_NOT_OK;
+    if (p->initDone <= 0) return UT_NOT_OK;
 
     /* calculate tone filter coefficient if frequency changed */
 
@@ -198,7 +198,7 @@ int sp_revsc_compute(sp_data *sp, sp_revsc *p, SPFLOAT *in1, SPFLOAT *in2, SPFLO
 
         /* send input signal and feedback to delay line */
 
-        lp->buf[lp->writePos] = (SPFLOAT) ((n & 1 ? ainR : ainL)
+        lp->buf[lp->writePos] = (UTFLOAT) ((n & 1 ? ainR : ainL)
                                  - lp->filterState);
         if (++lp->writePos >= bufferSize) {
             lp->writePos -= bufferSize;
@@ -213,7 +213,7 @@ int sp_revsc_compute(sp_data *sp, sp_revsc *p, SPFLOAT *in1, SPFLOAT *in2, SPFLO
         if (lp->readPos >= bufferSize)
         lp->readPos -= bufferSize;
         readPos = lp->readPos;
-        frac = (SPFLOAT) lp->readPosFrac * (1.0 / (SPFLOAT) DELAYPOS_SCALE);
+        frac = (UTFLOAT) lp->readPosFrac * (1.0 / (UTFLOAT) DELAYPOS_SCALE);
 
         /* calculate interpolation coefficients */
 
@@ -224,23 +224,23 @@ int sp_revsc_compute(sp_data *sp, sp_revsc *p, SPFLOAT *in1, SPFLOAT *in2, SPFLO
         /* read four samples for interpolation */
 
         if (readPos > 0 && readPos < (bufferSize - 2)) {
-            vm1 = (SPFLOAT) (lp->buf[readPos - 1]);
-            v0  = (SPFLOAT) (lp->buf[readPos]);
-            v1  = (SPFLOAT) (lp->buf[readPos + 1]);
-            v2  = (SPFLOAT) (lp->buf[readPos + 2]);
+            vm1 = (UTFLOAT) (lp->buf[readPos - 1]);
+            v0  = (UTFLOAT) (lp->buf[readPos]);
+            v1  = (UTFLOAT) (lp->buf[readPos + 1]);
+            v2  = (UTFLOAT) (lp->buf[readPos + 2]);
         }
         else {
 
         /* at buffer wrap-around, need to check index */
 
         if (--readPos < 0) readPos += bufferSize;
-            vm1 = (SPFLOAT) lp->buf[readPos];
+            vm1 = (UTFLOAT) lp->buf[readPos];
         if (++readPos >= bufferSize) readPos -= bufferSize;
-            v0 = (SPFLOAT) lp->buf[readPos];
+            v0 = (UTFLOAT) lp->buf[readPos];
         if (++readPos >= bufferSize) readPos -= bufferSize;
-            v1 = (SPFLOAT) lp->buf[readPos];
+            v1 = (UTFLOAT) lp->buf[readPos];
         if (++readPos >= bufferSize) readPos -= bufferSize;
-            v2 = (SPFLOAT) lp->buf[readPos];
+            v2 = (UTFLOAT) lp->buf[readPos];
         }
         v0 = (am1 * vm1 + a0 * v0 + a1 * v1 + a2 * v2) * frac + v0;
 
@@ -250,7 +250,7 @@ int sp_revsc_compute(sp_data *sp, sp_revsc *p, SPFLOAT *in1, SPFLOAT *in2, SPFLO
 
         /* apply feedback gain and lowpass filter */
 
-        v0 *= (SPFLOAT) p->feedback;
+        v0 *= (UTFLOAT) p->feedback;
         v0 = (lp->filterState - v0) * dampFact + v0;
         lp->filterState = v0;
 
@@ -272,5 +272,5 @@ int sp_revsc_compute(sp_data *sp, sp_revsc *p, SPFLOAT *in1, SPFLOAT *in2, SPFLO
 
     *out1  = aoutL * outputGain;
     *out2 = aoutR * outputGain;
-    return SP_OK;
+    return UT_OK;
 }

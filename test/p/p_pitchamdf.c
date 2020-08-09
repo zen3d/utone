@@ -1,31 +1,31 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "config.h"
 
 int main() {
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 12345);
-    sp->sr = SR;
-    sp->len = sp->sr * LEN;
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 12345);
+    ut->sr = SR;
+    ut->len = ut->sr * LEN;
     uint32_t t, u;
-    SPFLOAT in = 0, rms = 0, cps = 0;
+    UTFLOAT in = 0, rms = 0, cps = 0;
 
-    sp_pitchamdf *unit[NUM];
+    ut_pitchamdf *unit[NUM];
 
     for(u = 0; u < NUM; u++) { 
-        sp_pitchamdf_create(&unit[u]);
-        sp_pitchamdf_init(sp, unit[u], 100, 400);
+        ut_pitchamdf_create(&unit[u]);
+        ut_pitchamdf_init(ut, unit[u], 100, 400);
     }
 
-    for(t = 0; t < sp->len; t++) {
-        for(u = 0; u < NUM; u++) sp_pitchamdf_compute(sp, unit[u], &in, &cps, &rms);
+    for(t = 0; t < ut->len; t++) {
+        for(u = 0; u < NUM; u++) ut_pitchamdf_compute(ut, unit[u], &in, &cps, &rms);
     }
 
-    for(u = 0; u < NUM; u++) sp_pitchamdf_destroy(&unit[u]);
+    for(u = 0; u < NUM; u++) ut_pitchamdf_destroy(&unit[u]);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }
 

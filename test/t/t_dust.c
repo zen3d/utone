@@ -1,34 +1,34 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_dust *dst;
+    ut_dust *dst;
 } UserData;
 
-int t_dust(sp_test *tst, sp_data *sp, const char *hash) 
+int t_dust(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT out = 0;
+    UTFLOAT out = 0;
     UserData ud;
     
-    sp_dust_create(&ud.dst);
-    sp_dust_init(sp, ud.dst);
-    sp->len = 44100 * 5;
+    ut_dust_create(&ud.dst);
+    ut_dust_init(ut, ud.dst);
+    ut->len = 44100 * 5;
     ud.dst->bipolar = 1.0;
 
     for(n = 0; n < tst->size; n++) {
         out = 0;
-        sp_dust_compute(sp, ud.dst, NULL, &out);
-        sp_test_add_sample(tst, out);
+        ut_dust_compute(ut, ud.dst, NULL, &out);
+        ut_test_add_sample(tst, out);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_dust_destroy(&ud.dst);
+    ut_dust_destroy(&ud.dst);
      
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

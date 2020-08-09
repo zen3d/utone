@@ -11,27 +11,27 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_waveset_create(sp_waveset **p)
+int ut_waveset_create(ut_waveset **p)
 {
-    *p = malloc(sizeof(sp_waveset));
-    return SP_OK;
+    *p = malloc(sizeof(ut_waveset));
+    return UT_OK;
 }
 
-int sp_waveset_destroy(sp_waveset **p)
+int ut_waveset_destroy(ut_waveset **p)
 {
-    sp_waveset *pp = *p;
-    sp_auxdata_free(&pp->auxch);
+    ut_waveset *pp = *p;
+    ut_auxdata_free(&pp->auxch);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_waveset_init(sp_data *sp, sp_waveset *p, SPFLOAT ilen)
+int ut_waveset_init(ut_data *ut, ut_waveset *p, UTFLOAT ilen)
 {
-    p->length = 1 + (sp->sr * ilen);
+    p->length = 1 + (ut->sr * ilen);
 
-    sp_auxdata_alloc(&p->auxch, p->length * sizeof(SPFLOAT));
+    ut_auxdata_alloc(&p->auxch, p->length * sizeof(UTFLOAT));
     p->cnt = 1;
     p->start = 0;
     p->current = 0;
@@ -39,13 +39,13 @@ int sp_waveset_init(sp_data *sp, sp_waveset *p, SPFLOAT ilen)
     p->direction = 1;
     p->lastsamp = 1.0;
     p->noinsert = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_waveset_compute(sp_data *sp, sp_waveset *p, SPFLOAT *in, SPFLOAT *out)
+int ut_waveset_compute(ut_data *ut, ut_waveset *p, UTFLOAT *in, UTFLOAT *out)
 {
     int index = p->end;
-    SPFLOAT *insert = (SPFLOAT*)(p->auxch.ptr) + index;
+    UTFLOAT *insert = (UTFLOAT*)(p->auxch.ptr) + index;
 
     if (p->noinsert) goto output;
     *insert++ = *in;
@@ -54,20 +54,20 @@ int sp_waveset_compute(sp_data *sp, sp_waveset *p, SPFLOAT *in, SPFLOAT *out)
     }
     if (index==p->length) {  
         index = 0;
-        insert = (SPFLOAT*)(p->auxch.ptr);
+        insert = (UTFLOAT*)(p->auxch.ptr);
     }
 
     output:
 
     p->end = index;
     index = p->current;
-    insert = (SPFLOAT*)(p->auxch.ptr) + index;
-    SPFLOAT samp = *insert++;
+    insert = (UTFLOAT*)(p->auxch.ptr) + index;
+    UTFLOAT samp = *insert++;
     index++;
 
     if (index==p->length) {
         index = 0;
-        insert = (SPFLOAT*)(p->auxch.ptr);
+        insert = (UTFLOAT*)(p->auxch.ptr);
         p->noinsert = 0;
     }
 
@@ -81,7 +81,7 @@ int sp_waveset_compute(sp_data *sp, sp_waveset *p, SPFLOAT *in, SPFLOAT *out)
                 p->start = index;
                 p->noinsert = 0;
             } else { index = p->start;
-                insert = (SPFLOAT*)(p->auxch.ptr) + index;
+                insert = (UTFLOAT*)(p->auxch.ptr) + index;
             }
         }
     }
@@ -90,5 +90,5 @@ int sp_waveset_compute(sp_data *sp, sp_waveset *p, SPFLOAT *in, SPFLOAT *out)
     *out = samp;
     p->current = index;
 
-    return SP_OK;
+    return UT_OK;
 }

@@ -7,17 +7,17 @@ sptbl["noise"] = {
     },
 
     func = {
-        create = "sp_noise_create",
-        destroy = "sp_noise_destroy",
-        init = "sp_noise_init",
-        compute = "sp_noise_compute",
+        create = "ut_noise_create",
+        destroy = "ut_noise_destroy",
+        init = "ut_noise_init",
+        compute = "ut_noise_compute",
     },
 
     params = {
         optional = {
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Amplitude. (Value between 0-1).",
                 default = 1.0
             },

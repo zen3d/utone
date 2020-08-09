@@ -1,58 +1,58 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_osc *osc;
-    sp_ftbl *ft;
-    sp_metro *met;
-    sp_tenv *tenv;
-    SPFLOAT freq;
+    ut_osc *osc;
+    ut_ftbl *ft;
+    ut_metro *met;
+    ut_tenv *tenv;
+    UTFLOAT freq;
 } UserData;
 
-void write_osc(sp_data *sp, void *udata) {
+void write_osc(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT trig = 0;
-    SPFLOAT env = 0;
-    SPFLOAT osc = 0;
-    sp_metro_compute(sp, ud->met, NULL, &trig);
-    if(trig) ud->osc->freq = 500 + sp_rand(sp) % 2000;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp_tenv_compute(sp, ud->tenv, &trig, &env);
+    UTFLOAT trig = 0;
+    UTFLOAT env = 0;
+    UTFLOAT osc = 0;
+    ut_metro_compute(ut, ud->met, NULL, &trig);
+    if(trig) ud->osc->freq = 500 + ut_rand(ut) % 2000;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut_tenv_compute(ut, ud->tenv, &trig, &env);
 
-    sp->out[0] = osc * env;
+    ut->out[0] = osc * env;
 }
 
 int main() {
     UserData ud;
-    SPFLOAT *freqp = &ud.freq;
+    UTFLOAT *freqp = &ud.freq;
     ud.freq = 400;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 123456);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 123456);
 
-    sp_tenv_create(&ud.tenv);
-    sp_metro_create(&ud.met);
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_osc_create(&ud.osc);
+    ut_tenv_create(&ud.tenv);
+    ut_metro_create(&ud.met);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_osc_create(&ud.osc);
 
-    sp_tenv_init(sp, ud.tenv);
+    ut_tenv_init(ut, ud.tenv);
     ud.tenv->atk = 0.03;
     ud.tenv->hold = 0.1;
     ud.tenv->rel = 0.1;
-    sp_metro_init(sp, ud.met);
+    ut_metro_init(ut, ud.met);
     ud.met->freq = 3;
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
     ud.osc->freq = *freqp;
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, write_osc);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, write_osc);
 
-    sp_tenv_destroy(&ud.tenv);
-    sp_metro_destroy(&ud.met);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_destroy(&sp);
+    ut_tenv_destroy(&ud.tenv);
+    ut_metro_destroy(&ud.met);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_destroy(&ut);
     return 0;
 }

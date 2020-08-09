@@ -1,5 +1,5 @@
 typedef struct {
-    SPFLOAT amp;
+    UTFLOAT amp;
     unsigned int newrand;
     unsigned int prevrand;
     unsigned int k;
@@ -7,10 +7,10 @@ typedef struct {
     unsigned int total;
     uint32_t counter;
     unsigned int dice[7];
-} sp_pinknoise;
+} ut_pinknoise;
 
-int sp_pinknoise_create(sp_pinknoise **p);
-int sp_pinknoise_destroy(sp_pinknoise **p);
-int sp_pinknoise_init(sp_data *sp, sp_pinknoise *p);
-int sp_pinknoise_compute(sp_data *sp, sp_pinknoise *p, SPFLOAT *in, SPFLOAT *out);
+int ut_pinknoise_create(ut_pinknoise **p);
+int ut_pinknoise_destroy(ut_pinknoise **p);
+int ut_pinknoise_init(ut_data *ut, ut_pinknoise *p);
+int ut_pinknoise_compute(ut_data *ut, ut_pinknoise *p, UTFLOAT *in, UTFLOAT *out);
 

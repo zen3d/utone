@@ -1,11 +1,11 @@
-typedef struct sp_metro{
-    SPFLOAT sr, freq, iphs;
-    SPFLOAT curphs;
+typedef struct ut_metro{
+    UTFLOAT sr, freq, iphs;
+    UTFLOAT curphs;
     int flag;
-    SPFLOAT onedsr;
-} sp_metro;
+    UTFLOAT onedsr;
+} ut_metro;
 
-int sp_metro_create(sp_metro **p);
-int sp_metro_destroy(sp_metro **p);
-int sp_metro_init(sp_data *sp, sp_metro *p);
-int sp_metro_compute(sp_data *sp, sp_metro *p, SPFLOAT *in, SPFLOAT *out);
+int ut_metro_create(ut_metro **p);
+int ut_metro_destroy(ut_metro **p);
+int ut_metro_init(ut_data *ut, ut_metro *p);
+int ut_metro_compute(ut_data *ut, ut_metro *p, UTFLOAT *in, UTFLOAT *out);

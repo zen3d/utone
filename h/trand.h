@@ -1,8 +1,8 @@
 typedef struct {
-    SPFLOAT min, max, val;
-} sp_trand;
+    UTFLOAT min, max, val;
+} ut_trand;
 
-int sp_trand_create(sp_trand **p);
-int sp_trand_destroy(sp_trand **p);
-int sp_trand_init(sp_data *sp, sp_trand *p);
-int sp_trand_compute(sp_data *sp, sp_trand *p, SPFLOAT *in, SPFLOAT *out);
+int ut_trand_create(ut_trand **p);
+int ut_trand_destroy(ut_trand **p);
+int ut_trand_init(ut_data *ut, ut_trand *p);
+int ut_trand_compute(ut_data *ut, ut_trand *p, UTFLOAT *in, UTFLOAT *out);

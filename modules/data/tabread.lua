@@ -6,23 +6,23 @@ sptbl["tabread"] = {
     },
 
     func = {
-        create = "sp_tabread_create",
-        destroy = "sp_tabread_destroy",
-        init = "sp_tabread_init",
-        compute = "sp_tabread_compute",
+        create = "ut_tabread_create",
+        destroy = "ut_tabread_destroy",
+        init = "ut_tabread_init",
+        compute = "ut_tabread_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "ft",
-                type = "sp_ftbl *",
-                description = "A properly allocated table (using a function like sp_gen_file).",
+                type = "ut_ftbl *",
+                description = "A properly allocated table (using a function like ut_gen_file).",
                 default = "N/A"
             },
             {
                 name = "mode",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="1 = scaled index, 0 = unscaled index",
                 default = 1.0
             },
@@ -31,19 +31,19 @@ sptbl["tabread"] = {
         optional = {
             {
                 name = "index",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="index position, either scaled or unscaled with mode parameter",
                 default = 0
             },
             {
                 name = "offset",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Offset from beginning of ftable. If the mode is scaled, then it is in range 0-1, other wise it is the index position.",
                 default = 1.0
             },
             {
                 name = "wrap",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Enable wraparound. 1 = on; 0 = 0ff.",
                 default = 1.0
             }
@@ -53,7 +53,7 @@ sptbl["tabread"] = {
     modtype = "module",
 
     description = [[Table 
-        Read through an sp_ftbl with linear interpolation.
+        Read through an ut_ftbl with linear interpolation.
     ]],
 
     ninputs = 0,

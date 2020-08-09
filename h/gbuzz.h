@@ -1,14 +1,14 @@
 typedef struct {
-        SPFLOAT amp, freq, nharm, lharm, mul, iphs;
+        UTFLOAT amp, freq, nharm, lharm, mul, iphs;
         int16_t ampcod, cpscod, prvn;
-        SPFLOAT prvr, twor, rsqp1, rtn, rtnp1, rsumr;
+        UTFLOAT prvr, twor, rsqp1, rtn, rtnp1, rsumr;
         int32_t lphs;
         int reported;
-        SPFLOAT last;
-        sp_ftbl *ft;
-} sp_gbuzz;
+        UTFLOAT last;
+        ut_ftbl *ft;
+} ut_gbuzz;
 
-int sp_gbuzz_create(sp_gbuzz **p);
-int sp_gbuzz_destroy(sp_gbuzz **p);
-int sp_gbuzz_init(sp_data *sp, sp_gbuzz *p, sp_ftbl *ft, SPFLOAT iphs);
-int sp_gbuzz_compute(sp_data *sp, sp_gbuzz *p, SPFLOAT *in, SPFLOAT *out);
+int ut_gbuzz_create(ut_gbuzz **p);
+int ut_gbuzz_destroy(ut_gbuzz **p);
+int ut_gbuzz_init(ut_data *ut, ut_gbuzz *p, ut_ftbl *ft, UTFLOAT iphs);
+int ut_gbuzz_compute(ut_data *ut, ut_gbuzz *p, UTFLOAT *in, UTFLOAT *out);

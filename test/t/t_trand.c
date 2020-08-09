@@ -1,56 +1,56 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_trand *trand;
-    sp_metro *met;
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_trand *trand;
+    ut_metro *met;
+    ut_osc *osc;
+    ut_ftbl *ft; 
 } UserData;
 
-int t_trand(sp_test *tst, sp_data *sp, const char *hash) 
+int t_trand(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
     
     UserData ud;
-    sp_srand(sp, 1234567);
+    ut_srand(ut, 1234567);
 
-    sp_metro_create(&ud.met);
-    sp_trand_create(&ud.trand);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
+    ut_metro_create(&ud.met);
+    ut_trand_create(&ud.trand);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
 
-    sp_metro_init(sp, ud.met);
+    ut_metro_init(ut, ud.met);
     ud.met->freq = 20;
-    sp_trand_init(sp, ud.trand);
+    ut_trand_init(ut, ud.trand);
     ud.trand->min = 40;
     ud.trand->max = 1000;
 
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
 
-    sp->len = 44100 * 5;  
+    ut->len = 44100 * 5;  
 
     for(n = 0; n < tst->size; n++) {
-        SPFLOAT osc = 0, trand = 0, met = 0;
-        sp_metro_compute(sp, ud.met, NULL, &met);
-        sp_trand_compute(sp, ud.trand, &met, &trand);
+        UTFLOAT osc = 0, trand = 0, met = 0;
+        ut_metro_compute(ut, ud.met, NULL, &met);
+        ut_trand_compute(ut, ud.trand, &met, &trand);
         ud.osc->freq = trand;
-        sp_osc_compute(sp, ud.osc, NULL, &osc);
-        sp->out[0] = osc;
-        sp_test_add_sample(tst, sp->out[0]);
+        ut_osc_compute(ut, ud.osc, NULL, &osc);
+        ut->out[0] = osc;
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_trand_destroy(&ud.trand);
-    sp_metro_destroy(&ud.met);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_trand_destroy(&ud.trand);
+    ut_metro_destroy(&ud.met);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

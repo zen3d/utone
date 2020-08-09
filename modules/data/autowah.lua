@@ -7,29 +7,29 @@ sptbl["autowah"] = {
     },
 
     func = {
-        create = "sp_autowah_create",
-        destroy = "sp_autowah_destroy",
-        init = "sp_autowah_init",
-        compute = "sp_autowah_compute",
+        create = "ut_autowah_create",
+        destroy = "ut_autowah_destroy",
+        init = "ut_autowah_init",
+        compute = "ut_autowah_compute",
     },
 
     params = {
         optional = {
             {
                 name = "level",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description = "Overall level (between 0 and 1)",
                 default = 0.1
             },
             {
                 name = "wah",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="wah amount",
                 default = 0
             },
             {
                 name = "mix",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Wet/dry amount (100 = wet, 0 = dry)",
                 default = 100
             },

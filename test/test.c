@@ -1,18 +1,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "test.h"
 
 
-int sp_test_create(sp_test **t, uint32_t bufsize)
+int ut_test_create(ut_test **t, uint32_t bufsize)
 {
     uint32_t i;
-    *t = malloc(sizeof(sp_test));
-    sp_test *tp = *t;
+    *t = malloc(sizeof(ut_test));
+    ut_test *tp = *t;
 
-    SPFLOAT *buf = malloc(sizeof(SPFLOAT) * bufsize);
+    UTFLOAT *buf = malloc(sizeof(UTFLOAT) * bufsize);
     for(i = 0; i < bufsize; i++) tp->buf = 0;
 
     tp->buf = buf;
@@ -22,29 +22,29 @@ int sp_test_create(sp_test **t, uint32_t bufsize)
     tp->md5string[32] = '\0';
     tp->md5 = tp->md5string;
     tp->mode = NORMAL;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_test_destroy(sp_test **t)
+int ut_test_destroy(ut_test **t)
 {
-    sp_test *tp = *t;
+    ut_test *tp = *t;
     free(tp->buf);
     free(*t);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_test_add_sample(sp_test *t, SPFLOAT sample)
+int ut_test_add_sample(ut_test *t, UTFLOAT sample)
 {
     if(t->pos < t->size) {
         t->buf[t->pos] = sample;
         t->pos++;
     }
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_test_compare(sp_test *t, const char *md5hash)
+int ut_test_compare(ut_test *t, const char *md5hash)
 {
-    md5_append(&t->state, (const md5_byte_t *)t->buf, sizeof(SPFLOAT) * t->size);
+    md5_append(&t->state, (const md5_byte_t *)t->buf, sizeof(UTFLOAT) * t->size);
     md5_finish(&t->state, t->digest);
     int i;
     char in[3], out[3];
@@ -62,35 +62,35 @@ int sp_test_compare(sp_test *t, const char *md5hash)
     }
 
     if(fail) {
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     } else {
-        return SP_OK;
+        return UT_OK;
     }
 }
 
-int sp_test_write_raw(sp_test *t, uint32_t index) 
+int ut_test_write_raw(ut_test *t, uint32_t index) 
 {
     char fname[20];
     sprintf(fname, "%04d.raw", index);
     FILE *fp = fopen(fname, "wb");
-    fwrite(t->buf, sizeof(SPFLOAT), t->size, fp);
+    fwrite(t->buf, sizeof(UTFLOAT), t->size, fp);
     fclose(fp);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_test_verify(sp_test *t, const char *refhash)
+int ut_test_verify(ut_test *t, const char *refhash)
 {
     if(t->mode == NORMAL) {
         int fail = 0;
-        if(sp_test_compare(t, refhash) == SP_NOT_OK) {
+        if(ut_test_compare(t, refhash) == UT_NOT_OK) {
             printf("Generated hash %s does not match reference hash %s\n", 
                     t->md5string, refhash);
             fail = 1;
         }
         return fail;
     } else {
-        sp_test_entry *tst = t->cur_entry;
-        sp_test_compare(t, refhash);
+        ut_test_entry *tst = t->cur_entry;
+        ut_test_compare(t, refhash);
         printf("TEST(t_%s, \"%s\", \"%s\")\n",
                 tst->desc, tst->desc, t->md5string);
         return 0;

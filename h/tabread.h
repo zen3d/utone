@@ -1,11 +1,11 @@
 typedef struct {
-    SPFLOAT sig;
-    SPFLOAT index, mode, offset, wrap;
-    SPFLOAT mul;
-    sp_ftbl *ft;
-} sp_tabread;
+    UTFLOAT sig;
+    UTFLOAT index, mode, offset, wrap;
+    UTFLOAT mul;
+    ut_ftbl *ft;
+} ut_tabread;
 
-int sp_tabread_create(sp_tabread **p);
-int sp_tabread_destroy(sp_tabread **p);
-int sp_tabread_init(sp_data *sp, sp_tabread *p, sp_ftbl *ft, int mode);
-int sp_tabread_compute(sp_data *sp, sp_tabread *p, SPFLOAT *in, SPFLOAT *out);
+int ut_tabread_create(ut_tabread **p);
+int ut_tabread_destroy(ut_tabread **p);
+int ut_tabread_init(ut_data *ut, ut_tabread *p, ut_ftbl *ft, int mode);
+int ut_tabread_compute(ut_data *ut, ut_tabread *p, UTFLOAT *in, UTFLOAT *out);

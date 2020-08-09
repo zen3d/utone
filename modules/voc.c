@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -26,31 +26,31 @@
 
 
 typedef struct {
-    SPFLOAT  freq;
-    SPFLOAT  tenseness;
-    SPFLOAT  Rd;
-    SPFLOAT  waveform_length;
-    SPFLOAT  time_in_waveform;
+    UTFLOAT  freq;
+    UTFLOAT  tenseness;
+    UTFLOAT  Rd;
+    UTFLOAT  waveform_length;
+    UTFLOAT  time_in_waveform;
 
-    SPFLOAT  alpha;
-    SPFLOAT  E0;
-    SPFLOAT  epsilon;
-    SPFLOAT  shift;
-    SPFLOAT  delta;
-    SPFLOAT  Te;
-    SPFLOAT  omega;
+    UTFLOAT  alpha;
+    UTFLOAT  E0;
+    UTFLOAT  epsilon;
+    UTFLOAT  shift;
+    UTFLOAT  delta;
+    UTFLOAT  Te;
+    UTFLOAT  omega;
 
-    SPFLOAT  T;
+    UTFLOAT  T;
 } glottis;
 
 
 
 typedef struct transient {
     int  position;
-    SPFLOAT  time_alive;
-    SPFLOAT  lifetime;
-    SPFLOAT  strength;
-    SPFLOAT  exponent;
+    UTFLOAT  time_alive;
+    UTFLOAT  lifetime;
+    UTFLOAT  strength;
+    UTFLOAT  exponent;
     char is_free;
     unsigned int id;
     struct transient *next;
@@ -69,17 +69,17 @@ typedef struct {
 typedef struct {
     int n;
      
-    SPFLOAT  diameter[44];
-    SPFLOAT  rest_diameter[44];
-    SPFLOAT  target_diameter[44];
-    SPFLOAT  new_diameter[44];
-    SPFLOAT  R[44]; 
-    SPFLOAT  L[44]; 
-    SPFLOAT  reflection[45];
-    SPFLOAT  new_reflection[45];
-    SPFLOAT  junction_outL[45];
-    SPFLOAT  junction_outR[45];
-    SPFLOAT  A[44];
+    UTFLOAT  diameter[44];
+    UTFLOAT  rest_diameter[44];
+    UTFLOAT  target_diameter[44];
+    UTFLOAT  new_diameter[44];
+    UTFLOAT  R[44]; 
+    UTFLOAT  L[44]; 
+    UTFLOAT  reflection[45];
+    UTFLOAT  new_reflection[45];
+    UTFLOAT  junction_outL[45];
+    UTFLOAT  junction_outR[45];
+    UTFLOAT  A[44];
 
     int nose_length;
 
@@ -87,42 +87,42 @@ typedef struct {
     int nose_start; 
 
     int tip_start;
-    SPFLOAT  noseL[28];
-    SPFLOAT  noseR[28];
-    SPFLOAT  nose_junc_outL[29];
-    SPFLOAT  nose_junc_outR[29];
-    SPFLOAT  nose_reflection[29];
-    SPFLOAT  nose_diameter[28];
-    SPFLOAT  noseA[28];
+    UTFLOAT  noseL[28];
+    UTFLOAT  noseR[28];
+    UTFLOAT  nose_junc_outL[29];
+    UTFLOAT  nose_junc_outR[29];
+    UTFLOAT  nose_reflection[29];
+    UTFLOAT  nose_diameter[28];
+    UTFLOAT  noseA[28];
 
-    SPFLOAT  reflection_left;
-    SPFLOAT  reflection_right;
-    SPFLOAT  reflection_nose;
+    UTFLOAT  reflection_left;
+    UTFLOAT  reflection_right;
+    UTFLOAT  reflection_nose;
 
-    SPFLOAT  new_reflection_left;
-    SPFLOAT  new_reflection_right;
-    SPFLOAT  new_reflection_nose;
+    UTFLOAT  new_reflection_left;
+    UTFLOAT  new_reflection_right;
+    UTFLOAT  new_reflection_nose;
 
-    SPFLOAT  velum_target;
+    UTFLOAT  velum_target;
 
-    SPFLOAT  glottal_reflection;
-    SPFLOAT  lip_reflection;
+    UTFLOAT  glottal_reflection;
+    UTFLOAT  lip_reflection;
     int  last_obstruction;
-    SPFLOAT  fade;
-    SPFLOAT  movement_speed; 
-    SPFLOAT  lip_output;
-    SPFLOAT  nose_output;
-    SPFLOAT  block_time;
+    UTFLOAT  fade;
+    UTFLOAT  movement_speed; 
+    UTFLOAT  lip_output;
+    UTFLOAT  nose_output;
+    UTFLOAT  block_time;
 
     transient_pool tpool;
-    SPFLOAT  T;
+    UTFLOAT  T;
 } tract;
 
 
-struct sp_voc {
+struct ut_voc {
     glottis  glot; /*The Glottis*/
     tract  tr; /*The Vocal Tract */
-    SPFLOAT  buf[512];
+    UTFLOAT  buf[512];
     int counter;
 };
 
@@ -130,33 +130,33 @@ struct sp_voc {
 
 
 
-static void glottis_setup_waveform(glottis *glot, SPFLOAT lambda)
+static void glottis_setup_waveform(glottis *glot, UTFLOAT lambda)
 {
     
-    SPFLOAT Rd;
-    SPFLOAT Ra;
-    SPFLOAT Rk;
-    SPFLOAT Rg;
+    UTFLOAT Rd;
+    UTFLOAT Ra;
+    UTFLOAT Rk;
+    UTFLOAT Rg;
     
-    SPFLOAT Ta;
-    SPFLOAT Tp;
-    SPFLOAT Te;
+    UTFLOAT Ta;
+    UTFLOAT Tp;
+    UTFLOAT Te;
     
-    SPFLOAT epsilon;
-    SPFLOAT shift;
-    SPFLOAT delta;
-    SPFLOAT rhs_integral;
+    UTFLOAT epsilon;
+    UTFLOAT shift;
+    UTFLOAT delta;
+    UTFLOAT rhs_integral;
     
-    SPFLOAT lower_integral;
-    SPFLOAT upper_integral;
+    UTFLOAT lower_integral;
+    UTFLOAT upper_integral;
     
-    SPFLOAT omega;
-    SPFLOAT s;
-    SPFLOAT y;
-    SPFLOAT z;
+    UTFLOAT omega;
+    UTFLOAT s;
+    UTFLOAT y;
+    UTFLOAT z;
     
-    SPFLOAT alpha;
-    SPFLOAT E0;
+    UTFLOAT alpha;
+    UTFLOAT E0;
 
     
     glot->Rd = 3 * (1 - glot->tenseness);
@@ -173,18 +173,18 @@ static void glottis_setup_waveform(glottis *glot, SPFLOAT lambda)
 
     
     Ta = Ra;
-    Tp = (SPFLOAT)1.0 / (2*Rg);
+    Tp = (UTFLOAT)1.0 / (2*Rg);
     Te = Tp + Tp*Rk;
 
 
     
-    epsilon = (SPFLOAT)1.0 / Ta;
+    epsilon = (UTFLOAT)1.0 / Ta;
     shift = exp(-epsilon * (1 - Te));
     delta = 1 - shift;
 
 
     
-    rhs_integral = (SPFLOAT)(1.0/epsilon) * (shift-1) + (1-Te)*shift;
+    rhs_integral = (UTFLOAT)(1.0/epsilon) * (shift-1) + (1-Te)*shift;
     rhs_integral = rhs_integral / delta;
     lower_integral = - (Te - Tp) / 2 + rhs_integral;
     upper_integral = -lower_integral;
@@ -210,7 +210,7 @@ static void glottis_setup_waveform(glottis *glot, SPFLOAT lambda)
 }
 
 
-static void glottis_init(glottis *glot, SPFLOAT sr)
+static void glottis_init(glottis *glot, UTFLOAT sr)
 {
     glot->freq = 140; /* 140Hz frequency by default */
     glot->tenseness = 0.6; /* value between 0 and 1 */
@@ -220,13 +220,13 @@ static void glottis_init(glottis *glot, SPFLOAT sr)
 }
 
 
-static SPFLOAT glottis_compute(sp_data *sp, glottis *glot, SPFLOAT lambda)
+static UTFLOAT glottis_compute(ut_data *ut, glottis *glot, UTFLOAT lambda)
 {
-    SPFLOAT out;
-    SPFLOAT aspiration;
-    SPFLOAT noise;
-    SPFLOAT t;
-    SPFLOAT intensity;
+    UTFLOAT out;
+    UTFLOAT aspiration;
+    UTFLOAT noise;
+    UTFLOAT t;
+    UTFLOAT intensity;
 
     out = 0;
     intensity = 1.0;
@@ -249,7 +249,7 @@ static SPFLOAT glottis_compute(sp_data *sp, glottis *glot, SPFLOAT lambda)
 
 
 
-    noise = 2.0 * ((SPFLOAT) sp_rand(sp) / SP_RANDMAX) - 1;
+    noise = 2.0 * ((UTFLOAT) ut_rand(ut) / UT_RANDMAX) - 1;
 
 
     aspiration = intensity * (1 - sqrt(glot->tenseness)) * 0.3 * noise;
@@ -267,7 +267,7 @@ static SPFLOAT glottis_compute(sp_data *sp, glottis *glot, SPFLOAT lambda)
 static void tract_calculate_reflections(tract *tr)
 {
     int i;
-    SPFLOAT  sum; 
+    UTFLOAT  sum; 
 
     for(i = 0; i < tr->n; i++) {
         tr->A[i] = tr->diameter[i] * tr->diameter[i];
@@ -289,9 +289,9 @@ static void tract_calculate_reflections(tract *tr)
     tr->reflection_nose = tr->new_reflection_nose;
 
     sum = tr->A[tr->nose_start] + tr->A[tr->nose_start + 1] + tr->noseA[0];
-    tr->new_reflection_left = (SPFLOAT)(2 * tr->A[tr->nose_start] - sum) / sum;
-    tr->new_reflection_right = (SPFLOAT)(2 * tr->A[tr->nose_start + 1] - sum) / sum;
-    tr->new_reflection_nose = (SPFLOAT)(2 * tr->noseA[0] - sum) / sum;
+    tr->new_reflection_left = (UTFLOAT)(2 * tr->A[tr->nose_start] - sum) / sum;
+    tr->new_reflection_right = (UTFLOAT)(2 * tr->A[tr->nose_start + 1] - sum) / sum;
+    tr->new_reflection_nose = (UTFLOAT)(2 * tr->noseA[0] - sum) / sum;
 }
 
 
@@ -372,10 +372,10 @@ static void remove_transient(transient_pool *pool, unsigned int id)
 
 
 
-static SPFLOAT move_towards(SPFLOAT current, SPFLOAT target,
-        SPFLOAT amt_up, SPFLOAT amt_down)
+static UTFLOAT move_towards(UTFLOAT current, UTFLOAT target,
+        UTFLOAT amt_up, UTFLOAT amt_down)
 {
-    SPFLOAT tmp;
+    UTFLOAT tmp;
     if(current < target) {
         tmp = current + amt_up;
         return MIN(tmp, target);
@@ -388,10 +388,10 @@ static SPFLOAT move_towards(SPFLOAT current, SPFLOAT target,
 
 static void tract_reshape(tract *tr)
 {
-    SPFLOAT amount;
-    SPFLOAT slow_return;
-    SPFLOAT diameter;
-    SPFLOAT target_diameter;
+    UTFLOAT amount;
+    UTFLOAT slow_return;
+    UTFLOAT diameter;
+    UTFLOAT target_diameter;
     int i;
     int current_obstruction;
 
@@ -429,10 +429,10 @@ static void tract_reshape(tract *tr)
 }
 
 
-static void tract_init(sp_data *sp, tract *tr)
+static void tract_init(ut_data *ut, tract *tr)
 {
     int i;
-    SPFLOAT diameter, d; /* needed to set up diameter arrays */
+    UTFLOAT diameter, d; /* needed to set up diameter arrays */
     
     tr->n = 44;
     tr->nose_length = 28;
@@ -454,30 +454,30 @@ static void tract_init(sp_data *sp, tract *tr)
     tr->tip_start = 32;
 
     
-    memset(tr->diameter, 0, tr->n * sizeof(SPFLOAT));
-    memset(tr->rest_diameter, 0, tr->n * sizeof(SPFLOAT));
-    memset(tr->target_diameter, 0, tr->n * sizeof(SPFLOAT));
-    memset(tr->new_diameter, 0, tr->n * sizeof(SPFLOAT));
-    memset(tr->L, 0, tr->n * sizeof(SPFLOAT));
-    memset(tr->R, 0, tr->n * sizeof(SPFLOAT));
-    memset(tr->reflection, 0, (tr->n + 1) * sizeof(SPFLOAT));
-    memset(tr->new_reflection, 0, (tr->n + 1) * sizeof(SPFLOAT));
-    memset(tr->junction_outL, 0, (tr->n + 1) * sizeof(SPFLOAT));
-    memset(tr->junction_outR, 0, (tr->n + 1) * sizeof(SPFLOAT));
-    memset(tr->A, 0, tr->n * sizeof(SPFLOAT));
-    memset(tr->noseL, 0, tr->nose_length * sizeof(SPFLOAT));
-    memset(tr->noseR, 0, tr->nose_length * sizeof(SPFLOAT));
-    memset(tr->nose_junc_outL, 0, (tr->nose_length + 1) * sizeof(SPFLOAT));
-    memset(tr->nose_junc_outR, 0, (tr->nose_length + 1) * sizeof(SPFLOAT));
-    memset(tr->nose_diameter, 0, tr->nose_length * sizeof(SPFLOAT));
-    memset(tr->noseA, 0, tr->nose_length * sizeof(SPFLOAT));
+    memset(tr->diameter, 0, tr->n * sizeof(UTFLOAT));
+    memset(tr->rest_diameter, 0, tr->n * sizeof(UTFLOAT));
+    memset(tr->target_diameter, 0, tr->n * sizeof(UTFLOAT));
+    memset(tr->new_diameter, 0, tr->n * sizeof(UTFLOAT));
+    memset(tr->L, 0, tr->n * sizeof(UTFLOAT));
+    memset(tr->R, 0, tr->n * sizeof(UTFLOAT));
+    memset(tr->reflection, 0, (tr->n + 1) * sizeof(UTFLOAT));
+    memset(tr->new_reflection, 0, (tr->n + 1) * sizeof(UTFLOAT));
+    memset(tr->junction_outL, 0, (tr->n + 1) * sizeof(UTFLOAT));
+    memset(tr->junction_outR, 0, (tr->n + 1) * sizeof(UTFLOAT));
+    memset(tr->A, 0, tr->n * sizeof(UTFLOAT));
+    memset(tr->noseL, 0, tr->nose_length * sizeof(UTFLOAT));
+    memset(tr->noseR, 0, tr->nose_length * sizeof(UTFLOAT));
+    memset(tr->nose_junc_outL, 0, (tr->nose_length + 1) * sizeof(UTFLOAT));
+    memset(tr->nose_junc_outR, 0, (tr->nose_length + 1) * sizeof(UTFLOAT));
+    memset(tr->nose_diameter, 0, tr->nose_length * sizeof(UTFLOAT));
+    memset(tr->noseA, 0, tr->nose_length * sizeof(UTFLOAT));
 
     
     for(i = 0; i < tr->n; i++) {
         diameter = 0;
-        if(i < 7 * (SPFLOAT)tr->n / 44 - 0.5) {
+        if(i < 7 * (UTFLOAT)tr->n / 44 - 0.5) {
             diameter = 0.6;
-        } else if( i < 12 * (SPFLOAT)tr->n / 44) {
+        } else if( i < 12 * (UTFLOAT)tr->n / 44) {
             diameter = 1.1;
         } else {
             diameter = 1.5;
@@ -492,7 +492,7 @@ static void tract_init(sp_data *sp, tract *tr)
 
     
         for(i = 0; i < tr->nose_length; i++) {
-            d = 2 * ((SPFLOAT)i / tr->nose_length);
+            d = 2 * ((UTFLOAT)i / tr->nose_length);
             if(d < 1) {
                 diameter = 0.4 + 1.6 * d;
             } else {
@@ -507,8 +507,8 @@ static void tract_init(sp_data *sp, tract *tr)
     tract_calculate_nose_reflections(tr);
     tr->nose_diameter[0] = tr->velum_target;
 
-    tr->block_time = 512.0 / (SPFLOAT)sp->sr;
-    tr->T = 1.0 / (SPFLOAT)sp->sr;
+    tr->block_time = 512.0 / (UTFLOAT)ut->sr;
+    tr->T = 1.0 / (UTFLOAT)ut->sr;
     
     tr->tpool.size = 0;
     tr->tpool.next_free = 0;
@@ -523,13 +523,13 @@ static void tract_init(sp_data *sp, tract *tr)
 }
 
 
-static void tract_compute(sp_data *sp, tract *tr,
-    SPFLOAT  in,
-    SPFLOAT  lambda)
+static void tract_compute(ut_data *ut, tract *tr,
+    UTFLOAT  in,
+    UTFLOAT  lambda)
 {
-     SPFLOAT  r, w;
+     UTFLOAT  r, w;
     int i;
-    SPFLOAT  amp;
+    UTFLOAT  amp;
     int current_size;
     transient_pool *pool;
     transient *n;
@@ -599,33 +599,33 @@ static void tract_compute(sp_data *sp, tract *tr,
 
 
 
-int sp_voc_create(sp_voc **voc)
+int ut_voc_create(ut_voc **voc)
 {
-    *voc = malloc(sizeof(sp_voc));
-    return SP_OK;
+    *voc = malloc(sizeof(ut_voc));
+    return UT_OK;
 }
 
 
-int sp_voc_destroy(sp_voc **voc)
+int ut_voc_destroy(ut_voc **voc)
 {
     free(*voc);
-    return SP_OK;
+    return UT_OK;
 }
 
 
-int sp_voc_init(sp_data *sp, sp_voc *voc)
+int ut_voc_init(ut_data *ut, ut_voc *voc)
 {
-    glottis_init(&voc->glot, sp->sr); /* initialize glottis */
-    tract_init(sp, &voc->tr); /* initialize vocal tract */
+    glottis_init(&voc->glot, ut->sr); /* initialize glottis */
+    tract_init(ut, &voc->tr); /* initialize vocal tract */
     voc->counter = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
 
-int sp_voc_compute(sp_data *sp, sp_voc *voc, SPFLOAT *out)
+int ut_voc_compute(ut_data *ut, ut_voc *voc, UTFLOAT *out)
 {
-    SPFLOAT vocal_output, glot;
-    SPFLOAT lambda1, lambda2;
+    UTFLOAT vocal_output, glot;
+    UTFLOAT lambda1, lambda2;
     int i;
 
     
@@ -635,14 +635,14 @@ int sp_voc_compute(sp_data *sp, sp_voc *voc, SPFLOAT *out)
         tract_calculate_reflections(&voc->tr);
         for(i = 0; i < 512; i++) {
             vocal_output = 0;
-            lambda1 = (SPFLOAT) i / 512;
-            lambda2 = (SPFLOAT) (i + 0.5) / 512;
-            glot = glottis_compute(sp, &voc->glot, lambda1);
+            lambda1 = (UTFLOAT) i / 512;
+            lambda2 = (UTFLOAT) (i + 0.5) / 512;
+            glot = glottis_compute(ut, &voc->glot, lambda1);
 
-            tract_compute(sp, &voc->tr, glot, lambda1);
+            tract_compute(ut, &voc->tr, glot, lambda1);
             vocal_output += voc->tr.lip_output + voc->tr.nose_output;
 
-            tract_compute(sp, &voc->tr, glot, lambda2);
+            tract_compute(ut, &voc->tr, glot, lambda2);
             vocal_output += voc->tr.lip_output + voc->tr.nose_output;
             voc->buf[i] = vocal_output * 0.125;
         }
@@ -651,14 +651,14 @@ int sp_voc_compute(sp_data *sp, sp_voc *voc, SPFLOAT *out)
 
     *out = voc->buf[voc->counter];
     voc->counter = (voc->counter + 1) % 512;
-    return SP_OK;
+    return UT_OK;
 }
 
 
-int sp_voc_tract_compute(sp_data *sp, sp_voc *voc, SPFLOAT *in, SPFLOAT *out)
+int ut_voc_tract_compute(ut_data *ut, ut_voc *voc, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT vocal_output;
-    SPFLOAT lambda1, lambda2;
+    UTFLOAT vocal_output;
+    UTFLOAT lambda1, lambda2;
 
     if(voc->counter == 0) {
         tract_reshape(&voc->tr);
@@ -666,80 +666,80 @@ int sp_voc_tract_compute(sp_data *sp, sp_voc *voc, SPFLOAT *in, SPFLOAT *out)
     }
 
     vocal_output = 0;
-    lambda1 = (SPFLOAT) voc->counter / 512;
-    lambda2 = (SPFLOAT) (voc->counter + 0.5) / 512;
+    lambda1 = (UTFLOAT) voc->counter / 512;
+    lambda2 = (UTFLOAT) (voc->counter + 0.5) / 512;
 
-    tract_compute(sp, &voc->tr, *in, lambda1);
+    tract_compute(ut, &voc->tr, *in, lambda1);
     vocal_output += voc->tr.lip_output + voc->tr.nose_output;
-    tract_compute(sp, &voc->tr, *in, lambda2);
+    tract_compute(ut, &voc->tr, *in, lambda2);
     vocal_output += voc->tr.lip_output + voc->tr.nose_output;
 
 
     *out = vocal_output * 0.125;
     voc->counter = (voc->counter + 1) % 512;
-    return SP_OK;
+    return UT_OK;
 }
 
 
-void sp_voc_set_frequency(sp_voc *voc, SPFLOAT freq)
+void ut_voc_set_frequency(ut_voc *voc, UTFLOAT freq)
 {
     voc->glot.freq = freq;
 }
 
 
-SPFLOAT * sp_voc_get_frequency_ptr(sp_voc *voc)
+UTFLOAT * ut_voc_get_frequency_ptr(ut_voc *voc)
 {
     return &voc->glot.freq;
 }
 
 
-SPFLOAT* sp_voc_get_tract_diameters(sp_voc *voc)
+UTFLOAT* ut_voc_get_tract_diameters(ut_voc *voc)
 {
     return voc->tr.target_diameter;
 }
 
 
-SPFLOAT* sp_voc_get_current_tract_diameters(sp_voc *voc)
+UTFLOAT* ut_voc_get_current_tract_diameters(ut_voc *voc)
 {
     return voc->tr.diameter;
 }
 
 
-int sp_voc_get_tract_size(sp_voc *voc)
+int ut_voc_get_tract_size(ut_voc *voc)
 {
     return voc->tr.n;
 }
 
 
-SPFLOAT* sp_voc_get_nose_diameters(sp_voc *voc)
+UTFLOAT* ut_voc_get_nose_diameters(ut_voc *voc)
 {
     return voc->tr.nose_diameter;
 }
 
 
-int sp_voc_get_nose_size(sp_voc *voc)
+int ut_voc_get_nose_size(ut_voc *voc)
 {
     return voc->tr.nose_length;
 }
 
 
-void sp_voc_set_diameters(sp_voc *voc, 
+void ut_voc_set_diameters(ut_voc *voc, 
     int blade_start, 
     int lip_start, 
     int tip_start, 
-    SPFLOAT tongue_index,
-    SPFLOAT tongue_diameter, 
-    SPFLOAT *diameters) {
+    UTFLOAT tongue_index,
+    UTFLOAT tongue_diameter, 
+    UTFLOAT *diameters) {
 
     int i;
-    SPFLOAT t;
-    SPFLOAT fixed_tongue_diameter;
-    SPFLOAT curve;
+    UTFLOAT t;
+    UTFLOAT fixed_tongue_diameter;
+    UTFLOAT curve;
     int grid_offset = 0;
 
     for(i = blade_start; i < lip_start; i++) {
         t = 1.1 * M_PI *
-            (SPFLOAT)(tongue_index - i)/(tip_start - blade_start);
+            (UTFLOAT)(tongue_index - i)/(tip_start - blade_start);
         fixed_tongue_diameter = 2+(tongue_diameter-2)/1.5;
         curve = (1.5 - fixed_tongue_diameter + grid_offset) * cos(t);
         if(i == blade_start - 2 || i == lip_start - 1) curve *= 0.8;
@@ -749,41 +749,41 @@ void sp_voc_set_diameters(sp_voc *voc,
 }
 
 
-void sp_voc_set_tongue_shape(sp_voc *voc,
-    SPFLOAT tongue_index, 
-    SPFLOAT tongue_diameter) {
-    SPFLOAT *diameters;
-    diameters = sp_voc_get_tract_diameters(voc);
-    sp_voc_set_diameters(voc, 10, 39, 32,
+void ut_voc_set_tongue_shape(ut_voc *voc,
+    UTFLOAT tongue_index, 
+    UTFLOAT tongue_diameter) {
+    UTFLOAT *diameters;
+    diameters = ut_voc_get_tract_diameters(voc);
+    ut_voc_set_diameters(voc, 10, 39, 32,
             tongue_index, tongue_diameter, diameters);
 }
 
 
-int sp_voc_get_counter(sp_voc *voc)
+int ut_voc_get_counter(ut_voc *voc)
 {
     return voc->counter;
 }
 
 
-void sp_voc_set_tenseness(sp_voc *voc, SPFLOAT tenseness)
+void ut_voc_set_tenseness(ut_voc *voc, UTFLOAT tenseness)
 {
     voc->glot.tenseness = tenseness;
 }
 
 
-SPFLOAT * sp_voc_get_tenseness_ptr(sp_voc *voc)
+UTFLOAT * ut_voc_get_tenseness_ptr(ut_voc *voc)
 {
     return &voc->glot.tenseness;
 }
 
 
-void sp_voc_set_velum(sp_voc *voc, SPFLOAT velum)
+void ut_voc_set_velum(ut_voc *voc, UTFLOAT velum)
 {
     voc->tr.velum_target = velum;
 }
 
 
-SPFLOAT *sp_voc_get_velum_ptr(sp_voc *voc)
+UTFLOAT *ut_voc_get_velum_ptr(ut_voc *voc)
 {
     return &voc->tr.velum_target;
 }

@@ -7,10 +7,10 @@ sptbl["hilbert"] = {
     },
 
     func = {
-        create = "sp_hilbert_create",
-        destroy = "sp_hilbert_destroy",
-        init = "sp_hilbert_init",
-        compute = "sp_hilbert_compute",
+        create = "ut_hilbert_create",
+        destroy = "ut_hilbert_destroy",
+        init = "ut_hilbert_init",
+        compute = "ut_hilbert_compute",
     },
 
     params = {

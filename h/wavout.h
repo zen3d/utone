@@ -1,5 +1,5 @@
-typedef struct sp_wavout sp_wavout;
-int sp_wavout_create(sp_wavout **p);
-int sp_wavout_destroy(sp_wavout **p);
-int sp_wavout_init(sp_data *sp, sp_wavout *p, const char *filename);
-int sp_wavout_compute(sp_data *sp, sp_wavout *p, SPFLOAT *in, SPFLOAT *out);
+typedef struct ut_wavout ut_wavout;
+int ut_wavout_create(ut_wavout **p);
+int ut_wavout_destroy(ut_wavout **p);
+int ut_wavout_init(ut_data *ut, ut_wavout *p, const char *filename);
+int ut_wavout_compute(ut_data *ut, ut_wavout *p, UTFLOAT *in, UTFLOAT *out);

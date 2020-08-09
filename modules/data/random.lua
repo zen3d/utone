@@ -7,23 +7,23 @@ sptbl["random"] = {
     },
 
     func = {
-        create = "sp_random_create",
-        destroy = "sp_random_destroy",
-        init = "sp_random_init",
-        compute = "sp_random_compute",
+        create = "ut_random_create",
+        destroy = "ut_random_destroy",
+        init = "ut_random_init",
+        compute = "ut_random_compute",
     },
 
     params = {
         optional = {
             {
                 name = "min",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Minimum value.",
                 default = -0.2
             },
             {
                 name = "max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Maximum value.",
                 default = 0.2
             },

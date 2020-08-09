@@ -1,8 +1,8 @@
 typedef struct {
-    SPFLOAT xnm1[12], ynm1[12], coef[12];
-} sp_hilbert;
+    UTFLOAT xnm1[12], ynm1[12], coef[12];
+} ut_hilbert;
 
-int sp_hilbert_create(sp_hilbert **p);
-int sp_hilbert_destroy(sp_hilbert **p);
-int sp_hilbert_init(sp_data *sp, sp_hilbert *p);
-int sp_hilbert_compute(sp_data *sp, sp_hilbert *p, SPFLOAT *in, SPFLOAT *out1, SPFLOAT *out2);
+int ut_hilbert_create(ut_hilbert **p);
+int ut_hilbert_destroy(ut_hilbert **p);
+int ut_hilbert_init(ut_data *ut, ut_hilbert *p);
+int ut_hilbert_compute(ut_data *ut, ut_hilbert *p, UTFLOAT *in, UTFLOAT *out1, UTFLOAT *out2);

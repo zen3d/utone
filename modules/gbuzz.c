@@ -11,12 +11,12 @@
  */
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 /* Binary positive power function */
-static SPFLOAT intpow1(SPFLOAT x, int32_t n)   
+static UTFLOAT intpow1(UTFLOAT x, int32_t n)   
 {
-    SPFLOAT ans = 1.0;
+    UTFLOAT ans = 1.0;
     while (n!=0) {
       if (n&1) ans = ans * x;
       n >>= 1;
@@ -26,19 +26,19 @@ static SPFLOAT intpow1(SPFLOAT x, int32_t n)
 }
 
 
-int sp_gbuzz_create(sp_gbuzz **p)
+int ut_gbuzz_create(ut_gbuzz **p)
 {
-    *p = malloc(sizeof(sp_gbuzz));
-    return SP_OK;
+    *p = malloc(sizeof(ut_gbuzz));
+    return UT_OK;
 }
 
-int sp_gbuzz_destroy(sp_gbuzz **p)
+int ut_gbuzz_destroy(ut_gbuzz **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_gbuzz_init(sp_data *sp, sp_gbuzz *p, sp_ftbl *ft, SPFLOAT iphs)
+int ut_gbuzz_init(ut_data *ut, ut_gbuzz *p, ut_ftbl *ft, UTFLOAT iphs)
 {
     p->freq = 440;
     p->amp = 0.4;
@@ -49,19 +49,19 @@ int sp_gbuzz_init(sp_data *sp, sp_gbuzz *p, sp_ftbl *ft, SPFLOAT iphs)
     p->iphs = iphs; 
     
     if (p->iphs >= 0) {
-        p->lphs = (int32_t)(p->iphs * SP_FT_MAXLEN);
+        p->lphs = (int32_t)(p->iphs * UT_FT_MAXLEN);
         p->prvr = 0.0;
     }
     p->last = 1.0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_gbuzz_compute(sp_data *sp, sp_gbuzz *p, SPFLOAT *in, SPFLOAT *out)
+int ut_gbuzz_compute(ut_data *ut, ut_gbuzz *p, UTFLOAT *in, UTFLOAT *out)
 {
-    sp_ftbl *ftp;
-    SPFLOAT *ftbl;
+    ut_ftbl *ftp;
+    UTFLOAT *ftbl;
     int32_t phs, inc, lobits, lenmask, k, km1, kpn, kpnm1;
-    SPFLOAT r, absr, num, denom, scal, last = p->last;
+    UTFLOAT r, absr, num, denom, scal, last = p->last;
     int32_t nn, lphs = p->lphs;
     
     ftp = p->ft;
@@ -113,8 +113,8 @@ int sp_gbuzz_compute(sp_data *sp, sp_gbuzz *p, SPFLOAT *in, SPFLOAT *out)
     }
     
     lphs += inc;
-    lphs &= SP_FT_PHMASK;
+    lphs &= UT_FT_PHMASK;
     p->last = last;
     p->lphs = lphs;
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,27 +1,27 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_maygate_create(sp_maygate **p)
+int ut_maygate_create(ut_maygate **p)
 {
-    *p = malloc(sizeof(sp_maygate));
-    return SP_OK;
+    *p = malloc(sizeof(ut_maygate));
+    return UT_OK;
 }
 
-int sp_maygate_destroy(sp_maygate **p)
+int ut_maygate_destroy(ut_maygate **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_maygate_init(sp_data *sp, sp_maygate *p)
+int ut_maygate_init(ut_data *ut, ut_maygate *p)
 {
     p->prob = 0.0;
     p->gate = 0;
     p->mode = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_maygate_compute(sp_data *sp, sp_maygate *p, SPFLOAT *in, SPFLOAT *out)
+int ut_maygate_compute(ut_data *ut, ut_maygate *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(*in == 0) {
         if(p->mode) {
@@ -29,15 +29,15 @@ int sp_maygate_compute(sp_data *sp, sp_maygate *p, SPFLOAT *in, SPFLOAT *out)
         } else {
             *out = p->gate;
         }
-        return SP_OK;
+        return UT_OK;
     }
 
-    if((1.0 * sp_rand(sp) / SP_RANDMAX) <= p->prob) {
+    if((1.0 * ut_rand(ut) / UT_RANDMAX) <= p->prob) {
         *out = 1;
         p->gate = 1;
     } else {
         *out = 0;
         p->gate = 0;
     }
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,35 +1,35 @@
 #include <string.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_reverse_create(sp_reverse **p)
+int ut_reverse_create(ut_reverse **p)
 {
-    *p = malloc(sizeof(sp_reverse));
-    return SP_OK;
+    *p = malloc(sizeof(ut_reverse));
+    return UT_OK;
 }
 
-int sp_reverse_destroy(sp_reverse **p)
+int ut_reverse_destroy(ut_reverse **p)
 {
-    sp_reverse *pp = *p;
-    sp_auxdata_free(&pp->buf);
+    ut_reverse *pp = *p;
+    ut_auxdata_free(&pp->buf);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_reverse_init(sp_data *sp, sp_reverse *p, SPFLOAT delay)
+int ut_reverse_init(ut_data *ut, ut_reverse *p, UTFLOAT delay)
 {
-    size_t size = delay * sp->sr * sizeof(SPFLOAT) * 2;
+    size_t size = delay * ut->sr * sizeof(UTFLOAT) * 2;
     p->bufpos = 0;
-    sp_auxdata_alloc(&p->buf, size);
-    p->bufsize = (uint32_t)p->buf.size / sizeof(SPFLOAT);
-    return SP_OK;
+    ut_auxdata_alloc(&p->buf, size);
+    p->bufsize = (uint32_t)p->buf.size / sizeof(UTFLOAT);
+    return UT_OK;
 }
 
-int sp_reverse_compute(sp_data *sp, sp_reverse *p, SPFLOAT *in, SPFLOAT *out)
+int ut_reverse_compute(ut_data *ut, ut_reverse *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT *buf = (SPFLOAT *)p->buf.ptr;
+    UTFLOAT *buf = (UTFLOAT *)p->buf.ptr;
     *out = buf[p->bufpos];
     buf[(p->bufsize - 1) - p->bufpos] = *in;
     p->bufpos = (p->bufpos + 1) % p->bufsize;
-    return SP_OK;
+    return UT_OK;
 }

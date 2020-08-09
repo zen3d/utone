@@ -1,12 +1,12 @@
-typedef struct sp_comb{
-    SPFLOAT revtime, looptime;
-    SPFLOAT coef, prvt;
-    sp_auxdata aux;
+typedef struct ut_comb{
+    UTFLOAT revtime, looptime;
+    UTFLOAT coef, prvt;
+    ut_auxdata aux;
     uint32_t bufpos;
     uint32_t bufsize;
-} sp_comb;
+} ut_comb;
 
-int sp_comb_create(sp_comb **p);
-int sp_comb_destroy(sp_comb **p);
-int sp_comb_init(sp_data *sp, sp_comb *p, SPFLOAT looptime);
-int sp_comb_compute(sp_data *sp, sp_comb *p, SPFLOAT *in, SPFLOAT *out);
+int ut_comb_create(ut_comb **p);
+int ut_comb_destroy(ut_comb **p);
+int ut_comb_init(ut_data *ut, ut_comb *p, UTFLOAT looptime);
+int ut_comb_compute(ut_data *ut, ut_comb *p, UTFLOAT *in, UTFLOAT *out);

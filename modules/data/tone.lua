@@ -7,17 +7,17 @@ sptbl["tone"] = {
 	},
 
 	func = {
-	    create = "sp_tone_create",
-	    destroy = "sp_tone_destroy",
-	    init = "sp_tone_init",
-	    compute = "sp_tone_compute",
+	    create = "ut_tone_create",
+	    destroy = "ut_tone_destroy",
+	    init = "ut_tone_init",
+	    compute = "ut_tone_compute",
 	},
 
 	params = {
 	    optional = {
 	        {
 	            name = "hp",
-	            type = "SPFLOAT",
+	            type = "UTFLOAT",
 	            description = "The response curve's half power point (aka cutoff frequency).",
 	            default = "1000"
 	        },

@@ -12,46 +12,46 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif
 
-int sp_bal_create(sp_bal **p)
+int ut_bal_create(ut_bal **p)
 {
-    *p = malloc(sizeof(sp_bal));
-    return SP_OK;
+    *p = malloc(sizeof(ut_bal));
+    return UT_OK;
 }
 
-int sp_bal_destroy(sp_bal **p)
+int ut_bal_destroy(ut_bal **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_bal_init(sp_data *sp, sp_bal *p)
+int ut_bal_init(ut_data *ut, ut_bal *p)
 {
 
-    SPFLOAT b;
+    UTFLOAT b;
     p->ihp = 10;
-    b = 2.0 - cos((SPFLOAT)(p->ihp * (2.0 * M_PI / sp->sr)));
+    b = 2.0 - cos((UTFLOAT)(p->ihp * (2.0 * M_PI / ut->sr)));
     p->c2 = b - sqrt(b*b - 1.0);
     p->c1 = 1.0 - p->c2;
     p->prvq = p->prvr = p->prva = 0.0;
 
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_bal_compute(sp_data *sp, sp_bal *p, SPFLOAT *sig, SPFLOAT *comp, SPFLOAT *out)
+int ut_bal_compute(ut_data *ut, ut_bal *p, UTFLOAT *sig, UTFLOAT *comp, UTFLOAT *out)
 {
-    SPFLOAT q, r, a, diff;
-    SPFLOAT c1 = p->c1, c2 = p->c2;
+    UTFLOAT q, r, a, diff;
+    UTFLOAT c1 = p->c1, c2 = p->c2;
 
     q = p->prvq;
     r = p->prvr;
-    SPFLOAT as = *sig;
-    SPFLOAT cs = *comp;
+    UTFLOAT as = *sig;
+    UTFLOAT cs = *comp;
 
     q = c1 * as * as + c2 * q;
     r = c1 * cs * cs + c2 * r;
@@ -72,5 +72,5 @@ int sp_bal_compute(sp_data *sp, sp_bal *p, SPFLOAT *sig, SPFLOAT *comp, SPFLOAT 
         *out = *sig * a;
     }
 
-    return SP_OK;
+    return UT_OK;
 }

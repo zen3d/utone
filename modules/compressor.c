@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "CUI.h"
 
 #define max(a,b) ((a < b) ? b : a)
@@ -8,7 +8,7 @@
 
 
 #ifndef FAUSTFLOAT
-#define FAUSTFLOAT SPFLOAT
+#define FAUSTFLOAT UTFLOAT
 #endif  
 
 typedef struct {
@@ -116,27 +116,27 @@ static void computecompressor(compressor* dsp, int count, FAUSTFLOAT** inputs, F
 
 static void addHorizontalSlider(void* ui_interface, const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
 {
-    sp_compressor *p = ui_interface;
+    ut_compressor *p = ui_interface;
     p->args[p->argpos] = zone;
     p->argpos++;
 }
 
-int sp_compressor_create(sp_compressor **p)
+int ut_compressor_create(ut_compressor **p)
 {
-    *p = malloc(sizeof(sp_compressor));
-    return SP_OK;
+    *p = malloc(sizeof(ut_compressor));
+    return UT_OK;
 }
 
-int sp_compressor_destroy(sp_compressor **p)
+int ut_compressor_destroy(ut_compressor **p)
 {
-    sp_compressor *pp = *p;
+    ut_compressor *pp = *p;
     compressor *dsp = pp->faust;
     deletecompressor (dsp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_compressor_init(sp_data *sp, sp_compressor *p)
+int ut_compressor_init(ut_data *ut, ut_compressor *p)
 {
     compressor *dsp = newcompressor(); 
     UIGlue UI;
@@ -144,7 +144,7 @@ int sp_compressor_init(sp_data *sp, sp_compressor *p)
     UI.addHorizontalSlider= addHorizontalSlider;
     UI.uiInterface = p;
     buildUserInterfacecompressor(dsp, &UI);
-    initcompressor(dsp, sp->sr);
+    initcompressor(dsp, ut->sr);
 
      
     p->ratio = p->args[0]; 
@@ -153,15 +153,15 @@ int sp_compressor_init(sp_data *sp, sp_compressor *p)
     p->rel = p->args[3];
 
     p->faust = dsp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_compressor_compute(sp_data *sp, sp_compressor *p, SPFLOAT *in, SPFLOAT *out) 
+int ut_compressor_compute(ut_data *ut, ut_compressor *p, UTFLOAT *in, UTFLOAT *out) 
 {
 
     compressor *dsp = p->faust;
-    SPFLOAT *faust_out[] = {out};
-    SPFLOAT *faust_in[] = {in};
+    UTFLOAT *faust_out[] = {out};
+    UTFLOAT *faust_in[] = {in};
     computecompressor(dsp, 1, faust_in, faust_out);
-    return SP_OK;
+    return UT_OK;
 }

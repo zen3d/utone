@@ -1,67 +1,67 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #define NOSC 5
 
 typedef struct {
-    sp_talkbox *talkbox;
-    sp_blsaw *saw[NOSC];
-    sp_diskin *diskin;
+    ut_talkbox *talkbox;
+    ut_blsaw *saw[NOSC];
+    ut_diskin *diskin;
 } UserData;
 
 static int chord[] = {48, 51, 55, 60, 70};
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT tmp;
+    UTFLOAT tmp;
     int i;
-    SPFLOAT src = 0;
-    SPFLOAT exc = 0;
-    SPFLOAT talkbox = 0;
+    UTFLOAT src = 0;
+    UTFLOAT exc = 0;
+    UTFLOAT talkbox = 0;
 
     exc = 0;
     for(i = 0; i < NOSC; i++) {
-		sp_blsaw_compute(sp, ud->saw[i], NULL, &tmp);
+		ut_blsaw_compute(ut, ud->saw[i], NULL, &tmp);
 		exc += tmp;
     }
-    sp_diskin_compute(sp, ud->diskin, NULL, &src);
+    ut_diskin_compute(ut, ud->diskin, NULL, &src);
     src *= 0.5;
-    sp_talkbox_compute(sp, ud->talkbox, &src, &exc, &talkbox);
-    sp_out(sp, 0, talkbox);
+    ut_talkbox_compute(ut, ud->talkbox, &src, &exc, &talkbox);
+    ut_out(ut, 0, talkbox);
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
+    ut_data *ut;
     int i;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_diskin_create(&ud.diskin);
-	sp_talkbox_create(&ud.talkbox);
-	sp_talkbox_init(sp, ud.talkbox);
+    ut_diskin_create(&ud.diskin);
+	ut_talkbox_create(&ud.talkbox);
+	ut_talkbox_init(ut, ud.talkbox);
 	ud.talkbox->quality = 0.2;
 
 	for(i = 0; i < NOSC; i++) {
-		sp_blsaw_create(&ud.saw[i]);
-		sp_blsaw_init(sp, ud.saw[i]);
-		*ud.saw[i]->freq = sp_midi2cps(chord[i]);
+		ut_blsaw_create(&ud.saw[i]);
+		ut_blsaw_init(ut, ud.saw[i]);
+		*ud.saw[i]->freq = ut_midi2cps(chord[i]);
 		*ud.saw[i]->amp = 0.1;
     }
 
-    sp_diskin_init(sp, ud.diskin, "oneart.wav");
+    ut_diskin_init(ut, ud.diskin, "oneart.wav");
 
-    sp->len = 44100 * 8;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 8;
+    ut_process(ut, &ud, process);
 
-    sp_talkbox_destroy(&ud.talkbox);
+    ut_talkbox_destroy(&ud.talkbox);
     for(i = 0; i < NOSC; i ++) {
-		sp_blsaw_destroy(&ud.saw[i]);
+		ut_blsaw_destroy(&ud.saw[i]);
     }
-    sp_diskin_destroy(&ud.diskin);
+    ut_diskin_destroy(&ud.diskin);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

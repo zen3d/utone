@@ -1,50 +1,50 @@
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_allpass *ap;
-    sp_tenv *env;
-    sp_noise *nz;
+    ut_allpass *ap;
+    ut_tenv *env;
+    ut_noise *nz;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT tick = 0, env = 0, noise = 0, allpass = 0;
+    UTFLOAT tick = 0, env = 0, noise = 0, allpass = 0;
 
-    tick = (sp->pos == 0) ? 1 : 0;
-    sp_tenv_compute(sp, ud->env, &tick, &env);
-    sp_noise_compute(sp, ud->nz, NULL, &noise);
+    tick = (ut->pos == 0) ? 1 : 0;
+    ut_tenv_compute(ut, ud->env, &tick, &env);
+    ut_noise_compute(ut, ud->nz, NULL, &noise);
     noise *= env * 0.5;
-    sp_allpass_compute(sp, ud->ap, &noise, &allpass);
+    ut_allpass_compute(ut, ud->ap, &noise, &allpass);
 
-    sp->out[0] = allpass;
+    ut->out[0] = allpass;
 }
 
 
 int main()
 {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_allpass_create(&ud.ap);
-    sp_tenv_create(&ud.env);
-    sp_noise_create(&ud.nz);
+    ut_allpass_create(&ud.ap);
+    ut_tenv_create(&ud.env);
+    ut_noise_create(&ud.nz);
 
-    sp_allpass_init(sp, ud.ap, 0.1);
-    sp_tenv_init(sp, ud.env);
+    ut_allpass_init(ut, ud.ap, 0.1);
+    ut_tenv_init(ut, ud.env);
     ud.env->atk = 0.001;
     ud.env->hold = 0.00;
     ud.env->rel =  0.1;
 
-    sp_noise_init(sp, ud.nz);
+    ut_noise_init(ut, ud.nz);
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_noise_destroy(&ud.nz);
-    sp_tenv_destroy(&ud.env);
-    sp_allpass_destroy(&ud.ap);
+    ut_noise_destroy(&ud.nz);
+    ut_tenv_destroy(&ud.env);
+    ut_allpass_destroy(&ud.ap);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

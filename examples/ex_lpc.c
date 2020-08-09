@@ -1,44 +1,44 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_diskin *wav;
-    sp_lpc *lpc;
+    ut_diskin *wav;
+    ut_lpc *lpc;
 } user_data;
 
-static void process(sp_data *sp, void *ud)
+static void process(ut_data *ut, void *ud)
 {
     user_data *dt;
-    SPFLOAT diskin;
-    SPFLOAT out;
+    UTFLOAT diskin;
+    UTFLOAT out;
     dt = ud;
 
-    sp_diskin_compute(sp, dt->wav, NULL, &diskin);
-    sp_lpc_compute(sp, dt->lpc, &diskin, &out);
+    ut_diskin_compute(ut, dt->wav, NULL, &diskin);
+    ut_lpc_compute(ut, dt->lpc, &diskin, &out);
 
 
-    sp_out(sp, 0, out);
+    ut_out(ut, 0, out);
 }
 
 int main(int argc, char **argv)
 {
     user_data dt;
-    sp_data *sp;
+    ut_data *ut;
 
-    sp_create(&sp);
-    sp->sr = 44100;
-    sp->len = sp->sr * 8;
+    ut_create(&ut);
+    ut->sr = 44100;
+    ut->len = ut->sr * 8;
 
-    sp_lpc_create(&dt.lpc);
-    sp_lpc_init(sp, dt.lpc, 512);
+    ut_lpc_create(&dt.lpc);
+    ut_lpc_init(ut, dt.lpc, 512);
 
-    sp_diskin_create(&dt.wav);
-    sp_diskin_init(sp, dt.wav, "oneart.wav");
+    ut_diskin_create(&dt.wav);
+    ut_diskin_init(ut, dt.wav, "oneart.wav");
 
 
-    sp_process(sp, &dt, process);
-    sp_diskin_destroy(&dt.wav);
-    sp_lpc_destroy(&dt.lpc);
-    sp_destroy(&sp);
+    ut_process(ut, &dt, process);
+    ut_diskin_destroy(&dt.wav);
+    ut_lpc_destroy(&dt.lpc);
+    ut_destroy(&ut);
     return 0;
 }

@@ -1,72 +1,72 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SP_BUFSIZE 4096
-#ifndef SPFLOAT
-#define SPFLOAT float
+#define UT_BUFSIZE 4096
+#ifndef UTFLOAT
+#define UTFLOAT float
 #endif 
-#define SP_OK 1
-#define SP_NOT_OK 0
+#define UT_OK 1
+#define UT_NOT_OK 0
 
-#define SP_RANDMAX 2147483648
+#define UT_RANDMAX 2147483648
 
-typedef unsigned long sp_frame;
+typedef unsigned long ut_frame;
 
-typedef struct sp_auxdata {
+typedef struct ut_auxdata {
     size_t size;
     void *ptr;
-} sp_auxdata;
+} ut_auxdata;
 
-typedef struct sp_data { 
-    SPFLOAT *out;
+typedef struct ut_data { 
+    UTFLOAT *out;
     int sr;
     int nchan;
     unsigned long len;
     unsigned long pos;
     char filename[200];
     uint32_t rand;
-} sp_data; 
+} ut_data; 
 
 typedef struct {
     char state;
-    SPFLOAT val;
-} sp_param;
+    UTFLOAT val;
+} ut_param;
 
-int sp_auxdata_alloc(sp_auxdata *aux, size_t size);
-int sp_auxdata_free(sp_auxdata *aux);
+int ut_auxdata_alloc(ut_auxdata *aux, size_t size);
+int ut_auxdata_free(ut_auxdata *aux);
 
-int sp_create(sp_data **spp);
-int sp_createn(sp_data **spp, int nchan);
+int ut_create(ut_data **utp);
+int ut_createn(ut_data **utp, int nchan);
 
-int sp_destroy(sp_data **spp);
-int sp_process(sp_data *sp, void *ud, void (*callback)(sp_data *, void *));
-int sp_process_raw(sp_data *sp, void *ud, void (*callback)(sp_data *, void *));
-int sp_process_plot(sp_data *sp, void *ud, void (*callback)(sp_data *, void *));
-int sp_process_spa(sp_data *sp, void *ud, void (*callback)(sp_data *, void *));
+int ut_destroy(ut_data **utp);
+int ut_process(ut_data *ut, void *ud, void (*callback)(ut_data *, void *));
+int ut_process_raw(ut_data *ut, void *ud, void (*callback)(ut_data *, void *));
+int ut_process_plot(ut_data *ut, void *ud, void (*callback)(ut_data *, void *));
+int ut_process_spa(ut_data *ut, void *ud, void (*callback)(ut_data *, void *));
 
-SPFLOAT sp_midi2cps(SPFLOAT nn);
+UTFLOAT ut_midi2cps(UTFLOAT nn);
 
-int sp_set(sp_param *p, SPFLOAT val);
+int ut_set(ut_param *p, UTFLOAT val);
 
-int sp_out(sp_data *sp, uint32_t chan, SPFLOAT val);
+int ut_out(ut_data *ut, uint32_t chan, UTFLOAT val);
 
-uint32_t sp_rand(sp_data *sp);
-void sp_srand(sp_data *sp, uint32_t val);
+uint32_t ut_rand(ut_data *ut);
+void ut_srand(ut_data *ut, uint32_t val);
 
 
 typedef struct {
-    SPFLOAT *utbl;
+    UTFLOAT *utbl;
     int16_t *BRLow;
     int16_t *BRLowCpx;
-} sp_fft;
+} ut_fft;
 
-void sp_fft_init(sp_fft *fft, int M);
-void sp_fftr(sp_fft *fft, SPFLOAT *buf, int FFTsize);
-void sp_fft_cpx(sp_fft *fft, SPFLOAT *buf, int FFTsize);
-void sp_ifftr(sp_fft *fft, SPFLOAT *buf, int FFTsize);
-void sp_fft_destroy(sp_fft *fft);
+void ut_fft_init(ut_fft *fft, int M);
+void ut_fftr(ut_fft *fft, UTFLOAT *buf, int FFTsize);
+void ut_fft_cpx(ut_fft *fft, UTFLOAT *buf, int FFTsize);
+void ut_ifftr(ut_fft *fft, UTFLOAT *buf, int FFTsize);
+void ut_fft_destroy(ut_fft *fft);
 #ifndef kiss_fft_scalar
-#define kiss_fft_scalar SPFLOAT
+#define kiss_fft_scalar UTFLOAT
 #endif
 typedef struct {
     kiss_fft_scalar r;
@@ -78,20 +78,20 @@ typedef struct kiss_fftr_state* kiss_fftr_cfg;
 
 /* SPA: Soundpipe Audio */
 
-enum { SPA_READ, SPA_WRITE, SPA_NULL };
+enum { UTA_READ, UTA_WRITE, UTA_NULL };
 
 typedef struct {
     char magic;
     char nchan;
     uint16_t sr;
     uint32_t len;
-} spa_header;
+} uta_header;
 
 typedef struct {
-    spa_header header;
+    uta_header header;
     size_t offset;
     int mode;
     FILE *fp;
     uint32_t pos;
-} sp_audio;
+} ut_audio;
 

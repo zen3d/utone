@@ -10,43 +10,43 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_peaklim *peaklim;
-    sp_diskin *diskin;
+    ut_peaklim *peaklim;
+    ut_diskin *diskin;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT diskin = 0, peaklim = 0;
-    sp_diskin_compute(sp, ud->diskin, NULL, &diskin);
-    sp_peaklim_compute(sp, ud->peaklim, &diskin, &peaklim);
-    sp->out[0] = peaklim;
+    UTFLOAT diskin = 0, peaklim = 0;
+    ut_diskin_compute(ut, ud->diskin, NULL, &diskin);
+    ut_peaklim_compute(ut, ud->peaklim, &diskin, &peaklim);
+    ut->out[0] = peaklim;
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_peaklim_create(&ud.peaklim);
-    sp_diskin_create(&ud.diskin);
+    ut_peaklim_create(&ud.peaklim);
+    ut_diskin_create(&ud.diskin);
 
-    sp_peaklim_init(sp, ud.peaklim);
+    ut_peaklim_init(ut, ud.peaklim);
     ud.peaklim->atk = 0.1;
     ud.peaklim->rel = 0.1;
     ud.peaklim->thresh = -30;
-    sp_diskin_init(sp, ud.diskin, "oneart.wav");
+    ut_diskin_init(ut, ud.diskin, "oneart.wav");
 
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_peaklim_destroy(&ud.peaklim);
-    sp_diskin_destroy(&ud.diskin);
+    ut_peaklim_destroy(&ud.peaklim);
+    ut_diskin_destroy(&ud.diskin);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

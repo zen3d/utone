@@ -7,7 +7,7 @@ sptbl["gen_triangle"] = {
     },
 
     func = {
-        name = "sp_gen_triangle",
+        name = "ut_gen_triangle",
     },
 
     modtype = "gen",

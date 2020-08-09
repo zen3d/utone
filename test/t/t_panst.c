@@ -1,58 +1,58 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_panst *panst;
-    sp_osc *osc;
-    sp_osc *lfo;
-    sp_ftbl *ft;
+    ut_panst *panst;
+    ut_osc *osc;
+    ut_osc *lfo;
+    ut_ftbl *ft;
 } UserData;
 
-int t_panst(sp_test *tst, sp_data *sp, const char *hash) 
+int t_panst(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
 
     UserData ud;
-    SPFLOAT osc = 0, outL = 0, outR = 0, lfo = 0;
+    UTFLOAT osc = 0, outL = 0, outR = 0, lfo = 0;
 
-    sp_panst_create(&ud.panst);
-    sp_osc_create(&ud.osc);
-    sp_osc_create(&ud.lfo);
-    sp_ftbl_create(sp, &ud.ft, 2048);
+    ut_panst_create(&ud.panst);
+    ut_osc_create(&ud.osc);
+    ut_osc_create(&ud.lfo);
+    ut_ftbl_create(ut, &ud.ft, 2048);
 
-    sp_panst_init(sp, ud.panst);
+    ut_panst_init(ut, ud.panst);
     ud.panst->type = 0;
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
-    sp_osc_init(sp, ud.lfo, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
+    ut_osc_init(ut, ud.lfo, ud.ft, 0);
     ud.lfo->amp = 1;
     ud.lfo->freq = 0.5;
 
-    sp->len = 44100 * 5;
+    ut->len = 44100 * 5;
 
     for(n = 0; n < tst->size; n += 2) {
         osc = 0; outL = 0; outR = 0; lfo = 0;
 
-        sp_osc_compute(sp, ud.osc, NULL, &osc);
-        sp_osc_compute(sp, ud.lfo, NULL, &lfo);
+        ut_osc_compute(ut, ud.osc, NULL, &osc);
+        ut_osc_compute(ut, ud.lfo, NULL, &lfo);
         ud.panst->pan = lfo;
 
-        sp_panst_compute(sp, ud.panst, &osc, &osc, &outL, &outR);
-        sp_test_add_sample(tst, outL);
-        sp_test_add_sample(tst, outR);
+        ut_panst_compute(ut, ud.panst, &osc, &osc, &outL, &outR);
+        ut_test_add_sample(tst, outL);
+        ut_test_add_sample(tst, outR);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_panst_destroy(&ud.panst);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_osc_destroy(&ud.lfo);
+    ut_panst_destroy(&ud.panst);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_osc_destroy(&ud.lfo);
 
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

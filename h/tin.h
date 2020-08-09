@@ -1,9 +1,9 @@
 typedef struct {
     FILE *fp;
-    SPFLOAT val;
-} sp_tin;
+    UTFLOAT val;
+} ut_tin;
 
-int sp_tin_create(sp_tin **p);
-int sp_tin_destroy(sp_tin **p);
-int sp_tin_init(sp_data *sp, sp_tin *p);
-int sp_tin_compute(sp_data *sp, sp_tin *p, SPFLOAT *in, SPFLOAT *out);
+int ut_tin_create(ut_tin **p);
+int ut_tin_destroy(ut_tin **p);
+int ut_tin_init(ut_data *ut, ut_tin *p);
+int ut_tin_compute(ut_data *ut, ut_tin *p, UTFLOAT *in, UTFLOAT *out);

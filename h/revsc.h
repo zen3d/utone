@@ -7,22 +7,22 @@ typedef struct {
     int     dummy;
     int     seedVal;
     int     randLine_cnt;
-    SPFLOAT filterState;
-    SPFLOAT *buf;
-} sp_revsc_dl;
+    UTFLOAT filterState;
+    UTFLOAT *buf;
+} ut_revsc_dl;
 
 typedef struct  {
-    SPFLOAT feedback, lpfreq;
-    SPFLOAT iSampleRate, iPitchMod, iSkipInit;
-    SPFLOAT sampleRate;
-    SPFLOAT dampFact;
-    SPFLOAT prv_LPFreq;
+    UTFLOAT feedback, lpfreq;
+    UTFLOAT iSampleRate, iPitchMod, iSkipInit;
+    UTFLOAT sampleRate;
+    UTFLOAT dampFact;
+    UTFLOAT prv_LPFreq;
     int initDone;
-    sp_revsc_dl delayLines[8];
-    sp_auxdata aux;
-} sp_revsc;
+    ut_revsc_dl delayLines[8];
+    ut_auxdata aux;
+} ut_revsc;
 
-int sp_revsc_create(sp_revsc **p);
-int sp_revsc_destroy(sp_revsc **p);
-int sp_revsc_init(sp_data *sp, sp_revsc *p);
-int sp_revsc_compute(sp_data *sp, sp_revsc *p, SPFLOAT *in1, SPFLOAT *in2, SPFLOAT *out1, SPFLOAT *out2);
+int ut_revsc_create(ut_revsc **p);
+int ut_revsc_destroy(ut_revsc **p);
+int ut_revsc_init(ut_data *ut, ut_revsc *p);
+int ut_revsc_compute(ut_data *ut, ut_revsc *p, UTFLOAT *in1, UTFLOAT *in2, UTFLOAT *out1, UTFLOAT *out2);

@@ -7,17 +7,17 @@ sptbl["dmetro"] = {
     },
 
     func = {
-        create = "sp_dmetro_create",
-        destroy = "sp_dmetro_destroy",
-        init = "sp_dmetro_init",
-        compute = "sp_dmetro_compute",
+        create = "ut_dmetro_create",
+        destroy = "ut_dmetro_destroy",
+        init = "ut_dmetro_init",
+        compute = "ut_dmetro_compute",
     },
 
     params = {
         optional = {
             {
                 name = "time",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Time between triggers (in seconds). This will update at the start of each trigger.",
                 default = 1.0
             },

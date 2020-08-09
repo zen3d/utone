@@ -1,12 +1,12 @@
 typedef struct{
-    SPFLOAT freq, atk, dec, istor;
-    SPFLOAT tpidsr;
-    SPFLOAT sr;
-    SPFLOAT delay[4];
-}sp_fofilt;
+    UTFLOAT freq, atk, dec, istor;
+    UTFLOAT tpidsr;
+    UTFLOAT sr;
+    UTFLOAT delay[4];
+}ut_fofilt;
 
-int sp_fofilt_create(sp_fofilt **t);
-int sp_fofilt_destroy(sp_fofilt **t);
-int sp_fofilt_init(sp_data *sp, sp_fofilt *p);
-int sp_fofilt_compute(sp_data *sp, sp_fofilt *p, SPFLOAT *in, SPFLOAT *out);
+int ut_fofilt_create(ut_fofilt **t);
+int ut_fofilt_destroy(ut_fofilt **t);
+int ut_fofilt_init(ut_data *ut, ut_fofilt *p);
+int ut_fofilt_compute(ut_data *ut, ut_fofilt *p, UTFLOAT *in, UTFLOAT *out);
 

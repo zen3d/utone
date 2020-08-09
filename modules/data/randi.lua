@@ -7,35 +7,35 @@ sptbl["randi"] = {
     },
 
     func = {
-        create = "sp_randi_create",
-        destroy = "sp_randi_destroy",
-        init = "sp_randi_init",
-        compute = "sp_randi_compute",
+        create = "ut_randi_create",
+        destroy = "ut_randi_destroy",
+        init = "ut_randi_init",
+        compute = "ut_randi_compute",
     },
 
     params = {
         optional = {
             {
                 name = "min",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Minimum value",
                 default = 0
             },
             {
                 name = "max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Maximum value",
                 default = 1
             },
             {
                 name = "cps",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Frequency to change values.",
                 default = 3
             },
             {
                 name = "mode",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Randi mode (not yet implemented yet.)",
                 default = 0,
                 irate = true

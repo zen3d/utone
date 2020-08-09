@@ -1,10 +1,10 @@
-typedef struct sp_maygate{
-    SPFLOAT prob;
-    SPFLOAT gate;
+typedef struct ut_maygate{
+    UTFLOAT prob;
+    UTFLOAT gate;
     int mode;
-} sp_maygate;
+} ut_maygate;
 
-int sp_maygate_create(sp_maygate **p);
-int sp_maygate_destroy(sp_maygate **p);
-int sp_maygate_init(sp_data *sp, sp_maygate *p);
-int sp_maygate_compute(sp_data *sp, sp_maygate *p, SPFLOAT *in, SPFLOAT *out);
+int ut_maygate_create(ut_maygate **p);
+int ut_maygate_destroy(ut_maygate **p);
+int ut_maygate_init(ut_data *ut, ut_maygate *p);
+int ut_maygate_compute(ut_data *ut, ut_maygate *p, UTFLOAT *in, UTFLOAT *out);

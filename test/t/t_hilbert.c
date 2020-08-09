@@ -1,39 +1,39 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_hilbert *hilbert;
-    sp_osc *cos, *sin;
-    sp_ftbl *ft; 
-    sp_diskin *diskin;
+    ut_hilbert *hilbert;
+    ut_osc *cos, *sin;
+    ut_ftbl *ft; 
+    ut_diskin *diskin;
 } UserData;
 
-int t_hilbert(sp_test *tst, sp_data *sp, const char *hash) 
+int t_hilbert(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT real = 0, imag = 0;
-    SPFLOAT diskin = 0;
-    SPFLOAT sin = 0, cos = 0;
+    UTFLOAT real = 0, imag = 0;
+    UTFLOAT diskin = 0;
+    UTFLOAT sin = 0, cos = 0;
 
-    sp_srand(sp, 1234567);
+    ut_srand(ut, 1234567);
     UserData ud;
 
-    sp_hilbert_create(&ud.hilbert);
-    sp_osc_create(&ud.sin);
-    sp_osc_create(&ud.cos);
-    sp_diskin_create(&ud.diskin);
-    sp_ftbl_create(sp, &ud.ft, 8192);
+    ut_hilbert_create(&ud.hilbert);
+    ut_osc_create(&ud.sin);
+    ut_osc_create(&ud.cos);
+    ut_diskin_create(&ud.diskin);
+    ut_ftbl_create(ut, &ud.ft, 8192);
 
-    sp_hilbert_init(sp, ud.hilbert);
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.sin, ud.ft, 0);
-    sp_osc_init(sp, ud.cos, ud.ft, 0.25);
+    ut_hilbert_init(ut, ud.hilbert);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.sin, ud.ft, 0);
+    ut_osc_init(ut, ud.cos, ud.ft, 0.25);
     ud.sin->freq = 1000;
     ud.cos->freq = 1000;
-    sp_diskin_init(sp, ud.diskin, SAMPDIR "oneart.wav");
+    ut_diskin_init(ut, ud.diskin, SAMPDIR "oneart.wav");
 
     for(n = 0; n < tst->size; n++) {
         real = 0; 
@@ -42,22 +42,22 @@ int t_hilbert(sp_test *tst, sp_data *sp, const char *hash)
         sin = 0; 
         cos = 0;
 
-        sp_diskin_compute(sp, ud.diskin, NULL, &diskin);
-        sp_osc_compute(sp, ud.sin, NULL, &sin);
-        sp_osc_compute(sp, ud.cos, NULL, &cos);
-        sp_hilbert_compute(sp, ud.hilbert, &diskin, &real, &imag);
-        sp->out[0] = ((cos * real) + (sin * real)) * 0.7;
-        sp_test_add_sample(tst, sp->out[0]);
+        ut_diskin_compute(ut, ud.diskin, NULL, &diskin);
+        ut_osc_compute(ut, ud.sin, NULL, &sin);
+        ut_osc_compute(ut, ud.cos, NULL, &cos);
+        ut_hilbert_compute(ut, ud.hilbert, &diskin, &real, &imag);
+        ut->out[0] = ((cos * real) + (sin * real)) * 0.7;
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_hilbert_destroy(&ud.hilbert);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.sin);
-    sp_osc_destroy(&ud.cos);
-    sp_diskin_destroy(&ud.diskin);
+    ut_hilbert_destroy(&ud.hilbert);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.sin);
+    ut_osc_destroy(&ud.cos);
+    ut_diskin_destroy(&ud.diskin);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

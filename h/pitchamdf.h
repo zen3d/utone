@@ -1,8 +1,8 @@
 typedef struct {
-    SPFLOAT imincps, imaxcps, icps;
-    SPFLOAT imedi, idowns, iexcps, irmsmedi;
-    SPFLOAT srate;
-    SPFLOAT lastval;
+    UTFLOAT imincps, imaxcps, icps;
+    UTFLOAT imedi, idowns, iexcps, irmsmedi;
+    UTFLOAT srate;
+    UTFLOAT lastval;
     int32_t downsamp;
     int32_t upsamp;
     int32_t minperi;
@@ -16,12 +16,12 @@ typedef struct {
     int32_t rmsmedisize;
     int32_t rmsmediptr;
     int inerr;
-    sp_auxdata median;
-    sp_auxdata rmsmedian;
-    sp_auxdata buffer;
-} sp_pitchamdf;
+    ut_auxdata median;
+    ut_auxdata rmsmedian;
+    ut_auxdata buffer;
+} ut_pitchamdf;
 
-int sp_pitchamdf_create(sp_pitchamdf **p);
-int sp_pitchamdf_destroy(sp_pitchamdf **p);
-int sp_pitchamdf_init(sp_data *sp, sp_pitchamdf *p, SPFLOAT imincps, SPFLOAT imaxcps);
-int sp_pitchamdf_compute(sp_data *sp, sp_pitchamdf *p, SPFLOAT *in, SPFLOAT *cps, SPFLOAT *rms);
+int ut_pitchamdf_create(ut_pitchamdf **p);
+int ut_pitchamdf_destroy(ut_pitchamdf **p);
+int ut_pitchamdf_init(ut_data *ut, ut_pitchamdf *p, UTFLOAT imincps, UTFLOAT imaxcps);
+int ut_pitchamdf_compute(ut_data *ut, ut_pitchamdf *p, UTFLOAT *in, UTFLOAT *cps, UTFLOAT *rms);

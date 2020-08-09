@@ -1,9 +1,9 @@
 typedef struct{
-    SPFLOAT freq, q, xnm1, ynm1, ynm2, a0, a1, a2, d, lfq, lq;
-    SPFLOAT sr;
-}sp_mode;
+    UTFLOAT freq, q, xnm1, ynm1, ynm2, a0, a1, a2, d, lfq, lq;
+    UTFLOAT sr;
+}ut_mode;
 
-int sp_mode_create(sp_mode **p);
-int sp_mode_destroy(sp_mode **p);
-int sp_mode_init(sp_data *sp, sp_mode *p);
-int sp_mode_compute(sp_data *sp, sp_mode *p, SPFLOAT *in, SPFLOAT *out);
+int ut_mode_create(ut_mode **p);
+int ut_mode_destroy(ut_mode **p);
+int ut_mode_init(ut_data *ut, ut_mode *p);
+int ut_mode_compute(ut_data *ut, ut_mode *p, UTFLOAT *in, UTFLOAT *out);

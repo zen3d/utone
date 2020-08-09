@@ -7,29 +7,29 @@ sptbl["paulstretch"] = {
     },
 
     func = {
-        create = "sp_paulstretch_create",
-        destroy = "sp_paulstretch_destroy",
-        init = "sp_paulstretch_init",
-        compute = "sp_paulstretch_compute",
+        create = "ut_paulstretch_create",
+        destroy = "ut_paulstretch_destroy",
+        init = "ut_paulstretch_init",
+        compute = "ut_paulstretch_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "ft",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "ftable containing audio data",
                 default = "N/A"
             },
             {
                 name = "windowsize",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Window size, in seconds.",
                 default = 10
             },
             {
                 name = "stretch",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Stretch factor, 1.0 is no stretch.",
                 default = 10
             },

@@ -1,49 +1,49 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_tseg *tseg;
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_tseg *tseg;
+    ut_osc *osc;
+    ut_ftbl *ft; 
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, tseg = 0;
-    SPFLOAT trig = (sp->pos == 0);
-    sp_tseg_compute(sp, ud->tseg, &trig, &tseg);
+    UTFLOAT osc = 0, tseg = 0;
+    UTFLOAT trig = (ut->pos == 0);
+    ut_tseg_compute(ut, ud->tseg, &trig, &tseg);
     ud->osc->freq = 100 + (tseg * 1000);
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp->out[0] = osc;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut->out[0] = osc;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_tseg_create(&ud.tseg);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
+    ut_tseg_create(&ud.tseg);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
 
-    sp_tseg_init(sp, ud.tseg, 0.0001);
+    ut_tseg_init(ut, ud.tseg, 0.0001);
     ud.tseg->end = 1.0;
     ud.tseg->type = 3.0;
     ud.tseg->dur = 4.0;
 
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_tseg_destroy(&ud.tseg);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
+    ut_tseg_destroy(&ud.tseg);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

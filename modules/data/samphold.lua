@@ -7,10 +7,10 @@ sptbl["samphold"] = {
     },
 
     func = {
-        create = "sp_samphold_create",
-        destroy = "sp_samphold_destroy",
-        init = "sp_samphold_init",
-        compute = "sp_samphold_compute",
+        create = "ut_samphold_create",
+        destroy = "ut_samphold_destroy",
+        init = "ut_samphold_init",
+        compute = "ut_samphold_compute",
     },
 
     params = {

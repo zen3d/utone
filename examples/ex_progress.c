@@ -1,44 +1,44 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_progress *progress;
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_progress *progress;
+    ut_osc *osc;
+    ut_ftbl *ft; 
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, progress = 0;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp_progress_compute(sp, ud->progress, &osc, &progress);
-    sp->out[0] = progress;
+    UTFLOAT osc = 0, progress = 0;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut_progress_compute(ut, ud->progress, &osc, &progress);
+    ut->out[0] = progress;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp->len = 44100 * 30;
+    ut_data *ut;
+    ut_create(&ut);
+    ut->len = 44100 * 30;
 
-    sp_progress_create(&ud.progress);
-    sp_osc_create(&ud.osc);
+    ut_progress_create(&ud.progress);
+    ut_osc_create(&ud.osc);
 
-    sp_ftbl_create(sp, &ud.ft, 2048);
+    ut_ftbl_create(ut, &ud.ft, 2048);
 
-    sp_progress_init(sp, ud.progress);
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_progress_init(ut, ud.progress);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
 
-    sp_process(sp, &ud, process);
+    ut_process(ut, &ud, process);
 
-    sp_progress_destroy(&ud.progress);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
+    ut_progress_destroy(&ud.progress);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

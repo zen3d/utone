@@ -1,42 +1,42 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "dr_wav.h"
 
 #define WAVIN_BUFSIZE 1024
 
-struct sp_wavin {
-    SPFLOAT buf[WAVIN_BUFSIZE];
+struct ut_wavin {
+    UTFLOAT buf[WAVIN_BUFSIZE];
     int count;
     drwav wav;
     drwav_uint64 pos;
 };
 
-int sp_wavin_create(sp_wavin **p)
+int ut_wavin_create(ut_wavin **p)
 {
-    *p = malloc(sizeof(sp_wavin));
-    return SP_OK;
+    *p = malloc(sizeof(ut_wavin));
+    return UT_OK;
 }
 
-int sp_wavin_destroy(sp_wavin **p)
+int ut_wavin_destroy(ut_wavin **p)
 {
     drwav_uninit(&(*p)->wav);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_wavin_init(sp_data *sp, sp_wavin *p, const char *filename)
+int ut_wavin_init(ut_data *ut, ut_wavin *p, const char *filename)
 {
     p->count = 0;
     p->pos = 0;
     drwav_init_file(&p->wav, filename);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_wavin_compute(sp_data *sp, sp_wavin *p, SPFLOAT *in, SPFLOAT *out)
+int ut_wavin_compute(ut_data *ut, ut_wavin *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(p->pos > p->wav.totalSampleCount) {
         *out = 0;
-        return SP_OK;
+        return UT_OK;
     }
     if(p->count == 0) {
         drwav_read_f32(&p->wav, WAVIN_BUFSIZE, p->buf);
@@ -45,5 +45,5 @@ int sp_wavin_compute(sp_data *sp, sp_wavin *p, SPFLOAT *in, SPFLOAT *out)
     *out = p->buf[p->count];
     p->count = (p->count + 1) % WAVIN_BUFSIZE;
     p->pos++;
-    return SP_OK;
+    return UT_OK;
 }

@@ -7,17 +7,17 @@ sptbl["waveset"] = {
     },
 
     func = {
-        create = "sp_waveset_create",
-        destroy = "sp_waveset_destroy",
-        init = "sp_waveset_init",
-        compute = "sp_waveset_compute",
+        create = "ut_waveset_create",
+        destroy = "ut_waveset_destroy",
+        init = "ut_waveset_init",
+        compute = "ut_waveset_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "ilen",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Length of buffer (in seconds).",
                 default = 1.0 
             }
@@ -26,7 +26,7 @@ sptbl["waveset"] = {
         optional = {
             {
                 name = "rep",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Number of repeats.",
                 default = 1.5
             },

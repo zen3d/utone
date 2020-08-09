@@ -20,32 +20,32 @@
 #define M_PI		3.14159265358979323846	
 #endif 
 
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_port_create(sp_port **p)
+int ut_port_create(ut_port **p)
 {
-    *p = malloc(sizeof(sp_port));
-    return SP_OK;
+    *p = malloc(sizeof(ut_port));
+    return UT_OK;
 }
 
-int sp_port_destroy(sp_port **p)
+int ut_port_destroy(ut_port **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_port_init(sp_data *sp, sp_port *p, SPFLOAT htime)
+int ut_port_init(ut_data *ut, ut_port *p, UTFLOAT htime)
 {
     p->yt1 = 0;
     p->prvhtim = -100.0;
     p->htime = htime;
 
-    p->sr = sp->sr;
+    p->sr = ut->sr;
     p->onedsr = 1.0/p->sr;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_port_compute(sp_data *sp, sp_port *p, SPFLOAT *in, SPFLOAT *out)
+int ut_port_compute(ut_data *ut, ut_port *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(p->prvhtim != p->htime){
         p->c2 = pow(0.5, p->onedsr / p->htime);
@@ -54,11 +54,11 @@ int sp_port_compute(sp_data *sp, sp_port *p, SPFLOAT *in, SPFLOAT *out)
     }
 
     *out = p->yt1 = p->c1 * *in + p->c2 * p->yt1;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_port_reset(sp_data *sp, sp_port *p, SPFLOAT *in)
+int ut_port_reset(ut_data *ut, ut_port *p, UTFLOAT *in)
 {
     p->yt1 = *in;
-    return SP_OK;
+    return UT_OK;
 }

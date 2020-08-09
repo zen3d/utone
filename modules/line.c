@@ -1,51 +1,51 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_line_create(sp_line **p)
+int ut_line_create(ut_line **p)
 {
-    *p = malloc(sizeof(sp_line));
-    return SP_OK;
+    *p = malloc(sizeof(ut_line));
+    return UT_OK;
 }
 
-int sp_line_destroy(sp_line **p)
+int ut_line_destroy(ut_line **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-static void line_reinit(sp_data *sp, sp_line *p)
+static void line_reinit(ut_data *ut, ut_line *p)
 {
-    SPFLOAT onedsr = 1.0 / sp->sr;
-    p->incr = (SPFLOAT)((p->b - p->a) / (p->dur)) * onedsr;
+    UTFLOAT onedsr = 1.0 / ut->sr;
+    p->incr = (UTFLOAT)((p->b - p->a) / (p->dur)) * onedsr;
     p->val = p->a;
     p->stime = 0;
-    p->sdur = sp->sr * p->dur;
+    p->sdur = ut->sr * p->dur;
 }
 
-int sp_line_init(sp_data *sp, sp_line *p)
+int ut_line_init(ut_data *ut, ut_line *p)
 {
     p->a = 0;
     p->dur = 0.5;
     p->b = 1;
-    line_reinit(sp, p);
+    line_reinit(ut, p);
     p->init = 1;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_line_compute(sp_data *sp, sp_line *p, SPFLOAT *in, SPFLOAT *out)
+int ut_line_compute(ut_data *ut, ut_line *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(*in != 0 ) {
-        line_reinit(sp, p);
+        line_reinit(ut, p);
         p->init = 0;
     }
 
     if(p->init) {
         *out = 0;
-        return SP_OK;
+        return UT_OK;
     }
 
     if(p->stime < p->sdur) {
-        SPFLOAT val = p->val;
+        UTFLOAT val = p->val;
         p->val += p->incr;
         p->stime++;
         *out = val;
@@ -53,5 +53,5 @@ int sp_line_compute(sp_data *sp, sp_line *p, SPFLOAT *in, SPFLOAT *out)
         *out = p->b;
     }
 
-    return SP_OK;
+    return UT_OK;
 }

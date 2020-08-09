@@ -2,13 +2,13 @@
 
 default: all
 
-VERSION = 1.7.0
+VERSION = 0.0.1
 
 INTERMEDIATES_PREFIX ?= .
 PREFIX ?= /usr/local
 
-LIBSOUNDPIPE = $(INTERMEDIATES_PREFIX)/libsoundpipe.a
-SOUNDPIPEO = $(INTERMEDIATES_PREFIX)/soundpipe.o
+LIBUTONE = $(INTERMEDIATES_PREFIX)/libutone.a
+UTONEO = $(INTERMEDIATES_PREFIX)/utone.o
 MODDIR = $(INTERMEDIATES_PREFIX)/modules
 HDIR = $(INTERMEDIATES_PREFIX)/h
 UTILDIR = $(INTERMEDIATES_PREFIX)/util
@@ -27,12 +27,12 @@ include $(CONFIG)
 
 ifeq ($(USE_DOUBLE), 1)
 CFLAGS+=-DUSE_DOUBLE
-SPFLOAT=double
+UTFLOAT=double
 else
-SPFLOAT=float
+UTFLOAT=float
 endif
 
-CFLAGS += -DSP_VERSION=$(VERSION) -O3 -DSPFLOAT=${SPFLOAT} #-std=c99
+CFLAGS += -DSP_VERSION=$(VERSION) -O3 -DUTFLOAT=${UTFLOAT} #-std=c99
 CFLAGS += -I$(INTERMEDIATES_PREFIX)/h -Ih -I/usr/local/include -fPIC
 UTIL += $(INTERMEDIATES_PREFIX)/util/wav2smp
 
@@ -42,35 +42,35 @@ $(INTERMEDIATES_PREFIX)/modules \
 $(INTERMEDIATES_PREFIX)/util \
 $(PREFIX)/include \
 $(PREFIX)/lib \
-$(PREFIX)/share/doc/soundpipe:
+$(PREFIX)/share/doc/utone:
 	mkdir -p $@
 
-$(LIBSOUNDPIPE): $(MPATHS) $(LPATHS) | $(INTERMEDIATES_PREFIX)
+$(LIBUTONE): $(MPATHS) $(LPATHS) | $(INTERMEDIATES_PREFIX)
 	$(AR) rcs $@ $(MPATHS) $(LPATHS)
 
-$(HDIR)/soundpipe.h: $(HPATHS) | $(INTERMEDIATES_PREFIX)/h
-	echo "#ifndef SOUNDPIPE_H" >> $@
+$(HDIR)/utone.h: $(HPATHS) | $(INTERMEDIATES_PREFIX)/h
+	echo "#ifndef UTONE_H" >> $@
 ifdef USE_DOUBLE
 	echo "#define USE_DOUBLE" >> $@
 endif
-	echo "#define SOUNDPIPE_H" >> $@
+	echo "#define UTONE_H" >> $@
 	cat $(HPATHS) >> $@
 	echo "#endif" >> $@
 
-$(HDIR)/sp_base.h: h/base.h 
+$(HDIR)/ut_base.h: h/base.h 
 	>$@
-	echo "#ifndef SOUNDPIPE_H" >> $@
+	echo "#ifndef UTONE_H" >> $@
 ifdef USE_DOUBLE
 	echo "#define USE_DOUBLE" >> $@
 endif
-	echo "#define SOUNDPIPE_H" >> $@
+	echo "#define UTONE_H" >> $@
 	cat $< >> $@
 	echo "#endif" >> $@
 
-$(MODDIR)/%.o: modules/%.c h/%.h $(HDIR)/soundpipe.h | $(MODDIR)
+$(MODDIR)/%.o: modules/%.c h/%.h $(HDIR)/utone.h | $(MODDIR)
 	$(CC) -Wall $(CFLAGS) -c -static $< -o $@
 
-$(SOUNDPIPEO): $(MPATHS) $(LPATHS) | $(INTERMEDIATES_PREFIX)
+$(UTONEO): $(MPATHS) $(LPATHS) | $(INTERMEDIATES_PREFIX)
 	$(CC) $(CFLAGS) -c -combine $(CPATHS) -o $@
 
 $(INTERMEDIATES_PREFIX)/config.mk: config.def.mk | $(INTERMEDIATES_PREFIX)
@@ -82,9 +82,9 @@ $(UTILDIR)/wav2smp: util/wav2smp.c | $(UTILDIR)
 stretcher: $(UTILDIR)/stretcher
 
 $(UTILDIR)/stretcher: util/stretcher.c | $(UTILDIR)
-	$(CC) $(CFLAGS) -L/usr/local/lib $< -L. -lsoundpipe -lsndfile -lm -o $@
+	$(CC) $(CFLAGS) -L/usr/local/lib $< -L. -lutone -lsndfile -lm -o $@
 
-$(INTERMEDIATES_PREFIX)/sp_dict.lua: | $(INTERMEDIATES_PREFIX)
+$(INTERMEDIATES_PREFIX)/ut_dict.lua: | $(INTERMEDIATES_PREFIX)
 	cat modules/data/*.lua > $@
 
 bootstrap:
@@ -94,31 +94,31 @@ docs:
 	export INTERMEDIATES_PREFIX=$(INTERMEDIATES_PREFIX) && util/gendocs.sh
 
 all: $(INTERMEDIATES_PREFIX)/config.mk \
-	$(INTERMEDIATES_PREFIX)/libsoundpipe.a \
-	$(INTERMEDIATES_PREFIX)/sp_dict.lua \
-	$(HDIR)/sp_base.h
+	$(INTERMEDIATES_PREFIX)/libutone.a \
+	$(INTERMEDIATES_PREFIX)/ut_dict.lua \
+	$(HDIR)/ut_base.h
 
 util: $(UTIL)
 
 install: \
-	$(INTERMEDIATES_PREFIX)/h/soundpipe.h \
-	$(INTERMEDIATES_PREFIX)/h/sp_base.h \
-	$(INTERMEDIATES_PREFIX)/libsoundpipe.a | \
+	$(INTERMEDIATES_PREFIX)/h/utone.h \
+	$(INTERMEDIATES_PREFIX)/h/ut_base.h \
+	$(INTERMEDIATES_PREFIX)/libutone.a | \
 		$(PREFIX)/include \
 		$(PREFIX)/lib
-	install $(HDIR)/soundpipe.h $(PREFIX)/include/
-	install $(HDIR)/sp_base.h $(PREFIX)/include/
-	install $(LIBSOUNDPIPE) $(PREFIX)/lib/
+	install $(HDIR)/utone.h $(PREFIX)/include/
+	install $(HDIR)/ut_base.h $(PREFIX)/include/
+	install $(LIBUTONE) $(PREFIX)/lib/
 
 clean:
-	rm -rf $(HDIR)/soundpipe.h
+	rm -rf $(HDIR)/utone.h
 	rm -rf $(INTERMEDIATES_PREFIX)/docs
 	rm -rf $(INTERMEDIATES_PREFIX)/gen_noise
-	rm -rf $(INTERMEDIATES_PREFIX)/libsoundpipe.a
-	rm -rf $(INTERMEDIATES_PREFIX)/soundpipe.c
-	rm -rf $(INTERMEDIATES_PREFIX)/sp_dict.lua
+	rm -rf $(INTERMEDIATES_PREFIX)/libutone.a
+	rm -rf $(INTERMEDIATES_PREFIX)/utone.c
+	rm -rf $(INTERMEDIATES_PREFIX)/ut_dict.lua
 	rm -rf $(LPATHS)
 	rm -rf $(MPATHS)
 	rm -rf $(UTIL)
 	rm -rf $(UTILDIR)/wav2smp.dSYM
-	rm -rf $(HDIR)/sp_base.h
+	rm -rf $(HDIR)/ut_base.h

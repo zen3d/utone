@@ -1,27 +1,27 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_scale_create(sp_scale **p)
+int ut_scale_create(ut_scale **p)
 {
-    *p = malloc(sizeof(sp_scale));
-    return SP_OK;
+    *p = malloc(sizeof(ut_scale));
+    return UT_OK;
 }
 
-int sp_scale_destroy(sp_scale **p)
+int ut_scale_destroy(ut_scale **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_scale_init(sp_data *sp, sp_scale *p)
+int ut_scale_init(ut_data *ut, ut_scale *p)
 {
     p->min = -1;
     p->max = 1;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_scale_compute(sp_data *sp, sp_scale *p, SPFLOAT *in, SPFLOAT *out)
+int ut_scale_compute(ut_data *ut, ut_scale *p, UTFLOAT *in, UTFLOAT *out)
 {
     *out =  *in * (p->max - p->min) + p->min;
-    return SP_OK;
+    return UT_OK;
 }

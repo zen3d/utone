@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "CUI.h"
 
 #define max(a,b) ((a < b) ? b : a)
@@ -1005,27 +1005,27 @@ static void computezitarev(zitarev* dsp, int count, FAUSTFLOAT** inputs, FAUSTFL
 
 static void addHorizontalSlider(void* ui_interface, const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
 {
-    sp_zitarev *p = ui_interface;
+    ut_zitarev *p = ui_interface;
     p->args[p->argpos] = zone;
     p->argpos++;
 }
 
-int sp_zitarev_create(sp_zitarev **p)
+int ut_zitarev_create(ut_zitarev **p)
 {
-    *p = malloc(sizeof(sp_zitarev));
-    return SP_OK;
+    *p = malloc(sizeof(ut_zitarev));
+    return UT_OK;
 }
 
-int sp_zitarev_destroy(sp_zitarev **p)
+int ut_zitarev_destroy(ut_zitarev **p)
 {
-    sp_zitarev *pp = *p;
+    ut_zitarev *pp = *p;
     zitarev *dsp = pp->faust;
     deletezitarev (dsp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_zitarev_init(sp_data *sp, sp_zitarev *p)
+int ut_zitarev_init(ut_data *ut, ut_zitarev *p)
 {
     zitarev *dsp = newzitarev(); 
     UIGlue UI;
@@ -1033,7 +1033,7 @@ int sp_zitarev_init(sp_data *sp, sp_zitarev *p)
     UI.addHorizontalSlider= addHorizontalSlider;
     UI.uiInterface = p;
     buildUserInterfacezitarev(dsp, &UI);
-    initzitarev(dsp, sp->sr);
+    initzitarev(dsp, ut->sr);
 
     p->in_delay = p->args[0]; 
     p->lf_x = p->args[1]; 
@@ -1048,15 +1048,15 @@ int sp_zitarev_init(sp_data *sp, sp_zitarev *p)
     p->level = p->args[10];
 
     p->faust = dsp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_zitarev_compute(sp_data *sp, sp_zitarev *p, SPFLOAT *in1, SPFLOAT *in2, SPFLOAT *out1, SPFLOAT *out2) 
+int ut_zitarev_compute(ut_data *ut, ut_zitarev *p, UTFLOAT *in1, UTFLOAT *in2, UTFLOAT *out1, UTFLOAT *out2) 
 {
 
     zitarev *dsp = p->faust;
-    SPFLOAT *faust_out[] = {out1, out2};
-    SPFLOAT *faust_in[] = {in1, in2};
+    UTFLOAT *faust_out[] = {out1, out2};
+    UTFLOAT *faust_in[] = {in1, in2};
     computezitarev(dsp, 1, faust_in, faust_out);
-    return SP_OK;
+    return UT_OK;
 }

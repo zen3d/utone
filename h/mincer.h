@@ -1,19 +1,19 @@
 typedef struct {
-    SPFLOAT time, amp, pitch, lock, iN,
+    UTFLOAT time, amp, pitch, lock, iN,
         idecim, onset, offset, dbthresh;
     int cnt, hsize, curframe, N, decim,tscale;
-    SPFLOAT pos;
-    SPFLOAT accum;
-    sp_auxdata outframe, win, bwin, fwin,
+    UTFLOAT pos;
+    UTFLOAT accum;
+    ut_auxdata outframe, win, bwin, fwin,
     nwin, prev, framecount, indata[2];
-    SPFLOAT *tab;
+    UTFLOAT *tab;
     int curbuf;
-    SPFLOAT resamp;
-    sp_ftbl *ft;
-    sp_fft fft;
-} sp_mincer;
+    UTFLOAT resamp;
+    ut_ftbl *ft;
+    ut_fft fft;
+} ut_mincer;
 
-int sp_mincer_create(sp_mincer **p);
-int sp_mincer_destroy(sp_mincer **p);
-int sp_mincer_init(sp_data *sp, sp_mincer *p, sp_ftbl *ft, int winsize);
-int sp_mincer_compute(sp_data *sp, sp_mincer *p, SPFLOAT *in, SPFLOAT *out);
+int ut_mincer_create(ut_mincer **p);
+int ut_mincer_destroy(ut_mincer **p);
+int ut_mincer_init(ut_data *ut, ut_mincer *p, ut_ftbl *ft, int winsize);
+int ut_mincer_compute(ut_data *ut, ut_mincer *p, UTFLOAT *in, UTFLOAT *out);

@@ -7,17 +7,17 @@ sptbl["talkbox"] = {
     },
 
     func = {
-        create = "sp_talkbox_create",
-        destroy = "sp_talkbox_destroy",
-        init = "sp_talkbox_init",
-        compute = "sp_talkbox_compute",
+        create = "ut_talkbox_create",
+        destroy = "ut_talkbox_destroy",
+        init = "ut_talkbox_init",
+        compute = "ut_talkbox_compute",
     },
 
     params = {
         optional = {
             {
                 name = "quality",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Quality of the talkbox sound. 0=lowest fidelity. 1=highest fidelity",
                 default = 1
             },

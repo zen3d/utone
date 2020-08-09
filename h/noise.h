@@ -1,8 +1,8 @@
 typedef struct{
-    SPFLOAT amp;
-}sp_noise;
+    UTFLOAT amp;
+}ut_noise;
 
-int sp_noise_create(sp_noise **ns);
-int sp_noise_init(sp_data *sp, sp_noise *ns);
-int sp_noise_compute(sp_data *sp, sp_noise *ns, SPFLOAT *in, SPFLOAT *out);
-int sp_noise_destroy(sp_noise **ns);
+int ut_noise_create(ut_noise **ns);
+int ut_noise_init(ut_data *ut, ut_noise *ns);
+int ut_noise_compute(ut_data *ut, ut_noise *ns, UTFLOAT *in, UTFLOAT *out);
+int ut_noise_destroy(ut_noise **ns);

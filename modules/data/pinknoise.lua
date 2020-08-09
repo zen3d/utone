@@ -7,17 +7,17 @@ sptbl["pinknoise"] = {
     },
 
     func = {
-        create = "sp_pinknoise_create",
-        destroy = "sp_pinknoise_destroy",
-        init = "sp_pinknoise_init",
-        compute = "sp_pinknoise_compute",
+        create = "ut_pinknoise_create",
+        destroy = "ut_pinknoise_destroy",
+        init = "ut_pinknoise_init",
+        compute = "ut_pinknoise_compute",
     },
 
     params = {
         optional = {
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Amplitude. (Value between 0-1).",
                 default = 1.0
             },

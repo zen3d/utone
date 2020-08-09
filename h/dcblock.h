@@ -1,11 +1,11 @@
 typedef struct {
-    SPFLOAT gg;
-    SPFLOAT outputs;
-    SPFLOAT inputs;
-    SPFLOAT gain;
-} sp_dcblock;
+    UTFLOAT gg;
+    UTFLOAT outputs;
+    UTFLOAT inputs;
+    UTFLOAT gain;
+} ut_dcblock;
 
-int sp_dcblock_create(sp_dcblock **p);
-int sp_dcblock_destroy(sp_dcblock **p);
-int sp_dcblock_init(sp_data *sp, sp_dcblock *p);
-int sp_dcblock_compute(sp_data *sp, sp_dcblock *p, SPFLOAT *in, SPFLOAT *out);
+int ut_dcblock_create(ut_dcblock **p);
+int ut_dcblock_destroy(ut_dcblock **p);
+int ut_dcblock_init(ut_data *ut, ut_dcblock *p);
+int ut_dcblock_compute(ut_data *ut, ut_dcblock *p, UTFLOAT *in, UTFLOAT *out);

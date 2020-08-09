@@ -7,7 +7,7 @@ sptbl["gen_line"] = {
     },
 
     func = {
-        name = "sp_gen_line",
+        name = "ut_gen_line",
     },
 
     params = {

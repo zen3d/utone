@@ -17,23 +17,23 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_eqfil_create(sp_eqfil **p)
+int ut_eqfil_create(ut_eqfil **p)
 {
-    *p = malloc(sizeof(sp_eqfil));
-    return SP_OK;
+    *p = malloc(sizeof(ut_eqfil));
+    return UT_OK;
 }
 
-int sp_eqfil_destroy(sp_eqfil **p)
+int ut_eqfil_destroy(ut_eqfil **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_eqfil_init(sp_data *sp, sp_eqfil *p)
+int ut_eqfil_init(ut_data *ut, ut_eqfil *p)
 {
-    p->sr = sp->sr;
+    p->sr = ut->sr;
     p->z1 = p->z2 = 0.0;
     p->freq = 1000;
     p->bw = 125;
@@ -42,16 +42,16 @@ int sp_eqfil_init(sp_data *sp, sp_eqfil *p)
     p->frv = p->freq; p->bwv = p->bw;
     p->d = cos(2 * M_PI * p->frv /p->sr);
     p->c = tan(M_PI * p->bwv / p->sr);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_eqfil_compute(sp_data *sp, sp_eqfil *p, SPFLOAT *in, SPFLOAT *out)
+int ut_eqfil_compute(ut_data *ut, ut_eqfil *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT z1 = p->z1, z2 = p->z2, c, d, w, a, y;
-    SPFLOAT g;
+    UTFLOAT z1 = p->z1, z2 = p->z2, c, d, w, a, y;
+    UTFLOAT g;
 
     if(p->bw != p->bwv || p->freq != p->frv) {
-        SPFLOAT sr = sp->sr;
+        UTFLOAT sr = ut->sr;
         p->frv = p->freq; p->bwv = p->bw;
         p->d = cos(2 * M_PI * p->frv / sr);
         p->c = tan(M_PI * p->bwv / sr);
@@ -71,5 +71,5 @@ int sp_eqfil_compute(sp_data *sp, sp_eqfil *p, SPFLOAT *in, SPFLOAT *out)
     p->z1 = z1;
     p->z2 = z2;
 
-return SP_OK;
+return UT_OK;
 }

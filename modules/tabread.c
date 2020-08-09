@@ -11,37 +11,37 @@
  */
 #include <stdlib.h>
 #include "math.h"
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_tabread_create(sp_tabread **p)
+int ut_tabread_create(ut_tabread **p)
 {
-    *p = malloc(sizeof(sp_tabread));
-    return SP_OK;
+    *p = malloc(sizeof(ut_tabread));
+    return UT_OK;
 }
 
-int sp_tabread_destroy(sp_tabread **p)
+int ut_tabread_destroy(ut_tabread **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tabread_init(sp_data *sp, sp_tabread *p, sp_ftbl *ft, int mode)
+int ut_tabread_init(ut_data *ut, ut_tabread *p, ut_ftbl *ft, int mode)
 {
     p->ft = ft;
-    p->mode = (SPFLOAT) mode;
+    p->mode = (UTFLOAT) mode;
     p->offset = 0;
     p->wrap = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tabread_compute(sp_data *sp, sp_tabread *p, SPFLOAT *in, SPFLOAT *out)
+int ut_tabread_compute(ut_data *ut, ut_tabread *p, UTFLOAT *in, UTFLOAT *out)
 {
     int ndx, len = (int)p->ft->size;
     int32_t mask = (int)p->ft->size - 1;
-    SPFLOAT index = p->index;
-    SPFLOAT *tbl = p->ft->tbl;
-    SPFLOAT offset = p->offset;
-    SPFLOAT mul = 1, tmp, frac;
+    UTFLOAT index = p->index;
+    UTFLOAT *tbl = p->ft->tbl;
+    UTFLOAT offset = p->offset;
+    UTFLOAT mul = 1, tmp, frac;
 
     if (p->mode) {
         mul = p->ft->size;
@@ -51,7 +51,7 @@ int sp_tabread_compute(sp_data *sp, sp_tabread *p, SPFLOAT *in, SPFLOAT *out)
 
     int32_t iwrap = (int32_t)p->wrap;
 
-    SPFLOAT x1, x2;
+    UTFLOAT x1, x2;
     tmp = (index + offset) * mul;
     ndx = floor(tmp);
     frac = tmp - ndx;
@@ -69,5 +69,5 @@ int sp_tabread_compute(sp_data *sp, sp_tabread *p, SPFLOAT *in, SPFLOAT *out)
     x1 = tbl[ndx];
     x2 = tbl[ndx+1];
     *out = x1 + (x2 - x1) * frac;
-    return SP_OK;
+    return UT_OK;
 }

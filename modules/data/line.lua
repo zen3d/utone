@@ -7,29 +7,29 @@ sptbl["line"] = {
     },
 
     func = {
-        create = "sp_line_create",
-        destroy = "sp_line_destroy",
-        init = "sp_line_init",
-        compute = "sp_line_compute",
+        create = "ut_line_create",
+        destroy = "ut_line_destroy",
+        init = "ut_line_init",
+        compute = "ut_line_compute",
     },
 
     params = {
         optional = {
             {
                 name = "a",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Inital point.",
                 default = 0.0
             },
             {
                 name = "dur",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Duration (in seconds)",
                 default = 0.5
             },
             {
                 name = "b",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "End point",
                 default = 1.0
             }

@@ -12,46 +12,46 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-#define log001 (-(SPFLOAT)6.9078)    /* log(.001) */
+#define log001 (-(UTFLOAT)6.9078)    /* log(.001) */
 
-int sp_comb_create(sp_comb **p)
+int ut_comb_create(ut_comb **p)
 {
-    *p = malloc(sizeof(sp_comb));
-    return SP_OK;
+    *p = malloc(sizeof(ut_comb));
+    return UT_OK;
 }
 
-int sp_comb_destroy(sp_comb **p)
+int ut_comb_destroy(ut_comb **p)
 {
-    sp_comb *pp = *p;
-    sp_auxdata_free(&pp->aux);
+    ut_comb *pp = *p;
+    ut_auxdata_free(&pp->aux);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_comb_init(sp_data *sp, sp_comb *p, SPFLOAT looptime)
+int ut_comb_init(ut_data *ut, ut_comb *p, UTFLOAT looptime)
 {
     p->revtime = 3.5;
     p->looptime = looptime;
-    p->bufsize = (uint32_t) (0.5 + looptime * sp->sr);
-    sp_auxdata_alloc(&p->aux, p->bufsize * sizeof(SPFLOAT));
+    p->bufsize = (uint32_t) (0.5 + looptime * ut->sr);
+    ut_auxdata_alloc(&p->aux, p->bufsize * sizeof(UTFLOAT));
     p->prvt = 0.0;
     p->coef = 0.0;
     p->bufpos = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_comb_compute(sp_data *sp, sp_comb *p, SPFLOAT *in, SPFLOAT *out)
+int ut_comb_compute(ut_data *ut, ut_comb *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT tmp = 0;
-    SPFLOAT coef = p->coef;
-    SPFLOAT outsamp = 0;
-    SPFLOAT *buf = (SPFLOAT *)p->aux.ptr;
+    UTFLOAT tmp = 0;
+    UTFLOAT coef = p->coef;
+    UTFLOAT outsamp = 0;
+    UTFLOAT *buf = (UTFLOAT *)p->aux.ptr;
 
     if(p->prvt != p->revtime) {
         p->prvt = p->revtime;
-        SPFLOAT exp_arg = (SPFLOAT) (log001 * p->looptime / p->prvt);
+        UTFLOAT exp_arg = (UTFLOAT) (log001 * p->looptime / p->prvt);
         if(exp_arg < -36.8413615) {
             coef = p->coef = 0;
         } else {
@@ -67,5 +67,5 @@ int sp_comb_compute(sp_data *sp, sp_comb *p, SPFLOAT *in, SPFLOAT *out)
 
     p->bufpos++;
     p->bufpos %= p->bufsize; 
-    return SP_OK;
+    return UT_OK;
 }

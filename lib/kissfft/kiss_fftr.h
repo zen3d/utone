@@ -15,7 +15,7 @@ extern "C" {
  
  */
 
-#ifndef SOUNDPIPE_H
+#ifndef UTONE_H
 
 typedef struct kiss_fftr_state *kiss_fftr_cfg;
 

@@ -1,34 +1,34 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_gbuzz *buzz;
-    sp_ftbl *ft; 
+    ut_gbuzz *buzz;
+    ut_ftbl *ft; 
     int counter;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    sp_gbuzz_compute(sp, ud->buzz, NULL, &sp->out[0]);
+    ut_gbuzz_compute(ut, ud->buzz, NULL, &ut->out[0]);
 }
 
 int main() {
     srand(time(NULL));
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_gbuzz_create(&ud.buzz);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_gbuzz_create(&ud.buzz);
 
-    sp_gen_sine(sp, ud.ft);
-    sp_gbuzz_init(sp, ud.buzz, ud.ft, 0);
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut_gen_sine(ut, ud.ft);
+    ut_gbuzz_init(ut, ud.buzz, ud.ft, 0);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_ftbl_destroy(&ud.ft);
-    sp_gbuzz_destroy(&ud.buzz);
-    sp_destroy(&sp);
+    ut_ftbl_destroy(&ud.ft);
+    ut_gbuzz_destroy(&ud.buzz);
+    ut_destroy(&ut);
     return 0;
 }

@@ -7,10 +7,10 @@ sptbl["jcrev"] = {
     },
 
     func = {
-        create = "sp_jcrev_create",
-        destroy = "sp_jcrev_destroy",
-        init = "sp_jcrev_init",
-        compute = "sp_jcrev_compute",
+        create = "ut_jcrev_create",
+        destroy = "ut_jcrev_destroy",
+        init = "ut_jcrev_init",
+        compute = "ut_jcrev_compute",
     },
 
     params = {

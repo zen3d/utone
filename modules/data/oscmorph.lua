@@ -7,17 +7,17 @@ sptbl["oscmorph"] = {
     },
 
     func = {
-        create = "sp_oscmorph_create",
-        destroy = "sp_oscmorph_destroy",
-        init = "sp_oscmorph_init",
-        compute = "sp_oscmorph_compute",
+        create = "ut_oscmorph_create",
+        destroy = "ut_oscmorph_destroy",
+        init = "ut_oscmorph_init",
+        compute = "ut_oscmorph_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "tbl",
-                type = "sp_ftbl **",
+                type = "ut_ftbl **",
                 description = "An array of ftables to read from. Note: the size of these tables must be a power of 2 (and the same size as well).",
                 default = "N/A"
             },
@@ -29,7 +29,7 @@ sptbl["oscmorph"] = {
             },
             {
                 name = "phase",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Initial phase of waveform, expects a value 0-1",
                 default = 0
             }
@@ -37,19 +37,19 @@ sptbl["oscmorph"] = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Frequency (in Hz)",
                 default = 440
             },
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Amplitude (typically a value between 0 and 1).",
                 default = 0.2
             },
             {
                 name = "wtpos",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Wavetable position. (scaled 0-1)",
                 default = 0.0
             },

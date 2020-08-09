@@ -40,7 +40,7 @@
    email: m-mat @ math.sci.hiroshima-u.ac.jp (remove space)
 */
 
-#include "soundpipe.h"
+#include "utone.h"
 #define N           (624)
 #define M           (397)
 #define MATRIX_A    0x9908B0DFU     /* constant vector a */
@@ -68,7 +68,7 @@ static void MT_update_state(uint32_t *mt)
 
 /* generates a random number on [0,0xffffffff]-interval */
 
-uint32_t sp_randmt_compute(sp_randmt *p)
+uint32_t ut_randmt_compute(ut_randmt *p)
 {
     int       i = p->mti;
     uint32_t  y;
@@ -88,7 +88,7 @@ uint32_t sp_randmt_compute(sp_randmt *p)
     return y;
 }
 
-void sp_randmt_seed(sp_randmt *p,
+void ut_randmt_seed(ut_randmt *p,
     const uint32_t *initKey, uint32_t keyLength)
 {
     int       i, j, k;

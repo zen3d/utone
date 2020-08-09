@@ -1,36 +1,36 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_gbuzz *buzz;
-    sp_ftbl *ft; 
+    ut_gbuzz *buzz;
+    ut_ftbl *ft; 
     int counter;
 } UserData;
 
-int t_gbuzz(sp_test *tst, sp_data *sp, const char *hash) 
+int t_gbuzz(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
 
     UserData ud;
     ud.counter = 0;
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_gbuzz_create(&ud.buzz);
-    sp_gen_sine(sp, ud.ft);
-    sp_gbuzz_init(sp, ud.buzz, ud.ft, 0);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_gbuzz_create(&ud.buzz);
+    ut_gen_sine(ut, ud.ft);
+    ut_gbuzz_init(ut, ud.buzz, ud.ft, 0);
  
     for(n = 0; n < tst->size; n++) {
-        sp_gbuzz_compute(sp, ud.buzz, NULL, &sp->out[0]);
-        sp_test_add_sample(tst, sp->out[0]);
+        ut_gbuzz_compute(ut, ud.buzz, NULL, &ut->out[0]);
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_ftbl_destroy(&ud.ft);
-    sp_gbuzz_destroy(&ud.buzz);
+    ut_ftbl_destroy(&ud.ft);
+    ut_gbuzz_destroy(&ud.buzz);
      
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

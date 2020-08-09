@@ -7,23 +7,23 @@ sptbl["trand"] = {
     },
 
     func = {
-        create = "sp_trand_create",
-        destroy = "sp_trand_destroy",
-        init = "sp_trand_init",
-        compute = "sp_trand_compute",
+        create = "ut_trand_create",
+        destroy = "ut_trand_destroy",
+        init = "ut_trand_init",
+        compute = "ut_trand_compute",
     },
 
     params = {
         optional = {
             {
                 name = "min",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Minimum value to use.",
                 default = 0
             },
             {
                 name = "max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Maximum value to use.",
                 default = 1
             },

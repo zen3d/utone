@@ -1,11 +1,11 @@
 typedef struct {
-    SPFLOAT freq, bw;
+    UTFLOAT freq, bw;
     int scale;
-    SPFLOAT c1, c2, c3, yt1, yt2, cosf, prvfreq, prvbw;
-    SPFLOAT tpidsr;
-} sp_reson;
+    UTFLOAT c1, c2, c3, yt1, yt2, cosf, prvfreq, prvbw;
+    UTFLOAT tpidsr;
+} ut_reson;
 
-int sp_reson_create(sp_reson **p);
-int sp_reson_destroy(sp_reson **p);
-int sp_reson_init(sp_data *sp, sp_reson *p);
-int sp_reson_compute(sp_data *sp, sp_reson *p, SPFLOAT *in, SPFLOAT *out);
+int ut_reson_create(ut_reson **p);
+int ut_reson_destroy(ut_reson **p);
+int ut_reson_init(ut_data *ut, ut_reson *p);
+int ut_reson_compute(ut_data *ut, ut_reson *p, UTFLOAT *in, UTFLOAT *out);

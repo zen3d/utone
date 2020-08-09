@@ -7,17 +7,17 @@ sptbl["drip"] = {
     },
 
     func = {
-        create = "sp_drip_create",
-        destroy = "sp_drip_destroy",
-        init = "sp_drip_init",
-        compute = "sp_drip_compute",
+        create = "ut_drip_create",
+        destroy = "ut_drip_destroy",
+        init = "ut_drip_init",
+        compute = "ut_drip_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "dettack",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Period of time over which all sound is stopped.",
                 default = 0.09
             },
@@ -26,43 +26,43 @@ sptbl["drip"] = {
         optional = {
             {
                 name = "num_tubes",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Number of units.",
                 default = 10
             },
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Amplitude.",
                 default = 0.3
             },
             {
                 name = "damp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="The damping factor. Maximum value is 2.0.",
                 default = 0.2
             },
             {
                 name = "shake_max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "The amount of energy to add back into the system.",
                 default = 0
             },
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Main resonant frequency.",
                 default = 450
             },
             {
                 name = "freq1",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="The first resonant frequency.",
                 default = 600
             },
             {
                 name = "freq2",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="The second resonant frequency.",
                 default = 750
             },

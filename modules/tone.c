@@ -18,42 +18,42 @@
 #define M_PI		3.14159265358979323846
 #endif
 
-#include "soundpipe.h"
+#include "utone.h"
 
 
-int sp_tone_create(sp_tone **t)
+int ut_tone_create(ut_tone **t)
 {
-    *t = malloc(sizeof(sp_tone));
-    return SP_OK;
+    *t = malloc(sizeof(ut_tone));
+    return UT_OK;
 }
 
-int sp_tone_destroy(sp_tone **t)
+int ut_tone_destroy(ut_tone **t)
 {
     free(*t);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tone_init(sp_data *sp, sp_tone *p)
+int ut_tone_init(ut_data *ut, ut_tone *p)
 {
     p->hp = 1000;
-    SPFLOAT b;
-    p->tpidsr = (2.0 * M_PI) / sp->sr * 1.0;
-    p->prvhp = (SPFLOAT)p->hp;
-    b = 2.0 - cos((SPFLOAT)(p->prvhp * p->tpidsr));
+    UTFLOAT b;
+    p->tpidsr = (2.0 * M_PI) / ut->sr * 1.0;
+    p->prvhp = (UTFLOAT)p->hp;
+    b = 2.0 - cos((UTFLOAT)(p->prvhp * p->tpidsr));
     p->c2 = b - sqrt(b * b - 1.0);
     p->c1 = 1.0 - p->c2;
     p->yt1 = 0.0;
 
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tone_compute(sp_data *sp, sp_tone *p, SPFLOAT *in, SPFLOAT *out)
+int ut_tone_compute(ut_data *ut, ut_tone *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT c1 = p->c1, c2 = p->c2;
-    SPFLOAT yt1 = p->yt1;
+    UTFLOAT c1 = p->c1, c2 = p->c2;
+    UTFLOAT yt1 = p->yt1;
 
     if (p->hp != p->prvhp) {
-      SPFLOAT b;
+      UTFLOAT b;
       p->prvhp = p->hp;
       b = 2.0 - cos((p->prvhp * p->tpidsr));
       p->c2 = c2 = b - sqrt(b * b - 1.0);
@@ -64,5 +64,5 @@ int sp_tone_compute(sp_data *sp, sp_tone *p, SPFLOAT *in, SPFLOAT *out)
     *out = yt1;
 
     p->yt1 = yt1;
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,33 +1,33 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_noise *ns;
+    ut_noise *ns;
 } UserData;
 
-int t_noise(sp_test *tst, sp_data *sp, const char *hash) 
+int t_noise(ut_test *tst, ut_data *ut, const char *hash) 
 {
-    sp_srand(sp, 0); 
+    ut_srand(ut, 0); 
     uint32_t n;
     int fail = 0;
 
     UserData ud;
-    sp_noise_create(&ud.ns);
-    sp_noise_init(sp, ud.ns);
+    ut_noise_create(&ud.ns);
+    ut_noise_init(ut, ud.ns);
 
-    SPFLOAT in;
+    UTFLOAT in;
 
     for(n = 0; n < tst->size; n++) {
-        sp_noise_compute(sp, ud.ns, &in, &sp->out[0]); 
-        sp_test_add_sample(tst, sp->out[0]);
+        ut_noise_compute(ut, ud.ns, &in, &ut->out[0]); 
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_noise_destroy(&ud.ns);
+    ut_noise_destroy(&ud.ns);
     
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

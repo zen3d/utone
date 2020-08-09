@@ -1,19 +1,19 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_dtrig_create(sp_dtrig **p)
+int ut_dtrig_create(ut_dtrig **p)
 {
-    *p = malloc(sizeof(sp_dtrig));
-    return SP_OK;
+    *p = malloc(sizeof(ut_dtrig));
+    return UT_OK;
 }
 
-int sp_dtrig_destroy(sp_dtrig **p)
+int ut_dtrig_destroy(ut_dtrig **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_dtrig_init(sp_data *sp, sp_dtrig *p, sp_ftbl *ft)
+int ut_dtrig_init(ut_data *ut, ut_dtrig *p, ut_ftbl *ft)
 {
     p->ft = ft;
     p->counter = 0;
@@ -22,31 +22,31 @@ int sp_dtrig_init(sp_data *sp, sp_dtrig *p, sp_ftbl *ft)
     p->loop = 0;
     p->delay = 0;
     p->scale = 1;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_dtrig_compute(sp_data *sp, sp_dtrig *p, SPFLOAT *in, SPFLOAT *out)
+int ut_dtrig_compute(ut_data *ut, ut_dtrig *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(*in == 1.0){
         p->running = 1.0;
         p->pos = 0;
-        p->counter = p->delay * sp->sr;
+        p->counter = p->delay * ut->sr;
     } 
     if((p->pos < p->ft->size) && p->running){
         if(p->counter == 0){
-            p->counter = (uint32_t)(p->scale * p->ft->tbl[p->pos] * sp->sr - 1);
+            p->counter = (uint32_t)(p->scale * p->ft->tbl[p->pos] * ut->sr - 1);
             *out = 1.0;
             p->pos++; 
             if(p->loop){
                 p->pos %= p->ft->size;
             }
-            return SP_OK;
+            return UT_OK;
         }else{
             *out = 0;
             p->counter--;
-            return SP_OK;
+            return UT_OK;
         }
     }    
     *out = 0;
-    return SP_NOT_OK;
+    return UT_NOT_OK;
 }

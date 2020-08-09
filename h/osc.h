@@ -1,11 +1,11 @@
 typedef struct {
-    SPFLOAT freq, amp, iphs;
+    UTFLOAT freq, amp, iphs;
     int32_t   lphs;
-    sp_ftbl *tbl;
+    ut_ftbl *tbl;
     int inc;
-} sp_osc;
+} ut_osc;
 
-int sp_osc_create(sp_osc **osc);
-int sp_osc_destroy(sp_osc **osc);
-int sp_osc_init(sp_data *sp, sp_osc *osc, sp_ftbl *ft, SPFLOAT iphs);
-int sp_osc_compute(sp_data *sp, sp_osc *osc, SPFLOAT *in, SPFLOAT *out);
+int ut_osc_create(ut_osc **osc);
+int ut_osc_destroy(ut_osc **osc);
+int ut_osc_init(ut_data *ut, ut_osc *osc, ut_ftbl *ft, UTFLOAT iphs);
+int ut_osc_compute(ut_data *ut, ut_osc *osc, UTFLOAT *in, UTFLOAT *out);

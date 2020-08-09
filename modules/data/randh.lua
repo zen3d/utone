@@ -7,29 +7,29 @@ sptbl["randh"] = {
     },
 
     func = {
-        create = "sp_randh_create",
-        destroy = "sp_randh_destroy",
-        init = "sp_randh_init",
-        compute = "sp_randh_compute",
+        create = "ut_randh_create",
+        destroy = "ut_randh_destroy",
+        init = "ut_randh_init",
+        compute = "ut_randh_compute",
     },
 
     params = {
         optional = {
             {
                 name = "min",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Minimum value to use.",
                 default = 0
             },
             {
                 name = "max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Maximum value to use.",
                 default = 1
             },
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Frequency of randomization (in Hz)",
                 default = 10
             },

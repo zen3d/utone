@@ -1,29 +1,29 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_in_create(sp_in **p)
+int ut_in_create(ut_in **p)
 {
-    *p = malloc(sizeof(sp_in));
-    return SP_OK;
+    *p = malloc(sizeof(ut_in));
+    return UT_OK;
 }
 
-int sp_in_destroy(sp_in **p)
+int ut_in_destroy(ut_in **p)
 {
-    sp_in *pp = *p;
+    ut_in *pp = *p;
     fclose(pp->fp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_in_init(sp_data *sp, sp_in *p)
+int ut_in_init(ut_data *ut, ut_in *p)
 {
     p->fp = stdin; 
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_in_compute(sp_data *sp, sp_in *p, SPFLOAT *in, SPFLOAT *out)
+int ut_in_compute(ut_data *ut, ut_in *p, UTFLOAT *in, UTFLOAT *out)
 {
     *out = 0;
-    fread(out, sizeof(SPFLOAT), 1, p->fp);
-    return SP_OK;
+    fread(out, sizeof(UTFLOAT), 1, p->fp);
+    return UT_OK;
 }

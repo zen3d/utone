@@ -7,23 +7,23 @@ sptbl["diode"] = {
     },
 
     func = {
-        create = "sp_diode_create",
-        destroy = "sp_diode_destroy",
-        init = "sp_diode_init",
-        compute = "sp_diode_compute",
+        create = "ut_diode_create",
+        destroy = "ut_diode_destroy",
+        init = "ut_diode_init",
+        compute = "ut_diode_compute",
     },
 
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "",
                 default = 1000
             },
             {
                 name = "res",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="",
                 default = 0
             },

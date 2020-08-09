@@ -7,7 +7,7 @@
 
 typedef struct FFTFREQS {
     int size;
-    SPFLOAT *s,*c;
+    UTFLOAT *s,*c;
 } FFTFREQS;
 
 typedef struct {
@@ -27,5 +27,5 @@ void FFTwrapper_destroy(FFTwrapper **fw);
 void newFFTFREQS(FFTFREQS *f, int size);
 void deleteFFTFREQS(FFTFREQS *f);
 
-void smps2freqs(FFTwrapper *ft, SPFLOAT *smps, FFTFREQS *freqs);
-void freqs2smps(FFTwrapper *ft, FFTFREQS *freqs, SPFLOAT *smps);
+void smps2freqs(FFTwrapper *ft, UTFLOAT *smps, FFTFREQS *freqs);
+void freqs2smps(FFTwrapper *ft, FFTFREQS *freqs, UTFLOAT *smps);

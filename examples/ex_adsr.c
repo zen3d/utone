@@ -1,47 +1,47 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_adsr *adsr;
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_adsr *adsr;
+    ut_osc *osc;
+    ut_ftbl *ft; 
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, adsr = 0, gate = 0;
-    if(sp->pos < sp->sr * 3) {
+    UTFLOAT osc = 0, adsr = 0, gate = 0;
+    if(ut->pos < ut->sr * 3) {
         gate = 1;
     }
-    sp_adsr_compute(sp, ud->adsr, &gate, &adsr);
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp->out[0] = adsr * osc;
+    ut_adsr_compute(ut, ud->adsr, &gate, &adsr);
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut->out[0] = adsr * osc;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_adsr_create(&ud.adsr);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
+    ut_adsr_create(&ud.adsr);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
 
-    sp_adsr_init(sp, ud.adsr);
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_adsr_init(ut, ud.adsr);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
     ud.osc->amp = 0.5;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_adsr_destroy(&ud.adsr);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
+    ut_adsr_destroy(&ud.adsr);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

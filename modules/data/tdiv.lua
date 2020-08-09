@@ -7,22 +7,22 @@ sptbl["tdiv"] = {
     },
 
     func = {
-        create = "sp_tdiv_create",
-        destroy = "sp_tdiv_destroy",
-        init = "sp_tdiv_init",
+        create = "ut_tdiv_create",
+        destroy = "ut_tdiv_destroy",
+        init = "ut_tdiv_init",
     },
 
     params = {
         optional = {
             {
                 name = "num",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Triggers every N times.",
                 default = 2
             },
             {
                 name = "offset",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Offset amoutn.",
                 default = 0
             },

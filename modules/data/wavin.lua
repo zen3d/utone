@@ -7,10 +7,10 @@ sptbl["wavin"] = {
     },
 
     func = {
-        create = "sp_wavin_create",
-        destroy = "sp_wavin_destroy",
-        init = "sp_wavin_init",
-        compute = "sp_wavin_compute",
+        create = "ut_wavin_create",
+        destroy = "ut_wavin_destroy",
+        init = "ut_wavin_init",
+        compute = "ut_wavin_compute",
     },
 
     params = {

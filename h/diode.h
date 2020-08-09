@@ -1,23 +1,23 @@
 typedef struct {
     /* 4 one-pole filters */
-    SPFLOAT opva_alpha[4];
-    SPFLOAT opva_beta[4];
-    SPFLOAT opva_gamma[4];
-    SPFLOAT opva_delta[4];
-    SPFLOAT opva_eps[4];
-    SPFLOAT opva_a0[4];
-    SPFLOAT opva_fdbk[4];
-    SPFLOAT opva_z1[4];
+    UTFLOAT opva_alpha[4];
+    UTFLOAT opva_beta[4];
+    UTFLOAT opva_gamma[4];
+    UTFLOAT opva_delta[4];
+    UTFLOAT opva_eps[4];
+    UTFLOAT opva_a0[4];
+    UTFLOAT opva_fdbk[4];
+    UTFLOAT opva_z1[4];
     /* end one-pole filters */
 
-    SPFLOAT SG[4];
-    SPFLOAT gamma;
-    SPFLOAT freq;
-    SPFLOAT K;
-    SPFLOAT res;
-} sp_diode;
+    UTFLOAT SG[4];
+    UTFLOAT gamma;
+    UTFLOAT freq;
+    UTFLOAT K;
+    UTFLOAT res;
+} ut_diode;
 
-int sp_diode_create(sp_diode **p);
-int sp_diode_destroy(sp_diode **p);
-int sp_diode_init(sp_data *sp, sp_diode *p);
-int sp_diode_compute(sp_data *sp, sp_diode *p, SPFLOAT *in, SPFLOAT *out);
+int ut_diode_create(ut_diode **p);
+int ut_diode_destroy(ut_diode **p);
+int ut_diode_init(ut_data *ut, ut_diode *p);
+int ut_diode_compute(ut_data *ut, ut_diode *p, UTFLOAT *in, UTFLOAT *out);

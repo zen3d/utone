@@ -1,32 +1,32 @@
 #include <stdlib.h>
 #include <string.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "sndfile.h"
 
-struct sp_diskin {
+struct ut_diskin {
     SNDFILE *file;
     SF_INFO info;
-    SPFLOAT buffer[1024];
+    UTFLOAT buffer[1024];
     int bufpos;
     int loaded;
     int count;
 };
 
-int sp_diskin_create(sp_diskin **p)
+int ut_diskin_create(ut_diskin **p)
 {
-    *p = malloc(sizeof(sp_diskin));
-    return SP_OK;
+    *p = malloc(sizeof(ut_diskin));
+    return UT_OK;
 }
 
-int sp_diskin_destroy(sp_diskin **p)
+int ut_diskin_destroy(ut_diskin **p)
 {
-    sp_diskin *pp = *p;
+    ut_diskin *pp = *p;
     if(pp->loaded) sf_close(pp->file);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_diskin_init(sp_data *sp, sp_diskin *p, const char *filename)
+int ut_diskin_init(ut_data *ut, ut_diskin *p, const char *filename)
 {
     p->info.format = 0;
     memset(&p->info, 0, sizeof(SF_INFO));
@@ -51,11 +51,11 @@ int sp_diskin_init(sp_data *sp, sp_diskin *p, const char *filename)
     } else {
         p->count = 1024;
     }
-    memset(p->buffer, 0, sizeof(SPFLOAT) * 1024);
-    return SP_OK;
+    memset(p->buffer, 0, sizeof(UTFLOAT) * 1024);
+    return UT_OK;
 }
 
-int sp_diskin_compute(sp_data *sp, sp_diskin *p, SPFLOAT *in, SPFLOAT *out)
+int ut_diskin_compute(ut_data *ut, ut_diskin *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(p->bufpos == 0 && p->loaded && p->count > 0) {
 #ifdef USE_DOUBLE
@@ -67,10 +67,10 @@ int sp_diskin_compute(sp_data *sp, sp_diskin *p, SPFLOAT *in, SPFLOAT *out)
 
     if(p->count <= 0) {
         *out = 0;
-        return SP_OK;
+        return UT_OK;
     }
 
     *out = p->buffer[p->bufpos++];
     p->bufpos %= 1024; 
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,8 +1,8 @@
 typedef struct{
-    SPFLOAT lim, k1;
-}sp_clip;
+    UTFLOAT lim, k1;
+}ut_clip;
 
-int sp_clip_create(sp_clip **p);
-int sp_clip_destroy(sp_clip **p);
-int sp_clip_init(sp_data *sp, sp_clip *p);
-int sp_clip_compute(sp_data *sp, sp_clip *p, SPFLOAT *in, SPFLOAT *out);
+int ut_clip_create(ut_clip **p);
+int ut_clip_destroy(ut_clip **p);
+int ut_clip_init(ut_data *ut, ut_clip *p);
+int ut_clip_compute(ut_data *ut, ut_clip *p, UTFLOAT *in, UTFLOAT *out);

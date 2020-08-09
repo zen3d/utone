@@ -1,39 +1,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_osc *osc;
+    ut_ftbl *ft; 
     int counter;
 } UserData;
 
-void write_osc(sp_data *sp, void *udata) {
+void write_osc(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
+    UTFLOAT osc = 0;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
     ud->counter = (ud->counter + 1) % 4410;
-    sp_out(sp, 0, osc);
+    ut_out(ut, 0, osc);
 }
 
 int main() {
     srand(time(NULL));
     UserData ud;
     ud.counter = 0;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_ftbl_create(sp, &ud.ft, 8192);
-    sp_osc_create(&ud.osc);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_ftbl_create(ut, &ud.ft, 8192);
+    ut_osc_create(&ud.osc);
     
-    sp_gen_triangle(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_gen_triangle(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
     ud.osc->freq = 500;
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, write_osc);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, write_osc);
 
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_destroy(&sp);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_destroy(&ut);
     return 0;
 }

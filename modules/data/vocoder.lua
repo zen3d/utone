@@ -7,10 +7,10 @@ sptbl["vocoder"] = {
     },
 
     func = {
-        create = "sp_vocoder_create",
-        destroy = "sp_vocoder_destroy",
-        init = "sp_vocoder_init",
-        compute = "sp_vocoder_compute",
+        create = "ut_vocoder_create",
+        destroy = "ut_vocoder_destroy",
+        init = "ut_vocoder_init",
+        compute = "ut_vocoder_compute",
     },
 
     params = {
@@ -20,19 +20,19 @@ sptbl["vocoder"] = {
         optional = {
             {
                 name = "atk",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description = "Attack time . (Range 0.001 and 0.5 seconds)",
                 default = 0.1
             },
             {
                 name = "rel",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description = "Release time",
                 default = 0.1
             },
             {
                 name = "bwratio",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description = "Coeffecient to adjust the bandwidth of each band (0.1 - 2)",
                 default = 0.5
             },

@@ -7,7 +7,7 @@ sptbl["gen_file"] = {
     },
 
     func = {
-        name = "sp_gen_file",
+        name = "ut_gen_file",
     },
 
     params = {

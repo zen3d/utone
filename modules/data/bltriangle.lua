@@ -7,23 +7,23 @@ sptbl["bltriangle"] = {
     },
 
     func = {
-        create = "sp_bltriangle_create",
-        destroy = "sp_bltriangle_destroy",
-        init = "sp_bltriangle_init",
-        compute = "sp_bltriangle_compute",
+        create = "ut_bltriangle_create",
+        destroy = "ut_bltriangle_destroy",
+        init = "ut_bltriangle_init",
+        compute = "ut_bltriangle_compute",
     },
 
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description = "Frequency, (range 0-20000)",
                 default = 440
             },
             {
                 name = "amp",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Amplitude (range 0-1).",
 		default = 1.0
             },

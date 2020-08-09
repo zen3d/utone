@@ -7,17 +7,17 @@ sptbl["incr"] = {
     },
 
     func = {
-        create = "sp_incr_create",
-        destroy = "sp_incr_destroy",
-        init = "sp_incr_init",
-        compute = "sp_incr_compute",
+        create = "ut_incr_create",
+        destroy = "ut_incr_destroy",
+        init = "ut_incr_init",
+        compute = "ut_incr_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "val",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Initial value",
                 default = 0.5
             },
@@ -25,19 +25,19 @@ sptbl["incr"] = {
         optional = {
             {
                 name = "step",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Step value to increment by.",
                 default = 0.1
             },
             {
                 name = "min",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Minimum value",
                 default = 0
             },
             {
                 name = "max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Maximum value",
                 default = 1
             },

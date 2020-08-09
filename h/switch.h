@@ -1,9 +1,9 @@
 typedef struct {
-    SPFLOAT mode;
-} sp_switch;
+    UTFLOAT mode;
+} ut_switch;
 
-int sp_switch_create(sp_switch **p);
-int sp_switch_destroy(sp_switch **p);
-int sp_switch_init(sp_data *sp, sp_switch *p);
-int sp_switch_compute(sp_data *sp, sp_switch *p, SPFLOAT *trig,
-    SPFLOAT *in1, SPFLOAT *in2, SPFLOAT *out);
+int ut_switch_create(ut_switch **p);
+int ut_switch_destroy(ut_switch **p);
+int ut_switch_init(ut_data *ut, ut_switch *p);
+int ut_switch_compute(ut_data *ut, ut_switch *p, UTFLOAT *trig,
+    UTFLOAT *in1, UTFLOAT *in2, UTFLOAT *out);

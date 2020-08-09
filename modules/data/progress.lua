@@ -7,10 +7,10 @@ sptbl["progress"] = {
     },
 
     func = {
-        create = "sp_progress_create",
-        destroy = "sp_progress_destroy",
-        init = "sp_progress_init",
-        compute = "sp_progress_compute",
+        create = "ut_progress_create",
+        destroy = "ut_progress_destroy",
+        init = "ut_progress_init",
+        compute = "ut_progress_compute",
     },
 
     params = {

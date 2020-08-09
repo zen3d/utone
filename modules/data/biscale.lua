@@ -7,23 +7,23 @@ sptbl["biscale"] = {
     },
 
     func = {
-        create = "sp_biscale_create",
-        destroy = "sp_biscale_destroy",
-        init = "sp_biscale_init",
-        compute = "sp_biscale_compute",
+        create = "ut_biscale_create",
+        destroy = "ut_biscale_destroy",
+        init = "ut_biscale_init",
+        compute = "ut_biscale_compute",
     },
 
     params = {
         optional = {
             {
                 name = "min",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Minimum value to scale to.",
                 default = 0
             },
             {
                 name = "max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Maximum value to scale to.",
                 default = 1
             },

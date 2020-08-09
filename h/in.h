@@ -1,8 +1,8 @@
 typedef struct {
     FILE *fp;
-} sp_in;
+} ut_in;
 
-int sp_in_create(sp_in **p);
-int sp_in_destroy(sp_in **p);
-int sp_in_init(sp_data *sp, sp_in *p);
-int sp_in_compute(sp_data *sp, sp_in *p, SPFLOAT *in, SPFLOAT *out);
+int ut_in_create(ut_in **p);
+int ut_in_destroy(ut_in **p);
+int ut_in_init(ut_data *ut, ut_in *p);
+int ut_in_compute(ut_data *ut, ut_in *p, UTFLOAT *in, UTFLOAT *out);

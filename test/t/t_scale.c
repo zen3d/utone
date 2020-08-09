@@ -1,52 +1,52 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_scale *scale;
-    sp_osc *osc;
-    sp_ftbl *ft;
+    ut_scale *scale;
+    ut_osc *osc;
+    ut_ftbl *ft;
 } UserData;
 
-int t_scale(sp_test *tst, sp_data *sp, const char *hash)
+int t_scale(ut_test *tst, ut_data *ut, const char *hash)
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT val = 1;
-    SPFLOAT osc = 0, scale = 0;
+    UTFLOAT val = 1;
+    UTFLOAT osc = 0, scale = 0;
 
-    sp_srand(sp, 1234567);
+    ut_srand(ut, 1234567);
     UserData ud;
 
-    sp_scale_create(&ud.scale);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
+    ut_scale_create(&ud.scale);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
 
-    sp_scale_init(sp, ud.scale);
+    ut_scale_init(ut, ud.scale);
     ud.scale->min = 0;
     ud.scale->max = 880;
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
     ud.osc->amp = 0.1;
 
     for(n = 0; n < tst->size; n++) {
         osc = 0, scale = 0;
         /* constant set to 1, when scaled, it becomes 440 */
         val = 1;
-        sp_scale_compute(sp, ud.scale, &val, &scale);
+        ut_scale_compute(ut, ud.scale, &val, &scale);
         ud.osc->freq = scale;
-        sp_osc_compute(sp, ud.osc, NULL, &osc);
-        sp->out[0] = osc;
-        sp_test_add_sample(tst, sp->out[0]);
+        ut_osc_compute(ut, ud.osc, NULL, &osc);
+        ut->out[0] = osc;
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_scale_destroy(&ud.scale);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
+    ut_scale_destroy(&ud.scale);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

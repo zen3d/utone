@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef max
 #define max(a,b) (((a) > (b)) ? (a) : (b))
@@ -19,19 +19,19 @@
 #define dB2lin(x)           pow( 10.0, (x) / 20.0 )
 #endif
 
-int sp_peaklim_create(sp_peaklim **p)
+int ut_peaklim_create(ut_peaklim **p)
 {
-    *p = malloc(sizeof(sp_peaklim));
-    return SP_OK;
+    *p = malloc(sizeof(ut_peaklim));
+    return UT_OK;
 }
 
-int sp_peaklim_destroy(sp_peaklim **p)
+int ut_peaklim_destroy(ut_peaklim **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_peaklim_init(sp_data *sp, sp_peaklim *p)
+int ut_peaklim_init(ut_data *ut, ut_peaklim *p)
 {
     p->a1_r = 0;
     p->b0_r = 1;
@@ -42,26 +42,26 @@ int sp_peaklim_init(sp_data *sp, sp_peaklim *p)
     p->patk = -100;
     p->prel = -100;
     p->level = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_peaklim_compute(sp_data *sp, sp_peaklim *p, SPFLOAT *in, SPFLOAT *out)
+int ut_peaklim_compute(ut_data *ut, ut_peaklim *p, UTFLOAT *in, UTFLOAT *out)
 {
 
-    SPFLOAT db_gain = 0;
-    SPFLOAT gain = 0;
+    UTFLOAT db_gain = 0;
+    UTFLOAT gain = 0;
 
     /* change coefficients, if needed */
 
     if(p->patk != p->atk) {
         p->patk = p->atk;
-		p->a1_a = exp( -1.0 / ( p->rel * sp->sr ) );
+		p->a1_a = exp( -1.0 / ( p->rel * ut->sr ) );
 		p->b0_a = 1 - p->a1_a;
     }
 
     if(p->prel != p->rel) {
         p->prel = p->rel;
-		p->a1_r = exp( -1.0 / ( p->rel * sp->sr ) );
+		p->a1_r = exp( -1.0 / ( p->rel * ut->sr ) );
 		p->b0_r = 1 - p->a1_r;
     }
 
@@ -76,5 +76,5 @@ int sp_peaklim_compute(sp_data *sp, sp_peaklim *p, SPFLOAT *in, SPFLOAT *out)
 
     *out = *in * gain;
 
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,21 +1,21 @@
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_tenvx_create(sp_tenvx **p)
+int ut_tenvx_create(ut_tenvx **p)
 {
-    *p = malloc(sizeof(sp_tenvx));
-    return SP_OK;
+    *p = malloc(sizeof(ut_tenvx));
+    return UT_OK;
 }
 
-int sp_tenvx_destroy(sp_tenvx **p)
+int ut_tenvx_destroy(ut_tenvx **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
 
-int sp_tenvx_init(sp_data *sp, sp_tenvx *p)
+int ut_tenvx_init(ut_data *ut, ut_tenvx *p)
 {
     p->hold = 0.5;
     p->atk = 0.5;
@@ -23,21 +23,21 @@ int sp_tenvx_init(sp_data *sp, sp_tenvx *p)
     p->a_a = p->b_a = 0;
     p->a_r = p->b_r = 0;
     p->y = 0;
-    p->count = (uint32_t) (p->hold * sp->sr);
-    return SP_OK;
+    p->count = (uint32_t) (p->hold * ut->sr);
+    return UT_OK;
 }
 
 
-int sp_tenvx_compute(sp_data *sp, sp_tenvx *p, SPFLOAT *in, SPFLOAT *out)
+int ut_tenvx_compute(ut_data *ut, ut_tenvx *p, UTFLOAT *in, UTFLOAT *out)
 {
     *out = 0;
 
     if(*in != 0) {
-        p->a_a = exp(-1.0/(p->atk * sp->sr));
+        p->a_a = exp(-1.0/(p->atk * ut->sr));
         p->b_a = 1.0 - p->a_a;
-        p->a_r = exp(-1.0/(p->rel * sp->sr));
+        p->a_r = exp(-1.0/(p->rel * ut->sr));
         p->b_r = 1.0 - p->a_r;
-        p->count = (uint32_t) (p->hold * sp->sr);
+        p->count = (uint32_t) (p->hold * ut->sr);
     }
 
     if(p->count > 0) {
@@ -49,5 +49,5 @@ int sp_tenvx_compute(sp_data *sp, sp_tenvx *p, SPFLOAT *in, SPFLOAT *out)
         p->y = *out;
     }
 
-    return SP_OK;
+    return UT_OK;
 }

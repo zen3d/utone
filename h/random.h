@@ -1,9 +1,9 @@
 typedef struct { 
-    SPFLOAT min;
-    SPFLOAT max;
-} sp_random;
+    UTFLOAT min;
+    UTFLOAT max;
+} ut_random;
 
-int sp_random_create(sp_random **p);
-int sp_random_destroy(sp_random **p);
-int sp_random_init(sp_data *sp, sp_random *p);
-int sp_random_compute(sp_data *sp, sp_random *p, SPFLOAT *in, SPFLOAT *out);
+int ut_random_create(ut_random **p);
+int ut_random_destroy(ut_random **p);
+int ut_random_init(ut_data *ut, ut_random *p);
+int ut_random_compute(ut_data *ut, ut_random *p, UTFLOAT *in, UTFLOAT *out);

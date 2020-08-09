@@ -7,10 +7,10 @@ sptbl["panst"] = {
     },
 
     func = {
-        create = "sp_panst_create",
-        destroy = "sp_panst_destroy",
-        init = "sp_panst_init",
-        compute = "sp_panst_compute",
+        create = "ut_panst_create",
+        destroy = "ut_panst_destroy",
+        init = "ut_panst_init",
+        compute = "ut_panst_compute",
     },
 
     params = {
@@ -27,7 +27,7 @@ sptbl["panst"] = {
             },
             {
                 name = "pan",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Panning. A value of -1 is hard left, and a value of 1 is hard right.",
                 default = 0
             },

@@ -31,20 +31,20 @@ end
 
 function PG.createf(self, sp)
     local tbl = sp[self.name]
-    print(string.format("%s(sp_%s **%s)", 
+    print(string.format("%s(ut_%s **%s)", 
         tbl.func.create, self.name, self.name, tbl.func.init))
 end
 
 function PG.destroyf(self, sp)
     local tbl = sp[self.name]
-    print(string.format("%s(sp_%s **%s)", 
+    print(string.format("%s(ut_%s **%s)", 
         tbl.func.destroy, self.name, self.name, tbl.func.init))
 end
 
 function PG.initf(self, sp)
     local tbl = sp[self.name]
     
-    io.write(string.format("%s(sp_data *sp, sp_%s *%s", 
+    io.write(string.format("%s(ut_data *ut, ut_%s *%s", 
         tbl.func.init, self.name, self.name))
     
     for _, v in pairs(tbl.params.mandatory) do
@@ -61,11 +61,11 @@ end
 
 function PG.computef(self, sp)
     local tbl = sp[self.name]
-    io.write(string.format("%s(sp_data *sp, sp_%s *%s", 
+    io.write(string.format("%s(ut_data *ut, ut_%s *%s", 
         tbl.func.compute, self.name, self.name, tbl.func.init))
         
     for _, input in pairs(tbl.inputs) do
-        io.write(string.format(", SPFLOAT *%s", input.name))
+        io.write(string.format(", UTFLOAT *%s", input.name))
     end
 
     io.write(")\n")
@@ -126,7 +126,7 @@ function PG.other(self, sp)
     local tbl = sp[self.name].func.other
     
     for func,params in pairs(tbl) do
-        io.write(string.format("%s(sp_%s %s", func, self.name, self.name))
+        io.write(string.format("%s(ut_%s %s", func, self.name, self.name))
         for _,p in pairs(params) do
             io.write(string.format(", %s %s", p.type, p.name))
         end

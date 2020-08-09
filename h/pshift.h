@@ -1,13 +1,13 @@
 typedef struct {
     void *faust;
     int argpos;
-    SPFLOAT *args[3];
-    SPFLOAT *shift;
-    SPFLOAT *window;
-    SPFLOAT *xfade;
-} sp_pshift;
+    UTFLOAT *args[3];
+    UTFLOAT *shift;
+    UTFLOAT *window;
+    UTFLOAT *xfade;
+} ut_pshift;
 
-int sp_pshift_create(sp_pshift **p);
-int sp_pshift_destroy(sp_pshift **p);
-int sp_pshift_init(sp_data *sp, sp_pshift *p);
-int sp_pshift_compute(sp_data *sp, sp_pshift *p, SPFLOAT *in, SPFLOAT *out);
+int ut_pshift_create(ut_pshift **p);
+int ut_pshift_destroy(ut_pshift **p);
+int ut_pshift_init(ut_data *ut, ut_pshift *p);
+int ut_pshift_compute(ut_data *ut, ut_pshift *p, UTFLOAT *in, UTFLOAT *out);

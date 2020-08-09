@@ -1,9 +1,9 @@
 typedef struct {
-    SPFLOAT pan;
+    UTFLOAT pan;
     uint32_t type;
-} sp_pan2;
+} ut_pan2;
 
-int sp_pan2_create(sp_pan2 **p);
-int sp_pan2_destroy(sp_pan2 **p);
-int sp_pan2_init(sp_data *sp, sp_pan2 *p);
-int sp_pan2_compute(sp_data *sp, sp_pan2 *p, SPFLOAT *in, SPFLOAT *out1, SPFLOAT *out2);
+int ut_pan2_create(ut_pan2 **p);
+int ut_pan2_destroy(ut_pan2 **p);
+int ut_pan2_init(ut_data *ut, ut_pan2 *p);
+int ut_pan2_compute(ut_data *ut, ut_pan2 *p, UTFLOAT *in, UTFLOAT *out1, UTFLOAT *out2);

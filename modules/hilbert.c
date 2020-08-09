@@ -7,32 +7,32 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846	
 #endif 
 
-int sp_hilbert_create(sp_hilbert **p)
+int ut_hilbert_create(ut_hilbert **p)
 {
-    *p = malloc(sizeof(sp_hilbert));
-    return SP_OK;
+    *p = malloc(sizeof(ut_hilbert));
+    return UT_OK;
 }
 
-int sp_hilbert_destroy(sp_hilbert **p)
+int ut_hilbert_destroy(ut_hilbert **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_hilbert_init(sp_data *sp, sp_hilbert *p)
+int ut_hilbert_init(ut_data *ut, ut_hilbert *p)
 {
     int j; 
-    SPFLOAT onedsr = 1.0 / sp->sr;
+    UTFLOAT onedsr = 1.0 / ut->sr;
     /* pole values taken from Bernie Hutchins, "Musical Engineer's Handbook" */
-    SPFLOAT poles[12] = {0.3609, 2.7412, 11.1573, 44.7581, 179.6242, 798.4578,
+    UTFLOAT poles[12] = {0.3609, 2.7412, 11.1573, 44.7581, 179.6242, 798.4578,
                         1.2524, 5.5671, 22.3423, 89.6271, 364.7914, 2770.1114};
-    SPFLOAT polefreq, rc, alpha, beta;
+    UTFLOAT polefreq, rc, alpha, beta;
     /* calculate coefficients for allpass filters, based on sampling rate */
     for (j=0; j<12; j++) {
         polefreq = poles[j] * 15.0;
@@ -41,18 +41,18 @@ int sp_hilbert_init(sp_data *sp, sp_hilbert *p)
         alpha = alpha * 0.5 * onedsr;
         beta = (1.0 - alpha) / (1.0 + alpha);
         p->xnm1[j] = p->ynm1[j] = 0.0;
-        p->coef[j] = -(SPFLOAT)beta;
+        p->coef[j] = -(UTFLOAT)beta;
     }
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_hilbert_compute(sp_data *sp, sp_hilbert *p, SPFLOAT *in, SPFLOAT *out1, SPFLOAT *out2)
+int ut_hilbert_compute(ut_data *ut, ut_hilbert *p, UTFLOAT *in, UTFLOAT *out1, UTFLOAT *out2)
 {
-    SPFLOAT xn1 = 0;
-    SPFLOAT yn1 = 0; 
-    SPFLOAT xn2 = 0;
-    SPFLOAT yn2 = 0;
-    SPFLOAT *coef;
+    UTFLOAT xn1 = 0;
+    UTFLOAT yn1 = 0; 
+    UTFLOAT xn2 = 0;
+    UTFLOAT yn2 = 0;
+    UTFLOAT *coef;
     int j;
 
     coef = p->coef;
@@ -81,5 +81,5 @@ int sp_hilbert_compute(sp_data *sp, sp_hilbert *p, SPFLOAT *in, SPFLOAT *out1, S
     }
     *out1 = yn2;
     *out2 = yn1;
-    return SP_OK;
+    return UT_OK;
 }

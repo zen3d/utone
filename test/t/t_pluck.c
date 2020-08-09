@@ -1,45 +1,45 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_pluck *pluck;
-    sp_metro *met;
+    ut_pluck *pluck;
+    ut_metro *met;
 } UserData;
 
-int t_pluck(sp_test *tst, sp_data *sp, const char *hash) 
+int t_pluck(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
 
     UserData ud;
-    sp_srand(sp, 1337); 
-    SPFLOAT pluck = 0, met = 0;
-    SPFLOAT notes[] = {60, 63, 67, 70, 74};
+    ut_srand(ut, 1337); 
+    UTFLOAT pluck = 0, met = 0;
+    UTFLOAT notes[] = {60, 63, 67, 70, 74};
 
-    sp_pluck_create(&ud.pluck);
-    sp_metro_create(&ud.met);
+    ut_pluck_create(&ud.pluck);
+    ut_metro_create(&ud.met);
 
-    sp_pluck_init(sp, ud.pluck, 400);
-    sp_metro_init(sp, ud.met);
+    ut_pluck_init(ut, ud.pluck, 400);
+    ut_metro_init(ut, ud.met);
     ud.met->freq = 4;
 
     for(n = 0; n < tst->size; n++) {
         pluck = 0, met = 0;
-        sp_metro_compute(sp, ud.met, NULL, &met);
+        ut_metro_compute(ut, ud.met, NULL, &met);
         if(met) {
-            ud.pluck->freq = sp_midi2cps(notes[sp_rand(sp) % 5]);
+            ud.pluck->freq = ut_midi2cps(notes[ut_rand(ut) % 5]);
         }
-        sp_pluck_compute(sp, ud.pluck, &met, &pluck);
-        sp_test_add_sample(tst, pluck);
+        ut_pluck_compute(ut, ud.pluck, &met, &pluck);
+        ut_test_add_sample(tst, pluck);
     }
     
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_pluck_destroy(&ud.pluck);
-    sp_metro_destroy(&ud.met);
+    ut_pluck_destroy(&ud.pluck);
+    ut_metro_destroy(&ud.met);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

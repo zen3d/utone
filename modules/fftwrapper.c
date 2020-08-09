@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "kiss_fftr.h"
 
 void FFTwrapper_create(FFTwrapper **fw, int fftsize) 
@@ -60,7 +60,7 @@ void FFTwrapper_destroy(FFTwrapper **fw)
 
 /* do the Fast Fourier Transform */
 
-void smps2freqs(FFTwrapper *ft, SPFLOAT *smps, FFTFREQS *freqs) 
+void smps2freqs(FFTwrapper *ft, UTFLOAT *smps, FFTFREQS *freqs) 
 {
     int i;
 
@@ -86,7 +86,7 @@ void smps2freqs(FFTwrapper *ft, SPFLOAT *smps, FFTFREQS *freqs)
 /*
  * do the Inverse Fast Fourier Transform
  */
-void freqs2smps(FFTwrapper *ft, FFTFREQS *freqs, SPFLOAT *smps) 
+void freqs2smps(FFTwrapper *ft, FFTFREQS *freqs, UTFLOAT *smps) 
 {
 
     int i;
@@ -111,8 +111,8 @@ void freqs2smps(FFTwrapper *ft, FFTFREQS *freqs, SPFLOAT *smps)
 void newFFTFREQS(FFTFREQS *f,int size)
 {
     int i;
-    SPFLOAT *c = malloc(size * sizeof(SPFLOAT));
-    SPFLOAT *s = malloc(size * sizeof(SPFLOAT));
+    UTFLOAT *c = malloc(size * sizeof(UTFLOAT));
+    UTFLOAT *s = malloc(size * sizeof(UTFLOAT));
     f->c = c;
     f->s = s;
     for (i = 0; i<size ;i++){

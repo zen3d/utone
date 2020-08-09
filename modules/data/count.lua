@@ -7,23 +7,23 @@ sptbl["count"] = {
     },
 
     func = {
-        create = "sp_count_create",
-        destroy = "sp_count_destroy",
-        init = "sp_count_init",
-        compute = "sp_count_compute",
+        create = "ut_count_create",
+        destroy = "ut_count_destroy",
+        init = "ut_count_init",
+        compute = "ut_count_compute",
     },
 
     params = {
         optional = {
             {
                 name = "count",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Number to count up to (count - 1). Decimal points will be truncated.",
                 default = 4
             },
             {
                 name = "mode",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Counting mode. 0 = wrap-around, 1 = count up to N -1, then stop and spit out -1",
                 default = 0
             },

@@ -1,56 +1,56 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-static int sp_rpt_set(sp_rpt *p, SPFLOAT bpm, int div, int rep);
+static int ut_rpt_set(ut_rpt *p, UTFLOAT bpm, int div, int rep);
 
-int sp_rpt_create(sp_rpt **p)
+int ut_rpt_create(ut_rpt **p)
 {
-    *p = malloc(sizeof(sp_rpt));
-    return SP_OK;
+    *p = malloc(sizeof(ut_rpt));
+    return UT_OK;
 }
 
-int sp_rpt_destroy(sp_rpt **p)
+int ut_rpt_destroy(ut_rpt **p)
 {
-    sp_rpt *pp = *p;
-    sp_auxdata_free(&pp->aux);
+    ut_rpt *pp = *p;
+    ut_auxdata_free(&pp->aux);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_rpt_init(sp_data *sp, sp_rpt *p, SPFLOAT maxdur)
+int ut_rpt_init(ut_data *ut, ut_rpt *p, UTFLOAT maxdur)
 {
-    sp_auxdata_alloc(&p->aux, sizeof(SPFLOAT) * (uint32_t)maxdur * sp->sr);
+    ut_auxdata_alloc(&p->aux, sizeof(UTFLOAT) * (uint32_t)maxdur * ut->sr);
     p->playpos = 0;
     p->bufpos = 0;
     p->running = 0;
     p->reps = 4;
     p->count = p->reps;
     p->size = (int)p->aux.size;
-    p->sr = sp->sr;
+    p->sr = ut->sr;
     p->bpm = 130;
     p->div = 4;
     p->rep = 4;
-    p->rc = SP_OK;
-    return SP_OK;
+    p->rc = UT_OK;
+    return UT_OK;
 }
 
-int sp_rpt_compute(sp_data *sp, sp_rpt *p, SPFLOAT *trig,
-        SPFLOAT *in, SPFLOAT *out)
+int ut_rpt_compute(ut_data *ut, ut_rpt *p, UTFLOAT *trig,
+        UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT *buf = (SPFLOAT *)p->aux.ptr;
-    if(p->rc == SP_NOT_OK) {
+    UTFLOAT *buf = (UTFLOAT *)p->aux.ptr;
+    if(p->rc == UT_NOT_OK) {
         *out = 0;
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }
     if(*trig > 0){
-        p->rc = sp_rpt_set(p, p->bpm, p->div, p->rep);
+        p->rc = ut_rpt_set(p, p->bpm, p->div, p->rep);
         p->running = 1;
         p->playpos = 0;
         p->bufpos = 0;
         p->count = p->reps + 1;
     }
-    if(p->bufpos * sizeof(SPFLOAT) < p->aux.size){
-        p->rc = sp_rpt_set(p, p->bpm, p->div, p->rep);
+    if(p->bufpos * sizeof(UTFLOAT) < p->aux.size){
+        p->rc = ut_rpt_set(p, p->bpm, p->div, p->rep);
         buf[p->bufpos] = *in;
         p->bufpos++;
     }else{
@@ -65,21 +65,21 @@ int sp_rpt_compute(sp_data *sp, sp_rpt *p, SPFLOAT *trig,
     }else{
         *out = *in;
     }
-    return SP_OK;
+    return UT_OK;
 }
 
-static int sp_rpt_set(sp_rpt *p, SPFLOAT bpm, int div, int rep)
+static int ut_rpt_set(ut_rpt *p, UTFLOAT bpm, int div, int rep)
 {
-    uint32_t size = (p->sr * (60.0 / bpm)) / (SPFLOAT) div;
+    uint32_t size = (p->sr * (60.0 / bpm)) / (UTFLOAT) div;
     p->reps = rep;
-    if(size * sizeof(SPFLOAT) > p->aux.size){
+    if(size * sizeof(UTFLOAT) > p->aux.size){
         fprintf(stderr, "Error: not enough memory allocated for buffer.\n");
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }else if(size <= 0){
         fprintf(stderr, "Error: Size cannot be zero.\n");
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }else{
         p->size = size;
     }
-    return SP_OK;
+    return UT_OK;
 }

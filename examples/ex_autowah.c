@@ -1,39 +1,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_autowah *autowah;
-    sp_diskin *disk;
+    ut_autowah *autowah;
+    ut_diskin *disk;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT disk = 0, autowah = 0;
-    sp_diskin_compute(sp, ud->disk, NULL, &disk);
-    sp_autowah_compute(sp, ud->autowah, &disk, &autowah);
-    sp->out[0] = autowah;
+    UTFLOAT disk = 0, autowah = 0;
+    ut_diskin_compute(ut, ud->disk, NULL, &disk);
+    ut_autowah_compute(ut, ud->autowah, &disk, &autowah);
+    ut->out[0] = autowah;
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_autowah_create(&ud.autowah);
-    sp_diskin_create(&ud.disk);
+    ut_autowah_create(&ud.autowah);
+    ut_diskin_create(&ud.disk);
 
-    sp_diskin_init(sp, ud.disk, "riff.wav");
-    sp_autowah_init(sp, ud.autowah);
+    ut_diskin_init(ut, ud.disk, "riff.wav");
+    ut_autowah_init(ut, ud.autowah);
     *ud.autowah->wah = 1.0;
     
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_autowah_destroy(&ud.autowah);
-    sp_diskin_destroy(&ud.disk);
+    ut_autowah_destroy(&ud.autowah);
+    ut_diskin_destroy(&ud.disk);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

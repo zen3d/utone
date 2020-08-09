@@ -1,28 +1,28 @@
 #include <stdlib.h>
 #include <string.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_tblrec_create(sp_tblrec **p)
+int ut_tblrec_create(ut_tblrec **p)
 {
-    *p = malloc(sizeof(sp_tblrec));
-    return SP_OK;
+    *p = malloc(sizeof(ut_tblrec));
+    return UT_OK;
 }
 
-int sp_tblrec_destroy(sp_tblrec **p)
+int ut_tblrec_destroy(ut_tblrec **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tblrec_init(sp_data *sp, sp_tblrec *p, sp_ftbl *ft)
+int ut_tblrec_init(ut_data *ut, ut_tblrec *p, ut_ftbl *ft)
 {
     p->index = 0;
     p->record = 0;
     p->ft = ft;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tblrec_compute(sp_data *sp, sp_tblrec *p, SPFLOAT *in, SPFLOAT *trig, SPFLOAT *out)
+int ut_tblrec_compute(ut_data *ut, ut_tblrec *p, UTFLOAT *in, UTFLOAT *trig, UTFLOAT *out)
 {
     if(*trig != 0) {
         if(p->record == 1) {
@@ -30,7 +30,7 @@ int sp_tblrec_compute(sp_data *sp, sp_tblrec *p, SPFLOAT *in, SPFLOAT *trig, SPF
         } else {
             p->record = 1;
             p->index = 0;
-            memset(p->ft->tbl, 0, sizeof(SPFLOAT) * p->ft->size);
+            memset(p->ft->tbl, 0, sizeof(UTFLOAT) * p->ft->size);
         }
     }
 
@@ -40,5 +40,5 @@ int sp_tblrec_compute(sp_data *sp, sp_tblrec *p, SPFLOAT *in, SPFLOAT *trig, SPF
     }
 
     *out = *in;
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,15 +1,15 @@
 typedef struct
 {
-    SPFLOAT drive;
-    SPFLOAT dcoffset;
+    UTFLOAT drive;
+    UTFLOAT dcoffset;
 
-    SPFLOAT dcblocker[2][7];
+    UTFLOAT dcblocker[2][7];
 
-    SPFLOAT ai[6][7];
-    SPFLOAT aa[6][7];
-} sp_saturator;
+    UTFLOAT ai[6][7];
+    UTFLOAT aa[6][7];
+} ut_saturator;
 
-int sp_saturator_create(sp_saturator **p);
-int sp_saturator_destroy(sp_saturator **p);
-int sp_saturator_init(sp_data *sp, sp_saturator *p);
-int sp_saturator_compute(sp_data *sp, sp_saturator *p, SPFLOAT *in, SPFLOAT *out);
+int ut_saturator_create(ut_saturator **p);
+int ut_saturator_destroy(ut_saturator **p);
+int ut_saturator_init(ut_data *ut, ut_saturator *p);
+int ut_saturator_compute(ut_data *ut, ut_saturator *p, UTFLOAT *in, UTFLOAT *out);

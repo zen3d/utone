@@ -1,34 +1,34 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_progress_create(sp_progress **p)
+int ut_progress_create(ut_progress **p)
 {
-    *p = malloc(sizeof(sp_progress));
-    return SP_OK;
+    *p = malloc(sizeof(ut_progress));
+    return UT_OK;
 }
 
-int sp_progress_destroy(sp_progress **p)
+int ut_progress_destroy(ut_progress **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_progress_init(sp_data *sp, sp_progress *p)
+int ut_progress_init(ut_data *ut, ut_progress *p)
 {
     p->nbars = 40;
     p->skip = 1000;
     p->counter = 0;
-    p->len = (uint32_t) sp->len;
-    return SP_OK;
+    p->len = (uint32_t) ut->len;
+    return UT_OK;
 }
 
-int sp_progress_compute(sp_data *sp, sp_progress *p, SPFLOAT *in, SPFLOAT *out)
+int ut_progress_compute(ut_data *ut, ut_progress *p, UTFLOAT *in, UTFLOAT *out)
 {
-    if(p->counter == 0 || sp->pos == p->len - 1) {
+    if(p->counter == 0 || ut->pos == p->len - 1) {
         int n;
-        SPFLOAT slope = 1.0 / p->nbars;
-        if(sp->pos == 0) fprintf(stderr, "\e[?25l");
-        SPFLOAT percent = ((SPFLOAT)sp->pos / p->len);
+        UTFLOAT slope = 1.0 / p->nbars;
+        if(ut->pos == 0) fprintf(stderr, "\e[?25l");
+        UTFLOAT percent = ((UTFLOAT)ut->pos / p->len);
         fprintf(stderr, "[");
         for(n = 0; n < p->nbars; n++) {
             if(n * slope <= percent) {
@@ -40,9 +40,9 @@ int sp_progress_compute(sp_data *sp, sp_progress *p, SPFLOAT *in, SPFLOAT *out)
         fprintf(stderr, "] %.2f%%\t\r", 100 * percent);
 
     }
-    if(sp->pos == p->len - 1) fprintf(stderr, "\n\e[?25h");
+    if(ut->pos == p->len - 1) fprintf(stderr, "\n\e[?25h");
     fflush(stderr);
     p->counter++;
     p->counter %= p->skip;
-    return SP_OK;
+    return UT_OK;
 }

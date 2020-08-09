@@ -7,29 +7,29 @@ sptbl["tenvx"] = {
     },
 
     func = {
-        create = "sp_tenvx_create",
-        destroy = "sp_tenvx_destroy",
-        init = "sp_tenvx_init",
-        compute = "sp_tenvx_compute",
+        create = "ut_tenvx_create",
+        destroy = "ut_tenvx_destroy",
+        init = "ut_tenvx_init",
+        compute = "ut_tenvx_compute",
     },
 
     params = {
         optional = {
             {
                 name = "atk",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Tau attack time, in seconds. Must be non-zero.",
                 default = 0.1
             },
             {
                 name = "hold",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Hold time, in seconds. The duration of the gate signal.",
                 default = 0.3
             },
             {
                 name = "rel",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Tau release time, in seconds. Must be non-zero.",
                 default = 0.2
             },

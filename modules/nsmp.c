@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "ini.h"
 
 int nano_dict_add(nano_dict *dict, const char *name)
@@ -14,7 +14,7 @@ int nano_dict_add(nano_dict *dict, const char *name)
     dict->last->next = entry;
     dict->last = entry;
     dict->nval++;
-    return SP_OK;
+    return UT_OK;
 }
 
 int nano_ini_handler(void *user, const char *section, const char *name,
@@ -41,7 +41,7 @@ int nano_ini_handler(void *user, const char *section, const char *name,
         dict->last->speed = atof(value);
     }
 
-    return SP_OK;
+    return UT_OK;
 }
 
 int nano_create(nanosamp **smp, const char *ini, int sr)
@@ -57,10 +57,10 @@ int nano_create(nanosamp **smp, const char *ini, int sr)
     psmp->sr = sr;
     if(ini_parse(psmp->ini, nano_ini_handler, psmp) < 0) {
         printf("Can't load file %s\n", psmp->ini);
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }
 
-    return SP_OK;
+    return UT_OK;
 }
 
 int nano_select_from_index(nanosamp *smp, uint32_t pos)
@@ -69,7 +69,7 @@ int nano_select_from_index(nanosamp *smp, uint32_t pos)
     smp->selected = 1;
     smp->sample = smp->index[pos];
     smp->curpos = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
 uint32_t nano_keyword_to_index(nanosamp *smp, const char *keyword)
@@ -101,22 +101,22 @@ int nano_select(nanosamp *smp, const char *keyword)
         }
     }
 
-    if(smp->selected == 1) return SP_OK;
-    else return SP_NOT_OK;
+    if(smp->selected == 1) return UT_OK;
+    else return UT_NOT_OK;
 }
 
 
-int nano_compute(sp_data *sp, nanosamp *smp, SPFLOAT *out)
+int nano_compute(ut_data *ut, nanosamp *smp, UTFLOAT *out)
 {
     if(!smp->selected) {
         *out = 0;
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }
 
-    if(smp->curpos < (SPFLOAT)smp->sample->size) {
-        SPFLOAT x1 = 0 , x2 = 0, frac = 0, tmp = 0;
+    if(smp->curpos < (UTFLOAT)smp->sample->size) {
+        UTFLOAT x1 = 0 , x2 = 0, frac = 0, tmp = 0;
         uint32_t index = 0;
-        SPFLOAT *tbl = smp->ft->tbl;
+        UTFLOAT *tbl = smp->ft->tbl;
         tmp = (smp->curpos + smp->sample->pos);
         index = floorf(tmp);
         frac = fabs(tmp - index);
@@ -134,7 +134,7 @@ int nano_compute(sp_data *sp, nanosamp *smp, SPFLOAT *out)
         *out = 0;
     }
 
-    return SP_OK;
+    return UT_OK;
 }
 
 int nano_dict_destroy(nano_dict *dict)
@@ -148,7 +148,7 @@ int nano_dict_destroy(nano_dict *dict)
         free(entry);
         entry = next;
     }
-    return SP_OK;
+    return UT_OK;
 }
 
 int nano_destroy(nanosamp **smp)
@@ -156,7 +156,7 @@ int nano_destroy(nanosamp **smp)
     nanosamp *psmp = *smp;
     nano_dict_destroy(&psmp->dict);
     free(*smp);
-    return SP_OK;
+    return UT_OK;
 }
 
 
@@ -174,45 +174,45 @@ int nano_create_index(nanosamp *smp)
         smp->index[i] = entry;
         entry = next;
     }
-    return SP_OK;
+    return UT_OK;
 }
 
 int nano_destroy_index(nanosamp *smp)
 {
     free(smp->index);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_nsmp_create(sp_nsmp **p)
+int ut_nsmp_create(ut_nsmp **p)
 {
-    *p = malloc(sizeof(sp_nsmp));
-    return SP_OK;
+    *p = malloc(sizeof(ut_nsmp));
+    return UT_OK;
 }
 
-int sp_nsmp_destroy(sp_nsmp **p)
+int ut_nsmp_destroy(ut_nsmp **p)
 {
-    sp_nsmp *pp = *p;
+    ut_nsmp *pp = *p;
     nano_destroy_index(pp->smp);
     nano_destroy(&pp->smp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_nsmp_init(sp_data *sp, sp_nsmp *p, sp_ftbl *ft, int sr, const char *ini)
+int ut_nsmp_init(ut_data *ut, ut_nsmp *p, ut_ftbl *ft, int sr, const char *ini)
 {
-    if (nano_create(&p->smp, ini, sr) == SP_NOT_OK) {
+    if (nano_create(&p->smp, ini, sr) == UT_NOT_OK) {
         nano_destroy(&p->smp);
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }
     nano_create_index(p->smp);
     p->smp->sr = sr;
     p->index= 0;
     p->triggered = 0;
     p->smp->ft = ft;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_nsmp_compute(sp_data *sp, sp_nsmp *p, SPFLOAT *trig, SPFLOAT *out)
+int ut_nsmp_compute(ut_data *ut, ut_nsmp *p, UTFLOAT *trig, UTFLOAT *out)
 {
     if (*trig != 0) {
        p->triggered = 1;
@@ -220,20 +220,20 @@ int sp_nsmp_compute(sp_data *sp, sp_nsmp *p, SPFLOAT *trig, SPFLOAT *out)
     }
 
     if(p->triggered == 1) {
-        nano_compute(sp, p->smp, out);
+        nano_compute(ut, p->smp, out);
     } else {
         *out = 0;
     }
 
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_nsmp_print_index(sp_data *sp, sp_nsmp *p)
+int ut_nsmp_print_index(ut_data *ut, ut_nsmp *p)
 {
     uint32_t i;
     for(i = 0; i < p->smp->dict.nval; i++) {
         printf("%d: key = %s\n", i, p->smp->index[i]->name);
     }
-    return SP_OK;
+    return UT_OK;
 }
 

@@ -19,59 +19,59 @@
 #define M_PI		3.14159265358979323846	/* pi */
 #endif
 
-#include "soundpipe.h"
+#include "utone.h"
 
 /* Filter loop */
 
-static int sp_butter_filter(SPFLOAT *in, SPFLOAT *out, SPFLOAT *a)
+static int ut_butter_filter(UTFLOAT *in, UTFLOAT *out, UTFLOAT *a)
 {
-    SPFLOAT t, y;
+    UTFLOAT t, y;
     t = *in - a[4] * a[6] - a[5] * a[7];
     y = t * a[1] + a[2] * a[6] + a[3] * a[7];
     a[7] = a[6];
     a[6] = t;
     *out = y;
-    return SP_OK;
+    return UT_OK;
 }
 
 
-int sp_buthp_create(sp_buthp **p)
+int ut_buthp_create(ut_buthp **p)
 {
-    *p = malloc(sizeof(sp_buthp));
-    return SP_OK;
+    *p = malloc(sizeof(ut_buthp));
+    return UT_OK;
 }
 
-int sp_buthp_destroy(sp_buthp **p)
+int ut_buthp_destroy(ut_buthp **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_buthp_init(sp_data *sp, sp_buthp *p)
+int ut_buthp_init(ut_data *ut, ut_buthp *p)
 {
     p->istor = 0.0;
-    p->sr = sp->sr;
+    p->sr = ut->sr;
     p->freq = 1000;
-    p->pidsr = M_PI / sp->sr * 1.0;
+    p->pidsr = M_PI / ut->sr * 1.0;
     if (p->istor==0.0) {
         p->a[6] = p->a[7] = 0.0;
         p->lkf = 0.0;
     }
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_buthp_compute(sp_data *sp, sp_buthp *p, SPFLOAT *in, SPFLOAT *out)
+int ut_buthp_compute(ut_data *ut, ut_buthp *p, UTFLOAT *in, UTFLOAT *out)
 {
     if (p->freq <= 0.0)     {
       *out = 0;
-      return SP_OK;
+      return UT_OK;
     }
 
     if (p->freq != p->lkf)      {
-      SPFLOAT *a, c;
+      UTFLOAT *a, c;
       a = p->a;
       p->lkf = p->freq;
-      c = tan((SPFLOAT)(p->pidsr * p->lkf));
+      c = tan((UTFLOAT)(p->pidsr * p->lkf));
 
       a[1] = 1.0 / ( 1.0 + ROOT2 * c + c * c);
       a[2] = -(a[1] + a[1]);
@@ -79,7 +79,7 @@ int sp_buthp_compute(sp_data *sp, sp_buthp *p, SPFLOAT *in, SPFLOAT *out)
       a[4] = 2.0 * ( c*c - 1.0) * a[1];
       a[5] = ( 1.0 - ROOT2 * c + c * c) * a[1];
     }
-    sp_butter_filter(in, out, p->a);
-    return SP_OK;
+    ut_butter_filter(in, out, p->a);
+    return UT_OK;
 }
 

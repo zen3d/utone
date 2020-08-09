@@ -1,49 +1,49 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_biscale *biscale;
-    sp_osc *osc;
-    sp_ftbl *ft;
+    ut_biscale *biscale;
+    ut_osc *osc;
+    ut_ftbl *ft;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, biscale = 0;
+    UTFLOAT osc = 0, biscale = 0;
     /* constant set to 1, when scaled, it becomes 440 */
-    SPFLOAT val = 1;
-    sp_biscale_compute(sp, ud->biscale, &val, &biscale);
+    UTFLOAT val = 1;
+    ut_biscale_compute(ut, ud->biscale, &val, &biscale);
     ud->osc->freq = biscale;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp->out[0] = osc;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut->out[0] = osc;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_biscale_create(&ud.biscale);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
+    ut_biscale_create(&ud.biscale);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
 
-    sp_biscale_init(sp, ud.biscale);
+    ut_biscale_init(ut, ud.biscale);
     ud.biscale->min = 0;
     ud.biscale->max = 880;
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
     ud.osc->amp = 0.1;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_biscale_destroy(&ud.biscale);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
+    ut_biscale_destroy(&ud.biscale);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

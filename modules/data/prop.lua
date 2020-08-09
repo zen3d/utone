@@ -7,12 +7,12 @@ sptbl["prop"] = {
     },
 
     func = {
-        create = "sp_prop_create",
-        destroy = "sp_prop_destroy",
-        init = "sp_prop_init",
-        compute = "sp_prop_compute",
+        create = "ut_prop_create",
+        destroy = "ut_prop_destroy",
+        init = "ut_prop_init",
+        compute = "ut_prop_compute",
         other = {
-            sp_prop_reset = {
+            ut_prop_reset = {
                 description = "Resets prop back to starting position.",
                 args = {
                 }
@@ -33,7 +33,7 @@ sptbl["prop"] = {
         optional = {
             {
                 name = "bpm",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Beats per minute of the prop string.",
                 default = 60
             },

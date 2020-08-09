@@ -1,49 +1,49 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_noise *ns;
-    sp_revsc *rev;
+    ut_noise *ns;
+    ut_revsc *rev;
     int counter;
 } UserData;
 
-int t_revsc(sp_test *tst, sp_data *sp, const char *hash) 
+int t_revsc(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT in = 0;
-    SPFLOAT foo = 0;
-    sp_srand(sp, 123456);
+    UTFLOAT in = 0;
+    UTFLOAT foo = 0;
+    ut_srand(ut, 123456);
     UserData ud;
     ud.counter = 0;
-    sp_noise_create(&ud.ns);
-    sp_revsc_create(&ud.rev);
-    sp_noise_init(sp, ud.ns);
-    sp_revsc_init(sp, ud.rev);
+    ut_noise_create(&ud.ns);
+    ut_revsc_create(&ud.rev);
+    ut_noise_init(ut, ud.ns);
+    ut_revsc_init(ut, ud.rev);
 
-    sp->len = 44100 * 5;
+    ut->len = 44100 * 5;
 
     for(n = 0; n < tst->size; n++) {
         in = 0;
         foo = 0;
-        sp_noise_compute(sp, ud.ns, NULL, &in);
+        ut_noise_compute(ut, ud.ns, NULL, &in);
         
         if(ud.counter < 2000) {
             ud.counter = (ud.counter + 1) % 5000;
         }else{
             in = 0;
         }
-        sp_revsc_compute(sp, ud.rev, &in, &in, &sp->out[0], &foo); 
-        sp_test_add_sample(tst, sp->out[0]);
+        ut_revsc_compute(ut, ud.rev, &in, &in, &ut->out[0], &foo); 
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
     
-    sp_noise_destroy(&ud.ns);
-    sp_revsc_destroy(&ud.rev);
+    ut_noise_destroy(&ud.ns);
+    ut_revsc_destroy(&ud.rev);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

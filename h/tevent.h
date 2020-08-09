@@ -1,12 +1,12 @@
 typedef struct{
     void (*reinit)(void *);
-    void (*compute)(void *, SPFLOAT *out);
+    void (*compute)(void *, UTFLOAT *out);
     void *ud;
     int started;
-}sp_tevent;
+}ut_tevent;
 
-int sp_tevent_create(sp_tevent **te);
-int sp_tevent_destroy(sp_tevent **te);
-int sp_tevent_init(sp_data *sp, sp_tevent *te, 
-        void (*reinit)(void*), void (*compute)(void *, SPFLOAT *out), void *ud);
-int sp_tevent_compute(sp_data *sp, sp_tevent *te, SPFLOAT *in, SPFLOAT *out);
+int ut_tevent_create(ut_tevent **te);
+int ut_tevent_destroy(ut_tevent **te);
+int ut_tevent_init(ut_data *ut, ut_tevent *te, 
+        void (*reinit)(void*), void (*compute)(void *, UTFLOAT *out), void *ud);
+int ut_tevent_compute(ut_data *ut, ut_tevent *te, UTFLOAT *in, UTFLOAT *out);

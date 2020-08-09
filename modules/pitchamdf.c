@@ -12,32 +12,32 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 /* #define lrintf(x) lrintf(x) */
 
-int sp_pitchamdf_create(sp_pitchamdf **p)
+int ut_pitchamdf_create(ut_pitchamdf **p)
 {
-    *p = malloc(sizeof(sp_pitchamdf));
-    return SP_OK;
+    *p = malloc(sizeof(ut_pitchamdf));
+    return UT_OK;
 }
 
-int sp_pitchamdf_destroy(sp_pitchamdf **p)
+int ut_pitchamdf_destroy(ut_pitchamdf **p)
 {
-    sp_pitchamdf *pp = *p;
-    sp_auxdata_free(&pp->median);
+    ut_pitchamdf *pp = *p;
+    ut_auxdata_free(&pp->median);
 /* This mirrors the original code */
     if(pp->rmsmedisize) {
-        sp_auxdata_free(&pp->rmsmedian);
+        ut_auxdata_free(&pp->rmsmedian);
     }
-    sp_auxdata_free(&pp->buffer);
+    ut_auxdata_free(&pp->buffer);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_pitchamdf_init(sp_data *sp, sp_pitchamdf *p, SPFLOAT imincps, SPFLOAT imaxcps)
+int ut_pitchamdf_init(ut_data *ut, ut_pitchamdf *p, UTFLOAT imincps, UTFLOAT imaxcps)
 {
-    SPFLOAT srate, downs;
+    UTFLOAT srate, downs;
     int32_t size, minperi, maxperi, downsamp, upsamp, msize, bufsize;
     uint32_t interval;
 
@@ -57,11 +57,11 @@ int sp_pitchamdf_init(sp_data *sp, sp_pitchamdf *p, SPFLOAT imincps, SPFLOAT ima
     if (downs < (-1.9)) {
         upsamp = (int)lrintf((-downs));
         downsamp = 0;
-        srate = sp->sr * (SPFLOAT)upsamp;
+        srate = ut->sr * (UTFLOAT)upsamp;
     } else {
         downsamp = (int)lrintf(downs);
         if (downsamp < 1) downsamp = 1;
-        srate = sp->sr / (SPFLOAT)downsamp;
+        srate = ut->sr / (UTFLOAT)downsamp;
         upsamp = 0;
     }
 
@@ -69,7 +69,7 @@ int sp_pitchamdf_init(sp_data *sp, sp_pitchamdf *p, SPFLOAT imincps, SPFLOAT ima
     maxperi = (int32_t)(0.5 + srate / p->imincps);
     if (maxperi <= minperi) {
         p->inerr = 1;
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }
 
     if (p->iexcps < 1)
@@ -78,7 +78,7 @@ int sp_pitchamdf_init(sp_data *sp, sp_pitchamdf *p, SPFLOAT imincps, SPFLOAT ima
         interval = (uint32_t)(srate / p->iexcps);
 
     size = maxperi + interval;
-    bufsize = sizeof(SPFLOAT)*(size + maxperi + 2);
+    bufsize = sizeof(UTFLOAT)*(size + maxperi + 2);
 
     p->srate = srate;
     p->downsamp = downsamp;
@@ -105,8 +105,8 @@ int sp_pitchamdf_init(sp_data *sp, sp_pitchamdf *p, SPFLOAT imincps, SPFLOAT ima
     p->rmsmediptr = 0;
 
     if (p->rmsmedisize) {
-        msize = p->rmsmedisize * 3 * sizeof(SPFLOAT);
-        sp_auxdata_alloc(&p->rmsmedian, msize);
+        msize = p->rmsmedisize * 3 * sizeof(UTFLOAT);
+        ut_auxdata_alloc(&p->rmsmedian, msize);
     }
 
     if (p->imedi < 1) {
@@ -118,23 +118,23 @@ int sp_pitchamdf_init(sp_data *sp, sp_pitchamdf *p, SPFLOAT imincps, SPFLOAT ima
     p->mediptr = 0;
 
     if (p->medisize) {
-        msize = p->medisize * 3 * sizeof(SPFLOAT);
-        sp_auxdata_alloc(&p->median, msize);
+        msize = p->medisize * 3 * sizeof(UTFLOAT);
+        ut_auxdata_alloc(&p->median, msize);
     }
 
-    sp_auxdata_alloc(&p->buffer, bufsize);
-    return SP_OK;
+    ut_auxdata_alloc(&p->buffer, bufsize);
+    return UT_OK;
 }
 
 
 #define SWAP(a,b) temp=(a);(a)=(b);(b)=temp
 
-static SPFLOAT medianvalue(uint32_t n, SPFLOAT *vals)
+static UTFLOAT medianvalue(uint32_t n, UTFLOAT *vals)
 {   
     /* vals must point to 1 below relevant data! */
     uint32_t i, ir, j, l, mid;
     uint32_t k = (n + 1) / 2;
-    SPFLOAT a, temp;
+    UTFLOAT a, temp;
 
     l = 1;
     ir = n;
@@ -174,33 +174,33 @@ static SPFLOAT medianvalue(uint32_t n, SPFLOAT *vals)
 }
 #undef SWAP
 
-int sp_pitchamdf_compute(sp_data *sp, sp_pitchamdf *p, SPFLOAT *in, 
-    SPFLOAT *cps, SPFLOAT *rms_out)
+int ut_pitchamdf_compute(ut_data *ut, ut_pitchamdf *p, UTFLOAT *in, 
+    UTFLOAT *cps, UTFLOAT *rms_out)
 {
-    SPFLOAT *buffer = (SPFLOAT*)p->buffer.ptr;
-    SPFLOAT *rmsmedian = (SPFLOAT*)p->rmsmedian.ptr;
+    UTFLOAT *buffer = (UTFLOAT*)p->buffer.ptr;
+    UTFLOAT *rmsmedian = (UTFLOAT*)p->rmsmedian.ptr;
     int32_t rmsmedisize = p->rmsmedisize;
     int32_t rmsmediptr = p->rmsmediptr;
-    SPFLOAT *median = (SPFLOAT*)p->median.ptr;
+    UTFLOAT *median = (UTFLOAT*)p->median.ptr;
     int32_t medisize = p->medisize;
     int32_t mediptr = p->mediptr;
     int32_t size = p->size;
     int32_t index = p->index;
     int32_t minperi = p->minperi;
     int32_t maxperi = p->maxperi;
-    SPFLOAT srate = p->srate;
+    UTFLOAT srate = p->srate;
     int32_t peri = p->peri;
     int32_t upsamp = p->upsamp;
-    SPFLOAT upsmp = (SPFLOAT)upsamp;
-    SPFLOAT lastval = p->lastval;
-    SPFLOAT newval, delta;
+    UTFLOAT upsmp = (UTFLOAT)upsamp;
+    UTFLOAT lastval = p->lastval;
+    UTFLOAT newval, delta;
     int32_t readp = p->readp;
     int32_t interval = size - maxperi;
     int i;
     int32_t i1, i2;
-    SPFLOAT val, rms;
-    SPFLOAT sum;
-    SPFLOAT acc, accmin, diff;
+    UTFLOAT val, rms;
+    UTFLOAT sum;
+    UTFLOAT acc, accmin, diff;
 
     if (upsamp) {
         newval = *in;
@@ -239,7 +239,7 @@ int sp_pitchamdf_compute(sp_data *sp, sp_pitchamdf *p, SPFLOAT *in,
                 index = maxperi;
 
                 if (medisize) {
-                    median[mediptr] = (SPFLOAT)peri;
+                    median[mediptr] = (UTFLOAT)peri;
                     for (i1 = 0; i1 < medisize; i1++) {
                         median[medisize+i1] = median[i1];
                     }
@@ -290,7 +290,7 @@ int sp_pitchamdf_compute(sp_data *sp, sp_pitchamdf *p, SPFLOAT *in,
             index = maxperi;
 
             if (medisize) {
-                median[mediptr] = (SPFLOAT)peri;
+                median[mediptr] = (UTFLOAT)peri;
 
                 for (i1 = 0; i1 < medisize; i1++) {
                     median[medisize+i1] = median[i1];
@@ -310,12 +310,12 @@ int sp_pitchamdf_compute(sp_data *sp, sp_pitchamdf *p, SPFLOAT *in,
     sum = 0.0;
     for (i1=0; i1<peri; i1++) {
         val = buffer[i1];
-        sum += (SPFLOAT)(val * val);
+        sum += (UTFLOAT)(val * val);
     }
     if (peri==0)      
         rms = 0.0;
     else
-        rms = (SPFLOAT)sqrt(sum / (SPFLOAT)peri);
+        rms = (UTFLOAT)sqrt(sum / (UTFLOAT)peri);
     if (rmsmedisize) {
         rmsmedian[rmsmediptr] = rms;
         for (i1 = 0; i1 < rmsmedisize; i1++) {
@@ -334,12 +334,12 @@ int sp_pitchamdf_compute(sp_data *sp, sp_pitchamdf *p, SPFLOAT *in,
     if (peri==0) {
         *cps = 0.0;
     } else {
-        *cps = srate / (SPFLOAT)peri;
+        *cps = srate / (UTFLOAT)peri;
     }
 
     *rms_out = rms;
     p->index = index;
     p->peri = peri;
     p->readp = readp;
-    return SP_OK;
+    return UT_OK;
 }

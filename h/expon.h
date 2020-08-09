@@ -1,11 +1,11 @@
 typedef struct {
-    SPFLOAT a, dur, b;
-    SPFLOAT val, incr; 
+    UTFLOAT a, dur, b;
+    UTFLOAT val, incr; 
     uint32_t sdur, stime;
     int init;
-} sp_expon;
+} ut_expon;
 
-int sp_expon_create(sp_expon **p);
-int sp_expon_destroy(sp_expon **p);
-int sp_expon_init(sp_data *sp, sp_expon *p);
-int sp_expon_compute(sp_data *sp, sp_expon *p, SPFLOAT *in, SPFLOAT *out);
+int ut_expon_create(ut_expon **p);
+int ut_expon_destroy(ut_expon **p);
+int ut_expon_init(ut_data *ut, ut_expon *p);
+int ut_expon_compute(ut_data *ut, ut_expon *p, UTFLOAT *in, UTFLOAT *out);

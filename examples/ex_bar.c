@@ -1,42 +1,42 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_bar *bar;
-    sp_metro *met;
+    ut_bar *bar;
+    ut_metro *met;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT bar = 0, met = 0;
-    sp_metro_compute(sp, ud->met, NULL, &met);
-    sp_bar_compute(sp, ud->bar, &met, &bar);
-    sp->out[0] = bar;
+    UTFLOAT bar = 0, met = 0;
+    ut_metro_compute(ut, ud->met, NULL, &met);
+    ut_bar_compute(ut, ud->bar, &met, &bar);
+    ut->out[0] = bar;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_bar_create(&ud.bar);
-    sp_metro_create(&ud.met);
+    ut_bar_create(&ud.bar);
+    ut_metro_create(&ud.met);
 
-    sp_bar_init(sp, ud.bar, 3, 0.0001);
+    ut_bar_init(ut, ud.bar, 3, 0.0001);
     ud.bar->T30 = 1;
 
-    sp_metro_init(sp, ud.met);
+    ut_metro_init(ut, ud.met);
     ud.met->freq = 1;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_bar_destroy(&ud.bar);
-    sp_metro_destroy(&ud.met);
+    ut_bar_destroy(&ud.bar);
+    ut_metro_destroy(&ud.met);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

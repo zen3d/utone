@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 enum {
     T_ON,
@@ -7,39 +7,39 @@ enum {
     T_INIT
 };
 
-int sp_tenv2_create(sp_tenv2 **p)
+int ut_tenv2_create(ut_tenv2 **p)
 {
-    *p = malloc(sizeof(sp_tenv2));
-    return SP_OK;
+    *p = malloc(sizeof(ut_tenv2));
+    return UT_OK;
 }
 
-int sp_tenv2_destroy(sp_tenv2 **p)
+int ut_tenv2_destroy(ut_tenv2 **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tenv2_init(sp_data *sp, sp_tenv2 *p)
+int ut_tenv2_init(ut_data *ut, ut_tenv2 *p)
 {
     p->state = T_INIT;
     p->atk = 0.1;
     p->rel = 0.1;
     p->slope = 0;
     p->last = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tenv2_compute(sp_data *sp, sp_tenv2 *p, SPFLOAT *in, SPFLOAT *out)
+int ut_tenv2_compute(ut_data *ut, ut_tenv2 *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(*in != 0) {
         if(p->state == T_INIT || p->state == T_OFF) {
             p->state = T_ON;
-            p->timer = (uint32_t)(sp->sr * p->atk);
+            p->timer = (uint32_t)(ut->sr * p->atk);
             p->totaltime = p->timer;
             p->slope = 1.0 / p->totaltime;
         } else if (p->state == T_ON) { 
             p->state = T_OFF;
-            p->timer = (uint32_t)(sp->sr * p->rel);
+            p->timer = (uint32_t)(ut->sr * p->rel);
             p->totaltime = p->timer;
             p->slope = 1.0 / p->totaltime;
         }
@@ -47,7 +47,7 @@ int sp_tenv2_compute(sp_data *sp, sp_tenv2 *p, SPFLOAT *in, SPFLOAT *out)
     if(p->timer == 0) {
         if(p->state == T_ON) *out = 1;
         else *out = 0;
-        return SP_OK;
+        return UT_OK;
     } else {
         p->timer--;
         if(p->state == T_ON)  {
@@ -61,7 +61,7 @@ int sp_tenv2_compute(sp_data *sp, sp_tenv2 *p, SPFLOAT *in, SPFLOAT *out)
 
         p->last = *out;
 
-        return SP_OK;
+        return UT_OK;
     }
-    return SP_OK;
+    return UT_OK;
 }

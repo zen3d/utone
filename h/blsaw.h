@@ -1,12 +1,12 @@
 typedef struct {
     void *ud;
     int argpos;
-    SPFLOAT *args[2];
-    SPFLOAT *freq;
-    SPFLOAT *amp;
-} sp_blsaw;
+    UTFLOAT *args[2];
+    UTFLOAT *freq;
+    UTFLOAT *amp;
+} ut_blsaw;
 
-int sp_blsaw_create(sp_blsaw **p);
-int sp_blsaw_destroy(sp_blsaw **p);
-int sp_blsaw_init(sp_data *sp, sp_blsaw *p);
-int sp_blsaw_compute(sp_data *sp, sp_blsaw *p, SPFLOAT *in, SPFLOAT *out);
+int ut_blsaw_create(ut_blsaw **p);
+int ut_blsaw_destroy(ut_blsaw **p);
+int ut_blsaw_init(ut_data *ut, ut_blsaw *p);
+int ut_blsaw_compute(ut_data *ut, ut_blsaw *p, UTFLOAT *in, UTFLOAT *out);

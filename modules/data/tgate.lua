@@ -7,17 +7,17 @@ sptbl["tgate"] = {
     },
 
     func = {
-        create = "sp_tgate_create",
-        destroy = "sp_tgate_destroy",
-        init = "sp_tgate_init",
-        compute = "sp_tgate_compute",
+        create = "ut_tgate_create",
+        destroy = "ut_tgate_destroy",
+        init = "ut_tgate_init",
+        compute = "ut_tgate_compute",
     },
 
     params = {
         optional = {
             {
                 name = "time",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Duration of the gate (in seconds)",
                 default = 0.5
             },

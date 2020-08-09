@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "CUI.h"
 
 #define max(a,b) ((a < b) ? b : a)
@@ -151,52 +151,52 @@ void computebltriangle(bltriangle* dsp, int count, FAUSTFLOAT** inputs, FAUSTFLO
 
 static void addHorizontalSlider(void* ui_interface, const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
 {
-    sp_bltriangle *p = ui_interface;
+    ut_bltriangle *p = ui_interface;
     p->args[p->argpos] = zone;
     p->argpos++;
 }
 
-int sp_bltriangle_create(sp_bltriangle **p)
+int ut_bltriangle_create(ut_bltriangle **p)
 {
-    *p = malloc(sizeof(sp_bltriangle));
-    return SP_OK;
+    *p = malloc(sizeof(ut_bltriangle));
+    return UT_OK;
 }
 
-int sp_bltriangle_destroy(sp_bltriangle **p)
+int ut_bltriangle_destroy(ut_bltriangle **p)
 {
-    sp_bltriangle *pp = *p;
+    ut_bltriangle *pp = *p;
     bltriangle *dsp = pp->ud;
     deletebltriangle (dsp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_bltriangle_init(sp_data *sp, sp_bltriangle *p)
+int ut_bltriangle_init(ut_data *ut, ut_bltriangle *p)
 {
     bltriangle *dsp = newbltriangle(); UIGlue UI;
     p->argpos = 0;
     UI.addHorizontalSlider= addHorizontalSlider;
     UI.uiInterface = p;
     buildUserInterfacebltriangle(dsp, &UI);
-    initbltriangle(dsp, sp->sr);
+    initbltriangle(dsp, ut->sr);
 
 
     p->freq = p->args[0];
     p->amp = p->args[1];
 
     p->ud = dsp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_bltriangle_compute(sp_data *sp, sp_bltriangle *p, SPFLOAT *in, SPFLOAT *out)
+int ut_bltriangle_compute(ut_data *ut, ut_bltriangle *p, UTFLOAT *in, UTFLOAT *out)
 {
 
     bltriangle *dsp = p->ud;
-    SPFLOAT out1 = 0;
-    SPFLOAT *faust_out[] = {&out1};
-    SPFLOAT *faust_in[] = {in};
+    UTFLOAT out1 = 0;
+    UTFLOAT *faust_out[] = {&out1};
+    UTFLOAT *faust_in[] = {in};
     computebltriangle(dsp, 1, faust_in, faust_out);
 
     *out = out1;
-    return SP_OK;
+    return UT_OK;
 }

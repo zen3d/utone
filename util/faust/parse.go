@@ -21,7 +21,7 @@ func main() {
 
 	var cnt Blah	
 	
-	tmpl, err := template.ParseFiles("sp_faust.c.template")
+	tmpl, err := template.ParseFiles("ut_faust.c.template")
 	
 	if err != nil { panic(err) }	
 	
@@ -43,5 +43,5 @@ func main() {
 		cnt.Params = append(cnt.Params, mymap["label"].(string))
 	}
 
-	tmpl.ExecuteTemplate(os.Stdout, "sp_faust.c.template", cnt)
+	tmpl.ExecuteTemplate(os.Stdout, "ut_faust.c.template", cnt)
 }

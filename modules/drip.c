@@ -13,7 +13,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #define WUTR_SOUND_DECAY 0.95
 #define WUTR_SYSTEM_DECAY 0.996
@@ -30,34 +30,34 @@
 #define M_PI		3.14159265358979323846	
 #endif 
 
-static int my_random(sp_data *sp, int max)
+static int my_random(ut_data *ut, int max)
 {                      
-    return (sp_rand(sp) % (max + 1));
+    return (ut_rand(ut) % (max + 1));
 }
 
-static SPFLOAT noise_tick(sp_data *sp)                                        
+static UTFLOAT noise_tick(ut_data *ut)                                        
 {                       
-    SPFLOAT temp;                                                                
-    temp = 1.0 * sp_rand(sp) - 1073741823.5;
+    UTFLOAT temp;                                                                
+    temp = 1.0 * ut_rand(ut) - 1073741823.5;
     return temp * (1.0 / 1073741823.0);
 }                                                                              
 
-int sp_drip_create(sp_drip **p)
+int ut_drip_create(ut_drip **p)
 {
-    *p = malloc(sizeof(sp_drip));
-    return SP_OK;
+    *p = malloc(sizeof(ut_drip));
+    return UT_OK;
 }
 
-int sp_drip_destroy(sp_drip **p)
+int ut_drip_destroy(ut_drip **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_drip_init(sp_data *sp, sp_drip *p, SPFLOAT dettack)
+int ut_drip_init(ut_data *ut, ut_drip *p, UTFLOAT dettack)
 {
 
-    SPFLOAT temp;
+    UTFLOAT temp;
     p->dettack = dettack;
     p->num_tubes = 10;
     p->damp = 0.2;
@@ -68,9 +68,9 @@ int sp_drip_init(sp_data *sp, sp_drip *p, SPFLOAT dettack)
     p->amp = 0.3;
 
     p->sndLevel = 0.0;
-    SPFLOAT tpidsr = 2.0 * M_PI / sp->sr;
+    UTFLOAT tpidsr = 2.0 * M_PI / ut->sr;
 
-    p->kloop = (sp->sr * p->dettack);
+    p->kloop = (ut->sr * p->dettack);
     p->outputs00 = 0.0;
     p->outputs01 = 0.0;
     p->outputs10 = 0.0;
@@ -104,18 +104,18 @@ int sp_drip_init(sp_data *sp, sp_drip *p, SPFLOAT dettack)
     p->shake_maxSave = 0.0;
     p->num_objects = 10;        
     p->finalZ0 = p->finalZ1 = p->finalZ2 = 0.0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_drip_compute(sp_data *sp, sp_drip *p, SPFLOAT *trig, SPFLOAT *out)
+int ut_drip_compute(ut_data *ut, ut_drip *p, UTFLOAT *trig, UTFLOAT *out)
 {
-    SPFLOAT data;
-    SPFLOAT lastOutput;
+    UTFLOAT data;
+    UTFLOAT lastOutput;
 
-    SPFLOAT tpidsr = 2.0 * M_PI / sp->sr;
+    UTFLOAT tpidsr = 2.0 * M_PI / ut->sr;
 
     if(*trig) {
-        sp_drip_init(sp, p, p->dettack);
+        ut_drip_init(ut, p, p->dettack);
     } 
     if (p->num_tubes != 0.0 && p->num_tubes != p->num_objects) {
         p->num_objects = p->num_tubes;
@@ -149,31 +149,31 @@ int sp_drip_compute(sp_data *sp, sp_drip *p, SPFLOAT *trig, SPFLOAT *out)
         p->shakeEnergy = 0.0;
     }
 
-    SPFLOAT shakeEnergy = p->shakeEnergy;
-    SPFLOAT systemDecay = p->systemDecay;
-    SPFLOAT sndLevel = p->sndLevel;
-    SPFLOAT num_objects = p->num_objects;
-    SPFLOAT soundDecay = p->soundDecay;
-    SPFLOAT inputs0, inputs1, inputs2;
+    UTFLOAT shakeEnergy = p->shakeEnergy;
+    UTFLOAT systemDecay = p->systemDecay;
+    UTFLOAT sndLevel = p->sndLevel;
+    UTFLOAT num_objects = p->num_objects;
+    UTFLOAT soundDecay = p->soundDecay;
+    UTFLOAT inputs0, inputs1, inputs2;
 
     shakeEnergy *= systemDecay; /* Exponential system decay */
 
     sndLevel = shakeEnergy;
-    if (my_random(sp, 32767) < num_objects) {
+    if (my_random(ut, 32767) < num_objects) {
         int j;
-        j = my_random(sp, 3);
+        j = my_random(ut, 3);
         if (j == 0) {
             p->center_freqs0 = p->res_freq1 *
-            (0.75 + (0.25 * noise_tick(sp)));
-            p->gains0 = fabs(noise_tick(sp));
+            (0.75 + (0.25 * noise_tick(ut)));
+            p->gains0 = fabs(noise_tick(ut));
         } else if (j == 1) {
             p->center_freqs1 = p->res_freq1 *
-            (1.0 + (0.25 * noise_tick(sp)));
-            p->gains1 = fabs(noise_tick(sp));
+            (1.0 + (0.25 * noise_tick(ut)));
+            p->gains1 = fabs(noise_tick(ut));
         } else  {
             p->center_freqs2 = p->res_freq1 *
-            (1.25 + (0.25 * noise_tick(sp)));
-            p->gains2 = fabs(noise_tick(sp));
+            (1.25 + (0.25 * noise_tick(ut)));
+            p->gains2 = fabs(noise_tick(ut));
         }
     }
 
@@ -198,7 +198,7 @@ int sp_drip_compute(sp_data *sp, sp_drip *p, SPFLOAT *trig, SPFLOAT *out)
 
     sndLevel *= soundDecay;   
     inputs0 = sndLevel;
-    inputs0 *= noise_tick(sp); 
+    inputs0 *= noise_tick(ut); 
     inputs1 = inputs0 * p->gains1;
     inputs2 = inputs0 * p->gains2;
     inputs0 *= p->gains0;
@@ -227,5 +227,5 @@ int sp_drip_compute(sp_data *sp, sp_drip *p, SPFLOAT *trig, SPFLOAT *out)
     *out = lastOutput;
     p->shakeEnergy = shakeEnergy;
     p->sndLevel = sndLevel;
-    return SP_OK;
+    return UT_OK;
 }

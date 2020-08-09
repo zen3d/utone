@@ -1,47 +1,47 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_fosc *osc;
-    sp_ftbl *ft; 
-    sp_jitter *jit;
+    ut_fosc *osc;
+    ut_ftbl *ft; 
+    ut_jitter *jit;
 } UserData;
 
-int t_jitter(sp_test *tst, sp_data *sp, const char *hash) 
+int t_jitter(ut_test *tst, ut_data *ut, const char *hash) 
 {
-    sp_srand(sp, 1234567);
+    ut_srand(ut, 1234567);
 
     uint32_t n;
     int fail = 0;
 
     UserData ud;
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_fosc_create(&ud.osc);
-    sp_jitter_create(&ud.jit);   
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_fosc_create(&ud.osc);
+    ut_jitter_create(&ud.jit);   
 
-    sp_gen_sine(sp, ud.ft);
-    sp_fosc_init(sp, ud.osc, ud.ft);
-    sp_jitter_init(sp, ud.jit);
+    ut_gen_sine(ut, ud.ft);
+    ut_fosc_init(ut, ud.osc, ud.ft);
+    ut_jitter_init(ut, ud.jit);
     ud.jit->cpsMin = 0.5;
     ud.jit->cpsMax = 4;
     ud.jit->amp = 3;  
 
     for(n = 0; n < tst->size; n++) {
-        SPFLOAT jit = 0;
-        sp_jitter_compute(sp, ud.jit, NULL, &jit);
-        ud.osc->freq = sp_midi2cps(60 + jit);
-        sp_fosc_compute(sp, ud.osc, NULL, &sp->out[0]);
-        sp_test_add_sample(tst, sp->out[0]);
+        UTFLOAT jit = 0;
+        ut_jitter_compute(ut, ud.jit, NULL, &jit);
+        ud.osc->freq = ut_midi2cps(60 + jit);
+        ut_fosc_compute(ut, ud.osc, NULL, &ut->out[0]);
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
      
-    sp_ftbl_destroy(&ud.ft);
-    sp_fosc_destroy(&ud.osc);
-    sp_jitter_destroy(&ud.jit);
+    ut_ftbl_destroy(&ud.ft);
+    ut_fosc_destroy(&ud.osc);
+    ut_jitter_destroy(&ud.jit);
  
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

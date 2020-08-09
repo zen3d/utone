@@ -11,32 +11,32 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-#define sp_oneUp31Bit      (4.656612875245796924105750827168e-10)
-#define sp_randGab   ((SPFLOAT)     \
+#define ut_oneUp31Bit      (4.656612875245796924105750827168e-10)
+#define ut_randGab   ((UTFLOAT)     \
         (((p->holdrand = p->holdrand * 214013 + 2531011) >> 1)  \
-         & 0x7fffffff) * sp_oneUp31Bit)
-#define sp_BiRandGab ((SPFLOAT)     \
-        (p->holdrand = p->holdrand * -214013 + 2531011) * sp_oneUp31Bit)
+         & 0x7fffffff) * ut_oneUp31Bit)
+#define ut_BiRandGab ((UTFLOAT)     \
+        (p->holdrand = p->holdrand * -214013 + 2531011) * ut_oneUp31Bit)
 
-int sp_rspline_create(sp_rspline **p)
+int ut_rspline_create(ut_rspline **p)
 {
-    *p = malloc(sizeof(sp_rspline));
-    return SP_OK;
+    *p = malloc(sizeof(ut_rspline));
+    return UT_OK;
 }
 
-int sp_rspline_destroy(sp_rspline **p)
+int ut_rspline_destroy(ut_rspline **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_rspline_init(sp_data *sp, sp_rspline *p)
+int ut_rspline_init(ut_data *ut, ut_rspline *p)
 {
-    p->holdrand = sp_rand(sp);
-    p->num1 = sp_randGab;
-    p->num2 = sp_randGab;
+    p->holdrand = ut_rand(ut);
+    p->num1 = ut_randGab;
+    p->num2 = ut_randGab;
     p->df1 = 0.0;
     p->phs = 0.0;
     p->init = 1;
@@ -44,32 +44,32 @@ int sp_rspline_init(sp_data *sp, sp_rspline *p)
     p->cps_min = 0.1;
     p->min = 0;
     p->max = 1;
-    p->onedsr = 1.0 / (SPFLOAT)sp->sr;
-    return SP_OK;
+    p->onedsr = 1.0 / (UTFLOAT)ut->sr;
+    return UT_OK;
 }
 
-int sp_rspline_compute(sp_data *sp, sp_rspline *p, SPFLOAT *in, SPFLOAT *out)
+int ut_rspline_compute(ut_data *ut, ut_rspline *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT x;
-    SPFLOAT f0 = p->num0, df0 = p->df0;
-    SPFLOAT phs = p->phs;
-    SPFLOAT slope, resd1, resd0, f2, f1;
+    UTFLOAT x;
+    UTFLOAT f0 = p->num0, df0 = p->df0;
+    UTFLOAT phs = p->phs;
+    UTFLOAT slope, resd1, resd0, f2, f1;
 
     /* the original source code used an init flag alongside a goto */
     /* I didn't want to use gotos, so I opted to use this approach */
 
     if(p->init) {
-        p->si = (sp_randGab * (p->cps_max - p->cps_min) + p->cps_min)*p->onedsr;
+        p->si = (ut_randGab * (p->cps_max - p->cps_min) + p->cps_min)*p->onedsr;
         p->init = 1;
     }
 
     phs += p->si;
     if (phs >= 1.0 || p->init) {
-        p->si = (sp_randGab * (p->cps_max - p->cps_min)+p->cps_min)*p->onedsr;
+        p->si = (ut_randGab * (p->cps_max - p->cps_min)+p->cps_min)*p->onedsr;
         while (phs > 1.0) phs -= 1.0;
         f0 = p->num0 = p->num1;
         f1 = p->num1 = p->num2;
-        f2 = p->num2 = sp_BiRandGab;
+        f2 = p->num2 = ut_BiRandGab;
         df0 = p->df0 = p->df1;
         p->df1 = (f2 - f0) * 0.5;
         slope = f1 - f0;
@@ -79,10 +79,10 @@ int sp_rspline_compute(sp_data *sp, sp_rspline *p, SPFLOAT *in, SPFLOAT *out)
         p->c2 = - (resd1 + 2.0 * resd0);
     }
 
-    x = (SPFLOAT) phs;
+    x = (UTFLOAT) phs;
     *out = (((p->c3 * x + p->c2) * x + df0) * x + f0) * 
         (p->max - p->min) + p->min;
     p->phs = phs;
     p->init = 0;
-    return SP_OK;
+    return UT_OK;
 }

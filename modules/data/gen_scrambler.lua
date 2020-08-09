@@ -7,12 +7,12 @@ sptbl["gen_scrambler"] = {
     },
 
     func = {
-        name = "sp_gen_scrambler",
+        name = "ut_gen_scrambler",
     },
     params = {
         {
             name = "dest",
-            type = "&sp_ftbl *",
+            type = "&ut_ftbl *",
             description = [[destination ftable]],
             default = 123456
         },

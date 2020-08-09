@@ -19,33 +19,33 @@
 #define M_PI 3.14159265358979323846
 #endif 
 
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_clip_create(sp_clip **p)
+int ut_clip_create(ut_clip **p)
 {
-    *p = malloc(sizeof(sp_clip));
-    return SP_OK;
+    *p = malloc(sizeof(ut_clip));
+    return UT_OK;
 }
 
-int sp_clip_destroy(sp_clip **p)
+int ut_clip_destroy(ut_clip **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_clip_init(sp_data *sp, sp_clip *p)
+int ut_clip_init(ut_data *ut, ut_clip *p)
 {
     p->lim = 1;
     p->k1 = M_PI / (2.0 * p->lim);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_clip_compute(sp_data *sp, sp_clip *p, SPFLOAT *in, SPFLOAT *out)
+int ut_clip_compute(ut_data *ut, ut_clip *p, UTFLOAT *in, UTFLOAT *out)
 {
     p->k1 = M_PI / (2.0 * p->lim);
-    SPFLOAT k1 = p->k1;
-    SPFLOAT limit = p->lim;
-    SPFLOAT x;
+    UTFLOAT k1 = p->k1;
+    UTFLOAT limit = p->lim;
+    UTFLOAT x;
 
     x = *in;
     if (x >= limit) {
@@ -57,5 +57,5 @@ int sp_clip_compute(sp_data *sp, sp_clip *p, SPFLOAT *in, SPFLOAT *out)
     }
     *out = x;
 
-    return SP_OK;
+    return UT_OK;
 }

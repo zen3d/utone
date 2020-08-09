@@ -11,51 +11,51 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_vdelay_create(sp_vdelay **p)
+int ut_vdelay_create(ut_vdelay **p)
 {
-    *p = malloc(sizeof(sp_vdelay));
-    return SP_OK;
+    *p = malloc(sizeof(ut_vdelay));
+    return UT_OK;
 }
 
-int sp_vdelay_destroy(sp_vdelay **p)
+int ut_vdelay_destroy(ut_vdelay **p)
 {
-    sp_vdelay *pp = *p;
-    sp_auxdata_free(&pp->buf);
+    ut_vdelay *pp = *p;
+    ut_auxdata_free(&pp->buf);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_vdelay_init(sp_data *sp, sp_vdelay *p, SPFLOAT maxdel)
+int ut_vdelay_init(ut_data *ut, ut_vdelay *p, UTFLOAT maxdel)
 {
-    uint32_t n = (int32_t)(maxdel * sp->sr)+1;
-    p->sr = sp->sr;
+    uint32_t n = (int32_t)(maxdel * ut->sr)+1;
+    p->sr = ut->sr;
     p->del = maxdel * 0.5;
     p->maxdel = maxdel;
-    sp_auxdata_alloc(&p->buf, n * sizeof(SPFLOAT));
+    ut_auxdata_alloc(&p->buf, n * sizeof(UTFLOAT));
     p->left = 0;
     p->feedback = 0;
     p->prev = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_vdelay_compute(sp_data *sp, sp_vdelay *p, SPFLOAT *in, SPFLOAT *out)
+int ut_vdelay_compute(ut_data *ut, ut_vdelay *p, UTFLOAT *in, UTFLOAT *out)
 {
     int32_t maxd, indx;
     *out = p->sr;
-    SPFLOAT del = p->del;
-    SPFLOAT b0, b1, b2, b3;
+    UTFLOAT del = p->del;
+    UTFLOAT b0, b1, b2, b3;
     int32_t v0, v1, v2, v3;
-    SPFLOAT fv1;
+    UTFLOAT fv1;
     indx = p->left;
-    SPFLOAT *buf = (SPFLOAT *)p->buf.ptr;
+    UTFLOAT *buf = (UTFLOAT *)p->buf.ptr;
 
     buf[indx] = *in + p->prev*p->feedback;
 
-    fv1 = del * (-1.0 * sp->sr);
+    fv1 = del * (-1.0 * ut->sr);
     v1 = (int32_t)fv1;
-    fv1 -= (SPFLOAT) v1;
+    fv1 -= (UTFLOAT) v1;
     v1 += (int32_t)indx;
     maxd = (uint32_t) (p->maxdel * p->sr);
     /* Make sure we're inside the buffer */
@@ -80,7 +80,7 @@ int sp_vdelay_compute(sp_data *sp, sp_vdelay *p, SPFLOAT *in, SPFLOAT *out)
         v0 = (v1==0 ? maxd-1 : v1-1);
         v3 = (v2==(int32_t)maxd-1 ? 0 : v2+1);
         {
-            SPFLOAT w, x, y, z;
+            UTFLOAT w, x, y, z;
             z = fv1 * fv1; z--;
             z *= 0.1666666667;
             y = fv1;
@@ -97,20 +97,20 @@ int sp_vdelay_compute(sp_data *sp, sp_vdelay *p, SPFLOAT *in, SPFLOAT *out)
     if (++indx == maxd) indx = 0;
     p->left = indx;
     p->prev = *out;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_vdelay_reset(sp_data *sp, sp_vdelay *p)
+int ut_vdelay_reset(ut_data *ut, ut_vdelay *p)
 {
-    SPFLOAT *buf;
+    UTFLOAT *buf;
     uint32_t n;
     int32_t maxd;
     
-    buf = (SPFLOAT *)p->buf.ptr;
+    buf = (UTFLOAT *)p->buf.ptr;
     p->left = 0;
     maxd = (uint32_t) (p->maxdel * p->sr);
 
     for(n = 0; n < maxd; n++) buf[n] = 0;
 
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,9 +1,9 @@
-typedef struct sp_phasor{
-    SPFLOAT freq, phs;
-    SPFLOAT curphs, onedsr;
-} sp_phasor;
+typedef struct ut_phasor{
+    UTFLOAT freq, phs;
+    UTFLOAT curphs, onedsr;
+} ut_phasor;
 
-int sp_phasor_create(sp_phasor **p);
-int sp_phasor_destroy(sp_phasor **p);
-int sp_phasor_init(sp_data *sp, sp_phasor *p, SPFLOAT iphs);
-int sp_phasor_compute(sp_data *sp, sp_phasor *p, SPFLOAT *in, SPFLOAT *out);
+int ut_phasor_create(ut_phasor **p);
+int ut_phasor_destroy(ut_phasor **p);
+int ut_phasor_init(ut_data *ut, ut_phasor *p, UTFLOAT iphs);
+int ut_phasor_compute(ut_data *ut, ut_phasor *p, UTFLOAT *in, UTFLOAT *out);

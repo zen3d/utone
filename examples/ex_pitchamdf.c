@@ -1,60 +1,60 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_pitchamdf *pitchamdf;
-    sp_osc *osc;
-    sp_ftbl *ft;
-    sp_blsaw *blsaw;
-    sp_randh *randh;
+    ut_pitchamdf *pitchamdf;
+    ut_osc *osc;
+    ut_ftbl *ft;
+    ut_blsaw *blsaw;
+    ut_randh *randh;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT freq = 0, amp = 0, blsaw = 0, randh = 0, osc = 0;
-    sp_randh_compute(sp, ud->randh, NULL, &randh);
+    UTFLOAT freq = 0, amp = 0, blsaw = 0, randh = 0, osc = 0;
+    ut_randh_compute(ut, ud->randh, NULL, &randh);
     *ud->blsaw->freq = randh;
-    sp_blsaw_compute(sp, ud->blsaw, NULL, &blsaw);
-    sp_pitchamdf_compute(sp, ud->pitchamdf, &blsaw, &freq, &amp);
+    ut_blsaw_compute(ut, ud->blsaw, NULL, &blsaw);
+    ut_pitchamdf_compute(ut, ud->pitchamdf, &blsaw, &freq, &amp);
     ud->osc->freq = freq;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp->out[0] = osc;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut->out[0] = osc;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_pitchamdf_create(&ud.pitchamdf);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_blsaw_create(&ud.blsaw);
-    sp_randh_create(&ud.randh);
+    ut_pitchamdf_create(&ud.pitchamdf);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_blsaw_create(&ud.blsaw);
+    ut_randh_create(&ud.randh);
 
-    sp_pitchamdf_init(sp, ud.pitchamdf, 200, 500);
-    sp_randh_init(sp, ud.randh);
+    ut_pitchamdf_init(ut, ud.pitchamdf, 200, 500);
+    ut_randh_init(ut, ud.randh);
     ud.randh->max = 500;
     ud.randh->min = 200;
     ud.randh->freq = 6;
 
-    sp_blsaw_init(sp, ud.blsaw);
+    ut_blsaw_init(ut, ud.blsaw);
 
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_blsaw_destroy(&ud.blsaw);
-    sp_randh_destroy(&ud.randh);
-    sp_pitchamdf_destroy(&ud.pitchamdf);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
+    ut_blsaw_destroy(&ud.blsaw);
+    ut_randh_destroy(&ud.randh);
+    ut_pitchamdf_destroy(&ud.pitchamdf);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

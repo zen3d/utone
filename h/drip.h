@@ -1,52 +1,52 @@
-typedef struct sp_drip{
+typedef struct ut_drip{
 
-    SPFLOAT amp; /* How loud */
-    SPFLOAT dettack; /* How loud */
-    SPFLOAT num_tubes;
-    SPFLOAT damp;
-    SPFLOAT shake_max;
-    SPFLOAT freq;
-    SPFLOAT freq1;
-    SPFLOAT freq2;
+    UTFLOAT amp; /* How loud */
+    UTFLOAT dettack; /* How loud */
+    UTFLOAT num_tubes;
+    UTFLOAT damp;
+    UTFLOAT shake_max;
+    UTFLOAT freq;
+    UTFLOAT freq1;
+    UTFLOAT freq2;
 
-    SPFLOAT num_objectsSave;
-    SPFLOAT shake_maxSave;
-    SPFLOAT shakeEnergy;
-    SPFLOAT outputs00;
-    SPFLOAT outputs01;
-    SPFLOAT outputs10;
-    SPFLOAT outputs11;
-    SPFLOAT outputs20;
-    SPFLOAT outputs21;
-    SPFLOAT coeffs00;
-    SPFLOAT coeffs01;
-    SPFLOAT coeffs10;
-    SPFLOAT coeffs11;
-    SPFLOAT coeffs20;
-    SPFLOAT coeffs21;
-    SPFLOAT finalZ0;
-    SPFLOAT finalZ1;
-    SPFLOAT finalZ2;
-    SPFLOAT sndLevel;
-    SPFLOAT gains0;
-    SPFLOAT gains1;
-    SPFLOAT gains2;
-    SPFLOAT center_freqs0;
-    SPFLOAT center_freqs1;
-    SPFLOAT center_freqs2;
-    SPFLOAT soundDecay;
-    SPFLOAT systemDecay;
-    SPFLOAT num_objects;
-    SPFLOAT totalEnergy;
-    SPFLOAT decayScale;
-    SPFLOAT res_freq0;
-    SPFLOAT res_freq1;
-    SPFLOAT res_freq2;
-    SPFLOAT shake_damp;
+    UTFLOAT num_objectsSave;
+    UTFLOAT shake_maxSave;
+    UTFLOAT shakeEnergy;
+    UTFLOAT outputs00;
+    UTFLOAT outputs01;
+    UTFLOAT outputs10;
+    UTFLOAT outputs11;
+    UTFLOAT outputs20;
+    UTFLOAT outputs21;
+    UTFLOAT coeffs00;
+    UTFLOAT coeffs01;
+    UTFLOAT coeffs10;
+    UTFLOAT coeffs11;
+    UTFLOAT coeffs20;
+    UTFLOAT coeffs21;
+    UTFLOAT finalZ0;
+    UTFLOAT finalZ1;
+    UTFLOAT finalZ2;
+    UTFLOAT sndLevel;
+    UTFLOAT gains0;
+    UTFLOAT gains1;
+    UTFLOAT gains2;
+    UTFLOAT center_freqs0;
+    UTFLOAT center_freqs1;
+    UTFLOAT center_freqs2;
+    UTFLOAT soundDecay;
+    UTFLOAT systemDecay;
+    UTFLOAT num_objects;
+    UTFLOAT totalEnergy;
+    UTFLOAT decayScale;
+    UTFLOAT res_freq0;
+    UTFLOAT res_freq1;
+    UTFLOAT res_freq2;
+    UTFLOAT shake_damp;
     int kloop;
-} sp_drip;
+} ut_drip;
 
-int sp_drip_create(sp_drip **p);
-int sp_drip_destroy(sp_drip **p);
-int sp_drip_init(sp_data *sp, sp_drip *p, SPFLOAT dettack);
-int sp_drip_compute(sp_data *sp, sp_drip *p, SPFLOAT *trig, SPFLOAT *out);
+int ut_drip_create(ut_drip **p);
+int ut_drip_destroy(ut_drip **p);
+int ut_drip_init(ut_data *ut, ut_drip *p, UTFLOAT dettack);
+int ut_drip_compute(ut_data *ut, ut_drip *p, UTFLOAT *trig, UTFLOAT *out);

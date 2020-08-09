@@ -1,12 +1,12 @@
 typedef struct {
-    SPFLOAT amp, freq, ifreq;
-    SPFLOAT sicps;
+    UTFLOAT amp, freq, ifreq;
+    UTFLOAT sicps;
     int32_t phs256, npts, maxpts;
-    sp_auxdata auxch;
+    ut_auxdata auxch;
     char init;
-} sp_pluck;
+} ut_pluck;
 
-int sp_pluck_create(sp_pluck **p);
-int sp_pluck_destroy(sp_pluck **p);
-int sp_pluck_init(sp_data *sp, sp_pluck *p, SPFLOAT ifreq);
-int sp_pluck_compute(sp_data *sp, sp_pluck *p, SPFLOAT *trig, SPFLOAT *out);
+int ut_pluck_create(ut_pluck **p);
+int ut_pluck_destroy(ut_pluck **p);
+int ut_pluck_init(ut_data *ut, ut_pluck *p, UTFLOAT ifreq);
+int ut_pluck_compute(ut_data *ut, ut_pluck *p, UTFLOAT *trig, UTFLOAT *out);

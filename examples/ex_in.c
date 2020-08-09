@@ -10,34 +10,34 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_in *in;
+    ut_in *in;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT in = 0;
-    sp_in_compute(sp, ud->in, NULL, &in);
-    sp->out[0] = in;
+    UTFLOAT in = 0;
+    ut_in_compute(ut, ud->in, NULL, &in);
+    ut->out[0] = in;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_in_create(&ud.in);
+    ut_in_create(&ud.in);
 
-    sp_in_init(sp, ud.in);
+    ut_in_init(ut, ud.in);
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_in_destroy(&ud.in);
+    ut_in_destroy(&ud.in);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

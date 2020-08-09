@@ -1,5 +1,5 @@
-typedef struct sp_diskin sp_diskin;
-int sp_diskin_create(sp_diskin **p);
-int sp_diskin_destroy(sp_diskin **p);
-int sp_diskin_init(sp_data *sp, sp_diskin *p, const char *filename);
-int sp_diskin_compute(sp_data *sp, sp_diskin *p, SPFLOAT *in, SPFLOAT *out);
+typedef struct ut_diskin ut_diskin;
+int ut_diskin_create(ut_diskin **p);
+int ut_diskin_destroy(ut_diskin **p);
+int ut_diskin_init(ut_data *ut, ut_diskin *p, const char *filename);
+int ut_diskin_compute(ut_data *ut, ut_diskin *p, UTFLOAT *in, UTFLOAT *out);

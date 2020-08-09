@@ -7,24 +7,24 @@ sptbl["gbuzz"] = {
     },
 
     func = {
-        create = "sp_gbuzz_create",
-        destroy = "sp_gbuzz_destroy",
-        init = "sp_gbuzz_init",
-        compute = "sp_gbuzz_compute",
+        create = "ut_gbuzz_create",
+        destroy = "ut_gbuzz_destroy",
+        init = "ut_gbuzz_init",
+        compute = "ut_gbuzz_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "ft",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "Soundpipe function table used internally. This should be a sine wave.",
                 default = "N/A"
             },
 
             {
                 name = "iphs",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Phase to start on (in the range 0-1)",
                 default = 0
             },
@@ -33,31 +33,31 @@ sptbl["gbuzz"] = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Frequency, in Hertz.",
                 default = 440
             },
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Amplitude (Typically a value between 0 and 1).",
                 default = 0.4
             },
             {
                 name = "nharm",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Number of harmonics.",
                 default = 4
             },
             {
                 name = "lharm",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Lowest harmonic present. This should be a whole number integer.",
                 default = 0
             },
             {
                 name = "mul",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Multiplier. This determines the relative strength of each harmonic.",
                 default = 0.1
             },

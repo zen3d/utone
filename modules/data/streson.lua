@@ -7,23 +7,23 @@ sptbl["streson"] = {
     },
 
     func = {
-        create = "sp_streson_create",
-        destroy = "sp_streson_destroy",
-        init = "sp_streson_init",
-        compute = "sp_streson_compute",
+        create = "ut_streson_create",
+        destroy = "ut_streson_destroy",
+        init = "ut_streson_init",
+        compute = "ut_streson_compute",
     },
 
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Fundamental frequency of string.",
                 default = 440.0
             },
             {
                 name = "fdbgain",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Feedback amount (value between 0-1)",
                 default = 0.8
             },

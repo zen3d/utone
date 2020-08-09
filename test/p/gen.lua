@@ -1,42 +1,42 @@
 name = arg[1]
 sptbl = {}
 
-dofile ("../../sp_dict.lua")
+dofile ("../../ut_dict.lua")
 
 header=[[
 #include <stdlib.h>
 #include <stdio.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "config.h"
 
 int main() {
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 12345);
+    ut_data *sp;
+    ut_create(&sp);
+    ut_srand(sp, 12345);
     sp->sr = SR;
     sp->len = sp->sr * LEN;
     uint32_t t, u;
-    SPFLOAT in = 0, out = 0;
+    UTFLOAT in = 0, out = 0;
 ]]
 
 compute=[[
-    sp_FOO *unit[NUM];
+    ut_FOO *unit[NUM];
 
     for(u = 0; u < NUM; u++) { 
-        sp_FOO_create(&unit[u]);
-        sp_FOO_init(sp, unit[u]);
+        ut_FOO_create(&unit[u]);
+        ut_FOO_init(sp, unit[u]);
     }
 
     for(t = 0; t < sp->len; t++) {
-        for(u = 0; u < NUM; u++) sp_FOO_compute(sp, unit[u], &in, &out);
+        for(u = 0; u < NUM; u++) ut_FOO_compute(sp, unit[u], &in, &out);
     }
 
-    for(u = 0; u < NUM; u++) sp_FOO_destroy(&unit[u]);
+    for(u = 0; u < NUM; u++) ut_FOO_destroy(&unit[u]);
 ]]
 
 
 footer=[[
-    sp_destroy(&sp);
+    ut_destroy(&sp);
     return 0;
 }
 ]]

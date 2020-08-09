@@ -7,23 +7,23 @@ sptbl["mode"] = {
     },
 
     func = {
-        create = "sp_mode_create",
-        destroy = "sp_mode_destroy",
-        init = "sp_mode_init",
-        compute = "sp_mode_compute",
+        create = "ut_mode_create",
+        destroy = "ut_mode_destroy",
+        init = "ut_mode_init",
+        compute = "ut_mode_compute",
     },
 
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Resonant frequency of the filter.",
                 default = 500
             },
             {
                 name = "q",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Quality factor of the filter. Roughly equal to q/freq.",
                 default = 50
             },

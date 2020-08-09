@@ -6,17 +6,17 @@ sptbl["rms"] = {
     },
 
     func = {
-        create = "sp_rms_create",
-        destroy = "sp_rms_destroy",
-        init = "sp_rms_init",
-        compute = "sp_rms_compute",
+        create = "ut_rms_create",
+        destroy = "ut_rms_destroy",
+        init = "ut_rms_init",
+        compute = "ut_rms_compute",
     },
 
     params = {
         optional = {
             {
                 name = "ihp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Half-power point (in Hz) of internal lowpass filter. This parameter is fixed at 10Hz and is not yet mutable.",
                 default = 10
             },

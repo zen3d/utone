@@ -1,22 +1,22 @@
 typedef struct {
     void *faust;
     int argpos;
-    SPFLOAT *args[11];
-    SPFLOAT *in_delay;
-    SPFLOAT *lf_x;
-    SPFLOAT *rt60_low;
-    SPFLOAT *rt60_mid;
-    SPFLOAT *hf_damping;
-    SPFLOAT *eq1_freq;
-    SPFLOAT *eq1_level;
-    SPFLOAT *eq2_freq;
-    SPFLOAT *eq2_level;
-    SPFLOAT *mix;
-    SPFLOAT *level;
-} sp_zitarev;
+    UTFLOAT *args[11];
+    UTFLOAT *in_delay;
+    UTFLOAT *lf_x;
+    UTFLOAT *rt60_low;
+    UTFLOAT *rt60_mid;
+    UTFLOAT *hf_damping;
+    UTFLOAT *eq1_freq;
+    UTFLOAT *eq1_level;
+    UTFLOAT *eq2_freq;
+    UTFLOAT *eq2_level;
+    UTFLOAT *mix;
+    UTFLOAT *level;
+} ut_zitarev;
 
-int sp_zitarev_create(sp_zitarev **p);
-int sp_zitarev_destroy(sp_zitarev **p);
-int sp_zitarev_init(sp_data *sp, sp_zitarev *p);
-int sp_zitarev_compute(sp_data *sp, sp_zitarev *p, SPFLOAT *in1, SPFLOAT *in2, SPFLOAT *out1, SPFLOAT *out2);
+int ut_zitarev_create(ut_zitarev **p);
+int ut_zitarev_destroy(ut_zitarev **p);
+int ut_zitarev_init(ut_data *ut, ut_zitarev *p);
+int ut_zitarev_compute(ut_data *ut, ut_zitarev *p, UTFLOAT *in1, UTFLOAT *in2, UTFLOAT *out1, UTFLOAT *out2);
 

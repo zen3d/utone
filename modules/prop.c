@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
     uint32_t size;
@@ -17,7 +17,7 @@ typedef struct {
 
 static int prop_create(prop_data **pd);
 static int prop_parse(prop_data *pd, const char *str);
-static prop_event prop_next(sp_data *sp, prop_data *pd);
+static prop_event prop_next(ut_data *ut, prop_data *pd);
 static float prop_time(prop_data *pd, prop_event evt);
 static int prop_destroy(prop_data **pd);
 
@@ -54,61 +54,61 @@ PSTATUS_OK,
 PTYPE_NULL
 };
 
-int sp_prop_create(sp_prop **p)
+int ut_prop_create(ut_prop **p)
 {
-    *p = malloc(sizeof(sp_prop));
-    return SP_OK;
+    *p = malloc(sizeof(ut_prop));
+    return UT_OK;
 }
 
-int sp_prop_destroy(sp_prop **p)
+int ut_prop_destroy(ut_prop **p)
 {
-    sp_prop *pp = *p;
+    ut_prop *pp = *p;
     prop_destroy(&pp->prp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_prop_init(sp_data *sp, sp_prop *p, const char *str)
+int ut_prop_init(ut_data *ut, ut_prop *p, const char *str)
 {
     p->count = 0;
 
     prop_create(&p->prp);
     if(prop_parse(p->prp, str) == PSTATUS_NOTOK) {
         fprintf(stderr,"There was an error parsing the string.\n");
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }
     p->bpm = 60;
     p->lbpm = 60;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_prop_compute(sp_data *sp, sp_prop *p, SPFLOAT *in, SPFLOAT *out)
+int ut_prop_compute(ut_data *ut, ut_prop *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(p->count == 0) {
         if(p->bpm != p->lbpm) {
-            p->prp->scale = (SPFLOAT) 60.0 / p->bpm;
+            p->prp->scale = (UTFLOAT) 60.0 / p->bpm;
             p->lbpm = p->bpm;
         }
-        p->evt = prop_next(sp, p->prp);
-        p->count = prop_time(p->prp, p->evt) * sp->sr;
+        p->evt = prop_next(ut, p->prp);
+        p->count = prop_time(p->prp, p->evt) * ut->sr;
         switch(p->evt.type) {
             case PTYPE_ON: 
                 *out = 1.0;
                 break;
             case PTYPE_MAYBE: 
-                if( ((SPFLOAT) sp_rand(sp) / SP_RANDMAX) > 0.5) *out = 1.0;
+                if( ((UTFLOAT) ut_rand(ut) / UT_RANDMAX) > 0.5) *out = 1.0;
                 else *out = 0.0;
                 break;
             default:
                 *out = 0.0;
                 break;
         }
-        return SP_OK;
+        return UT_OK;
     }
     *out = 0;
     p->count--;
 
-    return SP_OK;
+    return UT_OK;
 }
 
 static int stack_push(prop_stack *ps, uint32_t val)
@@ -116,7 +116,7 @@ static int stack_push(prop_stack *ps, uint32_t val)
     if(ps->pos++ < 16) {
         ps->stack[ps->pos] = val;
     }
-    return SP_OK;
+    return UT_OK;
 }
 
 static void stack_init(prop_stack *ps)
@@ -330,7 +330,7 @@ static void reset(prop_data *pd)
     }
 }
 
-prop_event prop_next(sp_data *sp, prop_data *pd)
+prop_event prop_next(ut_data *ut, prop_data *pd)
 {
 /*
     prop_list *lst = pd->main;
@@ -352,19 +352,19 @@ prop_event prop_next(sp_data *sp, prop_data *pd)
             prop_slice *slice = (prop_slice *)val.ud;
 
             uint32_t pos = floor(
-                ((SPFLOAT)sp_rand(sp) / SP_RANDMAX) 
+                ((UTFLOAT)ut_rand(ut) / UT_RANDMAX) 
                 * slice->size);
 
             pd->main = slice->ar[pos];
             prop_list_reset(pd->main);
-            return prop_next(sp, pd);
+            return prop_next(ut, pd);
             break;
         }
         case PTYPE_LIST: {
             prop_list *lst = (prop_list *)val.ud;
             pd->main = lst;
             prop_list_reset(pd->main);
-            return prop_next(sp, pd);
+            return prop_next(ut, pd);
             break;
         }
         default:
@@ -541,9 +541,9 @@ static void mode_list_end(prop_data *pd)
     pd->main = pd->main->top;
 }
 
-int sp_prop_reset(sp_data *sp, sp_prop *p)
+int ut_prop_reset(ut_data *ut, ut_prop *p)
 {
     back_to_top(p->prp);
     p->count = 0;
-    return SP_OK;
+    return UT_OK;
 }

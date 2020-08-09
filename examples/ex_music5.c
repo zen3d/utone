@@ -1,25 +1,25 @@
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
     uint16_t counter;
     uint16_t t;
-    SPFLOAT out;
+    UTFLOAT out;
 } UserData;
 
-void process(sp_data *sp, void *udata) 
+void process(ut_data *ut, void *udata) 
 {
     UserData *ud = udata;
     if(ud->counter == 0) {
         uint16_t t = ud->t;
 
         ud->out = 
-            (SPFLOAT)((t*(((t>>12)|(t>>8))&(63&(t>>4)))) & 0xFF);
+            (UTFLOAT)((t*(((t>>12)|(t>>8))&(63&(t>>4)))) & 0xFF);
         ud->out /= 0xFF;
         ud->out -= 0.5;
         ud->out *= 0.3;
         ud->t++;
     }
-    sp->out[0] = ud->out;
+    ut->out[0] = ud->out;
     ud->counter++;
     ud->counter %= 10;
 }
@@ -27,12 +27,12 @@ void process(sp_data *sp, void *udata)
 int main()
 {
     UserData ud;
-    sp_data *sp;
+    ut_data *ut;
     ud.counter = 0;
     ud.t = 0;
-    sp_create(&sp);
-    sp->len = 44100 * 15;
-    sp_process(sp, &ud, process);
-    sp_destroy(&sp);
+    ut_create(&ut);
+    ut->len = 44100 * 15;
+    ut_process(ut, &ud, process);
+    ut_destroy(&ut);
     return 0;
 }

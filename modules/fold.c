@@ -11,35 +11,35 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_fold_create(sp_fold **p)
+int ut_fold_create(ut_fold **p)
 {
-    *p = malloc(sizeof(sp_fold));
-    return SP_OK;
+    *p = malloc(sizeof(ut_fold));
+    return UT_OK;
 }
 
-int sp_fold_destroy(sp_fold **p)
+int ut_fold_destroy(ut_fold **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_fold_init(sp_data *sp, sp_fold *p)
+int ut_fold_init(ut_data *ut, ut_fold *p)
 {
     p->incr = 1000;
     p->sample_index = 0;
     p->index = 0.0;
     p->value = 0.0; 
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_fold_compute(sp_data *sp, sp_fold *p, SPFLOAT *in, SPFLOAT *out)
+int ut_fold_compute(ut_data *ut, ut_fold *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT index = p->index;
+    UTFLOAT index = p->index;
     int32_t sample_index = p->sample_index;
-    SPFLOAT value = p->value;
-    if (index < (SPFLOAT)sample_index) {
+    UTFLOAT value = p->value;
+    if (index < (UTFLOAT)sample_index) {
         index += p->incr;
         *out = value = *in;
     } else {
@@ -49,5 +49,5 @@ int sp_fold_compute(sp_data *sp, sp_fold *p, SPFLOAT *in, SPFLOAT *out)
     p->index = index;
     p->sample_index = sample_index;
     p->value = value;
-    return SP_OK;
+    return UT_OK;
 }

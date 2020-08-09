@@ -12,49 +12,49 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846	
 #endif 
 
-int sp_rms_create(sp_rms **p)
+int ut_rms_create(ut_rms **p)
 {
-    *p = malloc(sizeof(sp_rms));
-    return SP_OK;
+    *p = malloc(sizeof(ut_rms));
+    return UT_OK;
 }
 
-int sp_rms_destroy(sp_rms **p)
+int ut_rms_destroy(ut_rms **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_rms_init(sp_data *sp, sp_rms *p)
+int ut_rms_init(ut_data *ut, ut_rms *p)
 {
     p->ihp = 10;
     p->istor = 0;
 
-    SPFLOAT b;
+    UTFLOAT b;
 
-    b = 2.0 - cos((SPFLOAT)(p->ihp * (2 * M_PI / sp->sr)));
+    b = 2.0 - cos((UTFLOAT)(p->ihp * (2 * M_PI / ut->sr)));
     p->c2 = b - sqrt(b*b - 1.0);
     p->c1 = 1.0 - p->c2;
     if (!p->istor) p->prvq = 0.0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_rms_compute(sp_data *sp, sp_rms *p, SPFLOAT *in, SPFLOAT *out)
+int ut_rms_compute(ut_data *ut, ut_rms *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT q;
-    SPFLOAT c1 = p->c1, c2 = p->c2;
+    UTFLOAT q;
+    UTFLOAT c1 = p->c1, c2 = p->c2;
 
     q = p->prvq;
     
-    SPFLOAT as = *in;
+    UTFLOAT as = *in;
     q = c1 * as * as + c2 * q;
     
     p->prvq = q;
     *out = sqrt(q);
-    return SP_OK;
+    return UT_OK;
 }

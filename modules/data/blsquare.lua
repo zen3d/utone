@@ -7,29 +7,29 @@ sptbl["blsquare"] = {
     },
 
     func = {
-        create = "sp_blsquare_create",
-        destroy = "sp_blsquare_destroy",
-        init = "sp_blsquare_init",
-        compute = "sp_blsquare_compute",
+        create = "ut_blsquare_create",
+        destroy = "ut_blsquare_destroy",
+        init = "ut_blsquare_init",
+        compute = "ut_blsquare_compute",
     },
 
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description = "Frequency, (range 0-20000)",
                 default = 440
             },
             {
                 name = "amp",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Amplitude (range 0-1).",
 		default = 1.0
             },
             {
                 name = "width",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Duty cycle width (range 0-1).",
 		default = 0.5
             },

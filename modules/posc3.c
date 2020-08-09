@@ -12,48 +12,48 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
-int sp_posc3_create(sp_posc3 **posc3)
+#include "utone.h"
+int ut_posc3_create(ut_posc3 **posc3)
 {
-    *posc3 = malloc(sizeof(sp_posc3));
-    return SP_OK;
+    *posc3 = malloc(sizeof(ut_posc3));
+    return UT_OK;
 }
 
-int sp_posc3_destroy(sp_posc3 **posc3)
+int ut_posc3_destroy(ut_posc3 **posc3)
 {
     free(*posc3);
-    return SP_NOT_OK;
+    return UT_NOT_OK;
 }
 
-int sp_posc3_init(sp_data *sp, sp_posc3 *posc3, sp_ftbl *ft)
+int ut_posc3_init(ut_data *ut, ut_posc3 *posc3, ut_ftbl *ft)
 {
 
     posc3->amp = 0.2;
     posc3->freq = 440.0;
     posc3->iphs = 0.0;
-    posc3->onedsr = 1.0 / sp->sr;
+    posc3->onedsr = 1.0 / ut->sr;
 
     posc3->tbl = ft;
     posc3->tablen = (int32_t) ft->size;
     posc3->tablenUPsr = posc3->tablen * posc3->onedsr;
     posc3->phs = posc3->iphs * posc3->tablen;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_posc3_compute(sp_data *sp, sp_posc3 *posc3, SPFLOAT *in, SPFLOAT *out)
+int ut_posc3_compute(ut_data *ut, ut_posc3 *posc3, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT *ftab;
-    SPFLOAT fract;
-    SPFLOAT phs  = posc3->phs;
-    SPFLOAT si   = posc3->freq * posc3->tablen * posc3->onedsr;
-    SPFLOAT amp = posc3->amp;
+    UTFLOAT *ftab;
+    UTFLOAT fract;
+    UTFLOAT phs  = posc3->phs;
+    UTFLOAT si   = posc3->freq * posc3->tablen * posc3->onedsr;
+    UTFLOAT amp = posc3->amp;
     int x0;
-    SPFLOAT y0, y1, ym1, y2;
+    UTFLOAT y0, y1, ym1, y2;
 
     ftab = posc3->tbl->tbl;
 
     x0    = (int32_t )phs;
-    fract = (SPFLOAT)(phs - (SPFLOAT)x0);
+    fract = (UTFLOAT)(phs - (UTFLOAT)x0);
     x0--;
 
     if (x0<0) {
@@ -65,9 +65,9 @@ int sp_posc3_compute(sp_data *sp, sp_posc3 *posc3, SPFLOAT *in, SPFLOAT *out)
     if (x0>posc3->tablen) y2 = ftab[1];
     else y2 = ftab[x0];
     {
-        SPFLOAT frsq = fract*fract;
-        SPFLOAT frcu = frsq*ym1;
-        SPFLOAT t1   = y2 + y0+y0+y0;
+        UTFLOAT frsq = fract*fract;
+        UTFLOAT frcu = frsq*ym1;
+        UTFLOAT t1   = y2 + y0+y0+y0;
         *out     = amp * (y0 + 0.5 *frcu +
         fract*(y1 - frcu/6.0 - t1/6.0
         - ym1/3.0) +
@@ -83,5 +83,5 @@ int sp_posc3_compute(sp_data *sp, sp_posc3 *posc3, SPFLOAT *in, SPFLOAT *out)
         posc3->phs = phs;
     }
     posc3->phs = phs;
-    return SP_OK;
+    return UT_OK;
 }

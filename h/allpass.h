@@ -1,12 +1,12 @@
 typedef struct {
-    SPFLOAT revtime, looptime;
-    SPFLOAT coef, prvt;
-    sp_auxdata aux;
+    UTFLOAT revtime, looptime;
+    UTFLOAT coef, prvt;
+    ut_auxdata aux;
     uint32_t bufpos;
     uint32_t bufsize;
-} sp_allpass;
+} ut_allpass;
 
-int sp_allpass_create(sp_allpass **p);
-int sp_allpass_destroy(sp_allpass **p);
-int sp_allpass_init(sp_data *sp, sp_allpass *p, SPFLOAT looptime);
-int sp_allpass_compute(sp_data *sp, sp_allpass *p, SPFLOAT *in, SPFLOAT *out);
+int ut_allpass_create(ut_allpass **p);
+int ut_allpass_destroy(ut_allpass **p);
+int ut_allpass_init(ut_data *ut, ut_allpass *p, UTFLOAT looptime);
+int ut_allpass_compute(ut_data *ut, ut_allpass *p, UTFLOAT *in, UTFLOAT *out);

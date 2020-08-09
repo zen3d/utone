@@ -1,9 +1,9 @@
 typedef struct {
     int init;
-    SPFLOAT prev, thresh, mode;
-} sp_thresh;
+    UTFLOAT prev, thresh, mode;
+} ut_thresh;
 
-int sp_thresh_create(sp_thresh **p);
-int sp_thresh_destroy(sp_thresh **p);
-int sp_thresh_init(sp_data *sp, sp_thresh *p);
-int sp_thresh_compute(sp_data *sp, sp_thresh *p, SPFLOAT *in, SPFLOAT *out);
+int ut_thresh_create(ut_thresh **p);
+int ut_thresh_destroy(ut_thresh **p);
+int ut_thresh_init(ut_data *ut, ut_thresh *p);
+int ut_thresh_compute(ut_data *ut, ut_thresh *p, UTFLOAT *in, UTFLOAT *out);

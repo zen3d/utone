@@ -7,35 +7,35 @@ sptbl["adsr"] = {
     },
 
     func = {
-        create = "sp_adsr_create",
-        destroy = "sp_adsr_destroy",
-        init = "sp_adsr_init",
-        compute = "sp_adsr_compute",
+        create = "ut_adsr_create",
+        destroy = "ut_adsr_destroy",
+        init = "ut_adsr_init",
+        compute = "ut_adsr_compute",
     },
 
     params = {
         optional = {
             {
                 name = "atk",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Attack time (in seconds)",
                 default = 0.1
             },
             {
                 name = "dec",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Decay time (in seconds)",
                 default = 0.1
             },
             {
                 name = "sus",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Sustain (in range 0-1)",
                 default = 0.5
             },
             {
                 name = "rel",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Release time (in seconds)",
                 default = 0.3
             },

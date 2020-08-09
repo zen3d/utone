@@ -7,35 +7,35 @@ sptbl["pareq"] = {
     },
 
     func = {
-        create = "sp_pareq_create",
-        destroy = "sp_pareq_destroy",
-        init = "sp_pareq_init",
-        compute = "sp_pareq_compute",
+        create = "ut_pareq_create",
+        destroy = "ut_pareq_destroy",
+        init = "ut_pareq_init",
+        compute = "ut_pareq_compute",
     },
 
     params = {
         optional = {
             {
                 name = "fc",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Center frequency in peak mode, corner frequency in shelving mode.",
                 default = 1000
             },
             {
                 name = "v",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Amount at which the center frequency value shall be increased or decreased. A value of 1 is a flat response.",
                 default = 1
             },
             {
                 name = "q",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Q of the filter. sqrt(0.5) is no resonance.",
                 default = 0.707
             },
             {
                 name = "mode",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="EQ mode. 0 = peak, 1 = low shelving, 2 = high shelving",
                 default = 0
             },

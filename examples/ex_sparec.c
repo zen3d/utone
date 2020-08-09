@@ -1,44 +1,44 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_sparec *sparec;
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_utarec *utarec;
+    ut_osc *osc;
+    ut_ftbl *ft; 
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, sparec = 0;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp_sparec_compute(sp, ud->sparec, &osc, &sparec);
-    sp->out[0] = osc;
+    UTFLOAT osc = 0, utarec = 0;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut_utarec_compute(ut, ud->utarec, &osc, &utarec);
+    ut->out[0] = osc;
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_sparec_create(&ud.sparec);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
+    ut_utarec_create(&ud.utarec);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
 
-    sp_sparec_init(sp, ud.sparec, "rec.spa");
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_utarec_init(ut, ud.utarec, "rec.uta");
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_sparec_close(sp, ud.sparec);
-    sp_sparec_destroy(&ud.sparec);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
+    ut_utarec_close(ut, ud.utarec);
+    ut_utarec_destroy(&ud.utarec);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

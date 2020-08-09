@@ -12,21 +12,21 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_osc_create(sp_osc **osc)
+int ut_osc_create(ut_osc **osc)
 {
-    *osc = malloc(sizeof(sp_osc));
-    return SP_OK;
+    *osc = malloc(sizeof(ut_osc));
+    return UT_OK;
 }
 
-int sp_osc_destroy(sp_osc **osc)
+int ut_osc_destroy(ut_osc **osc)
 {
     free(*osc);
-    return SP_NOT_OK;
+    return UT_NOT_OK;
 }
 
-int sp_osc_init(sp_data *sp, sp_osc *osc, sp_ftbl *ft, SPFLOAT iphs)
+int ut_osc_init(ut_data *ut, ut_osc *osc, ut_ftbl *ft, UTFLOAT iphs)
 {
     osc->freq = 440.0;
     osc->amp = 0.2;
@@ -34,19 +34,19 @@ int sp_osc_init(sp_data *sp, sp_osc *osc, sp_ftbl *ft, SPFLOAT iphs)
     osc->iphs = fabs(iphs);
     osc->inc = 0;
     if (osc->iphs >= 0){
-        osc->lphs = ((int32_t)(osc->iphs * SP_FT_MAXLEN)) & SP_FT_PHMASK;
+        osc->lphs = ((int32_t)(osc->iphs * UT_FT_MAXLEN)) & UT_FT_PHMASK;
     }
 
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_osc_compute(sp_data *sp, sp_osc *osc, SPFLOAT *in, SPFLOAT *out)
+int ut_osc_compute(ut_data *ut, ut_osc *osc, UTFLOAT *in, UTFLOAT *out)
 {
-    sp_ftbl *ftp;
-    SPFLOAT amp, cps, fract, v1, v2, *ft;
+    ut_ftbl *ftp;
+    UTFLOAT amp, cps, fract, v1, v2, *ft;
     int32_t phs, lobits;
     int32_t pos;
-    SPFLOAT sicvt = osc->tbl->sicvt;
+    UTFLOAT sicvt = osc->tbl->sicvt;
 
     ftp = osc->tbl;
     lobits = osc->tbl->lobits;
@@ -63,8 +63,8 @@ int sp_osc_compute(sp_data *sp, sp_osc *osc, SPFLOAT *in, SPFLOAT *out)
     v2 = *(ft + ((pos + 1) % ftp->size));
     *out = (v1 + (v2 - v1) * fract) * amp;
     phs += osc->inc;
-    phs &= SP_FT_PHMASK;
+    phs &= UT_FT_PHMASK;
 
     osc->lphs = phs;
-    return SP_OK;
+    return UT_OK;
 }

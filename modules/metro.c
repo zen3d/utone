@@ -11,37 +11,37 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_metro_create(sp_metro **p)
+int ut_metro_create(ut_metro **p)
 {
-    *p = malloc(sizeof(sp_metro));
-    return SP_OK;
+    *p = malloc(sizeof(ut_metro));
+    return UT_OK;
 }
 
-int sp_metro_destroy(sp_metro **p)
+int ut_metro_destroy(ut_metro **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_metro_init(sp_data *sp, sp_metro *p)
+int ut_metro_init(ut_data *ut, ut_metro *p)
 {
     p->iphs = 0;
     p->freq= 2.0;
-    SPFLOAT phs = p->iphs;
+    UTFLOAT phs = p->iphs;
     int32_t  longphs = phs;
     if (phs >= 0.0){
-      p->curphs = (SPFLOAT)phs - (SPFLOAT)longphs;
+      p->curphs = (UTFLOAT)phs - (UTFLOAT)longphs;
     }
     p->flag=1;
-    p->onedsr = 1.0 / sp->sr;
-    return SP_OK;
+    p->onedsr = 1.0 / ut->sr;
+    return UT_OK;
 }
 
-int sp_metro_compute(sp_data *sp, sp_metro *p, SPFLOAT *in, SPFLOAT *out)
+int ut_metro_compute(ut_data *ut, ut_metro *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT phs= p->curphs;
+    UTFLOAT phs= p->curphs;
     if (phs == 0.0 && p->flag){
         *out = 1.0;
         p->flag = 0;
@@ -53,5 +53,5 @@ int sp_metro_compute(sp_data *sp, sp_metro *p, SPFLOAT *in, SPFLOAT *out)
         *out = 0.0;
     }
     p->curphs = phs;
-    return SP_OK;
+    return UT_OK;
 }

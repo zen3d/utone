@@ -1,10 +1,10 @@
 typedef struct {
-    SPFLOAT hp;
-    SPFLOAT c1, c2, yt1, prvhp;
-    SPFLOAT tpidsr;
-} sp_atone;
+    UTFLOAT hp;
+    UTFLOAT c1, c2, yt1, prvhp;
+    UTFLOAT tpidsr;
+} ut_atone;
 
-int sp_atone_create(sp_atone **p);
-int sp_atone_destroy(sp_atone **p);
-int sp_atone_init(sp_data *sp, sp_atone *p);
-int sp_atone_compute(sp_data *sp, sp_atone *p, SPFLOAT *in, SPFLOAT *out);
+int ut_atone_create(ut_atone **p);
+int ut_atone_destroy(ut_atone **p);
+int ut_atone_init(ut_data *ut, ut_atone *p);
+int ut_atone_compute(ut_data *ut, ut_atone *p, UTFLOAT *in, UTFLOAT *out);

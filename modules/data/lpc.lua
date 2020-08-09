@@ -7,19 +7,19 @@ sptbl["lpc"] = {
     },
 
     func = {
-        create = "sp_lpc_create",
-        destroy = "sp_lpc_destroy",
-        init = "sp_lpc_init",
-        compute = "sp_lpc_compute",
+        create = "ut_lpc_create",
+        destroy = "ut_lpc_destroy",
+        init = "ut_lpc_init",
+        compute = "ut_lpc_compute",
         other = {
-            sp_lpc_synth = {
+            ut_lpc_synth = {
                 description = [[Toggle synth mode. 
                 Instead of reading an input, manipulate the parameters in  
                 a scaled ftable.]],
                 args = { 
                     {
                         name = "ft",
-                        type = "sp_ftbl *",
+                        type = "ut_ftbl *",
                         description = "ftable of size 7",
                         default = "N/A"
                     }

@@ -1,8 +1,8 @@
 typedef struct {
-    SPFLOAT min, max;
-} sp_biscale;
+    UTFLOAT min, max;
+} ut_biscale;
 
-int sp_biscale_create(sp_biscale **p);
-int sp_biscale_destroy(sp_biscale **p);
-int sp_biscale_init(sp_data *sp, sp_biscale *p);
-int sp_biscale_compute(sp_data *sp, sp_biscale *p, SPFLOAT *in, SPFLOAT *out);
+int ut_biscale_create(ut_biscale **p);
+int ut_biscale_destroy(ut_biscale **p);
+int ut_biscale_init(ut_data *ut, ut_biscale *p);
+int ut_biscale_compute(ut_data *ut, ut_biscale *p, UTFLOAT *in, UTFLOAT *out);

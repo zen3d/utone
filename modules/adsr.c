@@ -1,22 +1,22 @@
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 enum { CLEAR, ATTACK, DECAY, SUSTAIN, RELEASE };
 
-int sp_adsr_create(sp_adsr **p)
+int ut_adsr_create(ut_adsr **p)
 {
-    *p = malloc(sizeof(sp_adsr));
-    return SP_OK;
+    *p = malloc(sizeof(ut_adsr));
+    return UT_OK;
 }
 
-int sp_adsr_destroy(sp_adsr **p)
+int ut_adsr_destroy(ut_adsr **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_adsr_init(sp_data *sp, sp_adsr *p)
+int ut_adsr_init(ut_data *ut, ut_adsr *p)
 {
     p->atk = 0.1;
     p->dec = 0.1;
@@ -28,38 +28,38 @@ int sp_adsr_init(sp_data *sp, sp_adsr *p)
     p->y = 0;
     p->x = 0;
     p->prev = 0;
-    p->atk_time = p->atk * sp->sr;
+    p->atk_time = p->atk * ut->sr;
     p->mode = CLEAR;
-    return SP_OK;
+    return UT_OK;
 }
 
-static SPFLOAT tau2pole(sp_data *sp, sp_adsr *p, SPFLOAT tau)
+static UTFLOAT tau2pole(ut_data *ut, ut_adsr *p, UTFLOAT tau)
 {
-    return exp(-1.0 / (tau * sp->sr));
+    return exp(-1.0 / (tau * ut->sr));
 }
 
-static SPFLOAT adsr_filter(sp_data *sp, sp_adsr *p)
+static UTFLOAT adsr_filter(ut_data *ut, ut_adsr *p)
 {
     p->y = p->b * p->x  + p->a * p->y;
     return p->y;
 }
 
-int sp_adsr_compute(sp_data *sp, sp_adsr *p, SPFLOAT *in, SPFLOAT *out)
+int ut_adsr_compute(ut_data *ut, ut_adsr *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT pole;
+    UTFLOAT pole;
     if(p->prev < *in && p->mode != DECAY) {
         p->mode = ATTACK;
         p->timer = 0;
         /* quick fix: uncomment if broken */
-        /* pole = tau2pole(sp, p, p->atk * 0.75); */
-        /* p->atk_time = p->atk * sp->sr * 1.5; */
-        pole = tau2pole(sp, p, p->atk * 0.6);
-        p->atk_time = p->atk * sp->sr;
+        /* pole = tau2pole(ut, p, p->atk * 0.75); */
+        /* p->atk_time = p->atk * ut->sr * 1.5; */
+        pole = tau2pole(ut, p, p->atk * 0.6);
+        p->atk_time = p->atk * ut->sr;
         p->a = pole;
         p->b = 1 - pole;
     } else if(p->prev > *in) {
         p->mode = RELEASE;
-        pole = tau2pole(sp, p, p->rel);
+        pole = tau2pole(ut, p, p->rel);
         p->a = pole;
         p->b = 1 - pole;
     }
@@ -73,12 +73,12 @@ int sp_adsr_compute(sp_data *sp, sp_adsr *p, SPFLOAT *in, SPFLOAT *out)
             break;
         case ATTACK:
             p->timer++;
-            *out = adsr_filter(sp, p);
+            *out = adsr_filter(ut, p);
             /* quick fix: uncomment if broken */
             /* if(p->timer > p->atk_time) { */
             if(*out > 0.99) {
                 p->mode = DECAY;
-                pole = tau2pole(sp, p, p->dec);
+                pole = tau2pole(ut, p, p->dec);
                 p->a = pole;
                 p->b = 1 - pole;
             }
@@ -86,10 +86,10 @@ int sp_adsr_compute(sp_data *sp, sp_adsr *p, SPFLOAT *in, SPFLOAT *out)
         case DECAY:
         case RELEASE:
             p->x *= p->sus;
-            *out = adsr_filter(sp, p);
+            *out = adsr_filter(ut, p);
         default:
             break;        
     }
 
-    return SP_OK;
+    return UT_OK;
 }

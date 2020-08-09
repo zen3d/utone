@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846	
@@ -21,31 +21,31 @@
 #define SQRT2 1.41421356237309504880
 
 
-int sp_pan2_create(sp_pan2 **p)
+int ut_pan2_create(ut_pan2 **p)
 {
-    *p = malloc(sizeof(sp_pan2));
-    return SP_OK;
+    *p = malloc(sizeof(ut_pan2));
+    return UT_OK;
 }
 
-int sp_pan2_destroy(sp_pan2 **p)
+int ut_pan2_destroy(ut_pan2 **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_pan2_init(sp_data *sp, sp_pan2 *p)
+int ut_pan2_init(ut_data *ut, ut_pan2 *p)
 {
     p->type = 0;
     p->pan = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_pan2_compute(sp_data *sp, sp_pan2 *p, SPFLOAT *in, SPFLOAT *out1, SPFLOAT *out2)
+int ut_pan2_compute(ut_data *ut, ut_pan2 *p, UTFLOAT *in, UTFLOAT *out1, UTFLOAT *out2)
 {
     /* Send the signal's input to the output */
     uint32_t type = p->type;
-    SPFLOAT pan = (1 + p->pan) * 0.5;
-    SPFLOAT cc, ss, l, r;
+    UTFLOAT pan = (1 + p->pan) * 0.5;
+    UTFLOAT cc, ss, l, r;
 
     type %= 4;
 
@@ -81,5 +81,5 @@ int sp_pan2_compute(sp_data *sp, sp_pan2 *p, SPFLOAT *in, SPFLOAT *out1, SPFLOAT
         break;
     }
 
-    return SP_OK;
+    return UT_OK;
 }

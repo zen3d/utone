@@ -1,35 +1,35 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_thresh_create(sp_thresh **p)
+int ut_thresh_create(ut_thresh **p)
 {
-    *p = malloc(sizeof(sp_thresh));
-    return SP_OK;
+    *p = malloc(sizeof(ut_thresh));
+    return UT_OK;
 }
 
-int sp_thresh_destroy(sp_thresh **p)
+int ut_thresh_destroy(ut_thresh **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_thresh_init(sp_data *sp, sp_thresh *p)
+int ut_thresh_init(ut_data *ut, ut_thresh *p)
 {
     /* Initalize variables here. */
     p->init = 1;
     p->mode = 0;
     p->prev = 0;
     p->thresh = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_thresh_compute(sp_data *sp, sp_thresh *p, SPFLOAT *in, SPFLOAT *out)
+int ut_thresh_compute(ut_data *ut, ut_thresh *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(p->init) {
         *out = 0;
         p->prev = *in;
         p->init = 0;
-        return SP_OK;
+        return UT_OK;
     }
 
     switch((int)p->mode) {
@@ -50,10 +50,10 @@ int sp_thresh_compute(sp_data *sp, sp_thresh *p, SPFLOAT *in, SPFLOAT *out)
             break;
 
         default:
-            return SP_NOT_OK;
+            return UT_NOT_OK;
     }
 
     p->prev = *in;
     
-    return SP_OK;
+    return UT_OK;
 }

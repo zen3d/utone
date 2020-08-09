@@ -1,39 +1,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_atone *atone;
-    sp_noise *noise;
+    ut_atone *atone;
+    ut_noise *noise;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT noise = 0, atone = 0;
-    sp_noise_compute(sp, ud->noise, NULL, &noise);
-    sp_atone_compute(sp, ud->atone, &noise, &atone);
-    sp->out[0] = atone;
+    UTFLOAT noise = 0, atone = 0;
+    ut_noise_compute(ut, ud->noise, NULL, &noise);
+    ut_atone_compute(ut, ud->atone, &noise, &atone);
+    ut->out[0] = atone;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_atone_create(&ud.atone);
-    sp_noise_create(&ud.noise);
+    ut_atone_create(&ud.atone);
+    ut_noise_create(&ud.noise);
 
-    sp_atone_init(sp, ud.atone);
-    sp_noise_init(sp, ud.noise);
+    ut_atone_init(ut, ud.atone);
+    ut_noise_init(ut, ud.noise);
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_atone_destroy(&ud.atone);
-    sp_noise_destroy(&ud.noise);
+    ut_atone_destroy(&ud.atone);
+    ut_noise_destroy(&ud.noise);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

@@ -1,29 +1,29 @@
-#define SP_FT_MAXLEN 0x1000000L
-#define SP_FT_PHMASK 0x0FFFFFFL
+#define UT_FT_MAXLEN 0x1000000L
+#define UT_FT_PHMASK 0x0FFFFFFL
 
-typedef struct sp_ftbl{
+typedef struct ut_ftbl{
     size_t size;
     uint32_t lobits;
     uint32_t lomask;
-    SPFLOAT lodiv;
-    SPFLOAT sicvt;
-    SPFLOAT *tbl;
+    UTFLOAT lodiv;
+    UTFLOAT sicvt;
+    UTFLOAT *tbl;
     char del;
-}sp_ftbl;
+}ut_ftbl;
 
-int sp_ftbl_create(sp_data *sp, sp_ftbl **ft, size_t size);
-int sp_ftbl_init(sp_data *sp, sp_ftbl *ft, size_t size);
-int sp_ftbl_bind(sp_data *sp, sp_ftbl **ft, SPFLOAT *tbl, size_t size);
-int sp_ftbl_destroy(sp_ftbl **ft);
-int sp_gen_vals(sp_data *sp, sp_ftbl *ft, const char *string);
-int sp_gen_sine(sp_data *sp, sp_ftbl *ft);
-int sp_gen_file(sp_data *sp, sp_ftbl *ft, const char *filename);
-int sp_gen_sinesum(sp_data *sp, sp_ftbl *ft, const char *argstring);
-int sp_gen_line(sp_data *sp, sp_ftbl *ft, const char *argstring);
-int sp_gen_xline(sp_data *sp, sp_ftbl *ft, const char *argstring);
-int sp_gen_gauss(sp_data *sp, sp_ftbl *ft, SPFLOAT scale, uint32_t seed);
-int sp_ftbl_loadfile(sp_data *sp, sp_ftbl **ft, const char *filename);
-int sp_ftbl_loadspa(sp_data *sp, sp_ftbl **ft, const char *filename);
-int sp_gen_composite(sp_data *sp, sp_ftbl *ft, const char *argstring);
-int sp_gen_rand(sp_data *sp, sp_ftbl *ft, const char *argstring);
-int sp_gen_triangle(sp_data *sp, sp_ftbl *ft);
+int ut_ftbl_create(ut_data *ut, ut_ftbl **ft, size_t size);
+int ut_ftbl_init(ut_data *ut, ut_ftbl *ft, size_t size);
+int ut_ftbl_bind(ut_data *ut, ut_ftbl **ft, UTFLOAT *tbl, size_t size);
+int ut_ftbl_destroy(ut_ftbl **ft);
+int ut_gen_vals(ut_data *ut, ut_ftbl *ft, const char *string);
+int ut_gen_sine(ut_data *ut, ut_ftbl *ft);
+int ut_gen_file(ut_data *ut, ut_ftbl *ft, const char *filename);
+int ut_gen_sinesum(ut_data *ut, ut_ftbl *ft, const char *argstring);
+int ut_gen_line(ut_data *ut, ut_ftbl *ft, const char *argstring);
+int ut_gen_xline(ut_data *ut, ut_ftbl *ft, const char *argstring);
+int ut_gen_gauss(ut_data *ut, ut_ftbl *ft, UTFLOAT scale, uint32_t seed);
+int ut_ftbl_loadfile(ut_data *ut, ut_ftbl **ft, const char *filename);
+int ut_ftbl_loadspa(ut_data *ut, ut_ftbl **ft, const char *filename);
+int ut_gen_composite(ut_data *ut, ut_ftbl *ft, const char *argstring);
+int ut_gen_rand(ut_data *ut, ut_ftbl *ft, const char *argstring);
+int ut_gen_triangle(ut_data *ut, ut_ftbl *ft);

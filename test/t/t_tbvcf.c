@@ -1,41 +1,41 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 
 typedef struct {
-    sp_noise *ns;
-    sp_tbvcf *tn;
+    ut_noise *ns;
+    ut_tbvcf *tn;
 } UserData;
 
-int t_tbvcf(sp_test *tst, sp_data *sp, const char *hash) 
+int t_tbvcf(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
 
-    sp_srand(sp, 0); 
+    ut_srand(ut, 0); 
     UserData ud;
-    sp_noise_create(&ud.ns);
-    sp_tbvcf_create(&ud.tn);
-    sp_noise_init(sp, ud.ns);
-    sp_tbvcf_init(sp, ud.tn);
+    ut_noise_create(&ud.ns);
+    ut_tbvcf_create(&ud.tn);
+    ut_noise_init(ut, ud.ns);
+    ut_tbvcf_init(ut, ud.tn);
     ud.tn->dist = 1.0;
-    SPFLOAT in = 0;
+    UTFLOAT in = 0;
 
     for(n = 0; n < tst->size; n++) {
         in = 0;
 
-        sp_noise_compute(sp, ud.ns, NULL, &in);
-        sp_tbvcf_compute(sp, ud.tn, &in, &sp->out[0]); 
-        sp_test_add_sample(tst, sp->out[0]);
+        ut_noise_compute(ut, ud.ns, NULL, &in);
+        ut_tbvcf_compute(ut, ud.tn, &in, &ut->out[0]); 
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
     
-    sp_noise_destroy(&ud.ns);
-    sp_tbvcf_destroy(&ud.tn);
+    ut_noise_destroy(&ud.ns);
+    ut_tbvcf_destroy(&ud.tn);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

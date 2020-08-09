@@ -7,10 +7,10 @@ sptbl["brown"] = {
     },
 
     func = {
-        create = "sp_brown_create",
-        destroy = "sp_brown_destroy",
-        init = "sp_brown_init",
-        compute = "sp_brown_compute",
+        create = "ut_brown_create",
+        destroy = "ut_brown_destroy",
+        init = "ut_brown_init",
+        compute = "ut_brown_compute",
     },
 
     params = {

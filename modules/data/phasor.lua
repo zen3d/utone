@@ -7,17 +7,17 @@ sptbl["phasor"] = {
     },
 
     func = {
-        create = "sp_phasor_create",
-        destroy = "sp_phasor_destroy",
-        init = "sp_phasor_init",
-        compute = "sp_phasor_compute",
+        create = "ut_phasor_create",
+        destroy = "ut_phasor_destroy",
+        init = "ut_phasor_init",
+        compute = "ut_phasor_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "iphs",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "initial phase",
                 default = 0
             },
@@ -26,7 +26,7 @@ sptbl["phasor"] = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Frequency.",
                 default = 1.5
             },

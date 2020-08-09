@@ -1,55 +1,55 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_samphold *samphold;
-    sp_osc *osc;
-    sp_ftbl *ft;
-    sp_metro *met;
-    sp_noise *noise;
+    ut_samphold *samphold;
+    ut_osc *osc;
+    ut_ftbl *ft;
+    ut_metro *met;
+    ut_noise *noise;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, samphold = 0, met = 0, noise = 0;
-    sp_metro_compute(sp, ud->met, NULL, &met);
-    sp_noise_compute(sp, ud->noise, NULL, &noise);
-    sp_samphold_compute(sp, ud->samphold, &met, &noise, &samphold);
+    UTFLOAT osc = 0, samphold = 0, met = 0, noise = 0;
+    ut_metro_compute(ut, ud->met, NULL, &met);
+    ut_noise_compute(ut, ud->noise, NULL, &noise);
+    ut_samphold_compute(ut, ud->samphold, &met, &noise, &samphold);
     ud->osc->freq = 200 + (samphold + 1) * 300;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp->out[0] = osc;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut->out[0] = osc;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_samphold_create(&ud.samphold);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_metro_create(&ud.met);
-    sp_noise_create(&ud.noise);
+    ut_samphold_create(&ud.samphold);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_metro_create(&ud.met);
+    ut_noise_create(&ud.noise);
 
-    sp_samphold_init(sp, ud.samphold);
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
-    sp_metro_init(sp, ud.met);
+    ut_samphold_init(ut, ud.samphold);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
+    ut_metro_init(ut, ud.met);
     ud.met->freq = 5;
-    sp_noise_init(sp, ud.noise);
+    ut_noise_init(ut, ud.noise);
     ud.noise->amp = 1;
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_samphold_destroy(&ud.samphold);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_metro_destroy(&ud.met);
-    sp_noise_destroy(&ud.noise);
+    ut_samphold_destroy(&ud.samphold);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_metro_destroy(&ud.met);
+    ut_noise_destroy(&ud.noise);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

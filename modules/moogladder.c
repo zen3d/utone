@@ -12,13 +12,13 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif
 
-#define SPFLOAT2LONG(x) lrintf(x)
+#define UTFLOAT2LONG(x) lrintf(x)
 
 
 /* John ffitch tanh function to speed up inner loop */ 
@@ -41,17 +41,17 @@ static double my_tanh(double x)
     return sign*tanh(x);
 }
 
-int sp_moogladder_create(sp_moogladder **t){
-    *t = malloc(sizeof(sp_moogladder));
-    return SP_OK;
+int ut_moogladder_create(ut_moogladder **t){
+    *t = malloc(sizeof(ut_moogladder));
+    return UT_OK;
 }
 
-int sp_moogladder_destroy(sp_moogladder **t){
+int ut_moogladder_destroy(ut_moogladder **t){
     free(*t);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_moogladder_init(sp_data *sp, sp_moogladder *p){
+int ut_moogladder_init(ut_data *ut, ut_moogladder *p){
     p->istor = 0.0;
     p->res = 0.4;
     p->freq = 1000;
@@ -65,27 +65,27 @@ int sp_moogladder_init(sp_data *sp, sp_moogladder *p){
       p->oldfreq = 0.0;
       p->oldres = -1.0;     /* ensure calculation on first cycle */
     }
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_moogladder_compute(sp_data *sp, sp_moogladder *p, SPFLOAT *in, SPFLOAT *out){
-    SPFLOAT freq = p->freq;
-    SPFLOAT res = p->res;
-    SPFLOAT res4;
-    SPFLOAT *delay = p->delay;
-    SPFLOAT *tanhstg = p->tanhstg;
-    SPFLOAT stg[4], input;
-    SPFLOAT acr, tune;
+int ut_moogladder_compute(ut_data *ut, ut_moogladder *p, UTFLOAT *in, UTFLOAT *out){
+    UTFLOAT freq = p->freq;
+    UTFLOAT res = p->res;
+    UTFLOAT res4;
+    UTFLOAT *delay = p->delay;
+    UTFLOAT *tanhstg = p->tanhstg;
+    UTFLOAT stg[4], input;
+    UTFLOAT acr, tune;
 #define THERMAL (0.000025) /* (1.0 / 40000.0) transistor thermal voltage  */
     int     j, k;
 
     if (res < 0) res = 0;
 
     if (p->oldfreq != freq || p->oldres != res) {
-        SPFLOAT f, fc, fc2, fc3, fcr;
+        UTFLOAT f, fc, fc2, fc3, fcr;
         p->oldfreq = freq;
         /* sr is half the actual filter sampling rate  */
-        fc =  (SPFLOAT)(freq/sp->sr);
+        fc =  (UTFLOAT)(freq/ut->sr);
         f  =  0.5*fc;
         fc2 = fc*fc;
         fc3 = fc2*fc;
@@ -101,7 +101,7 @@ int sp_moogladder_compute(sp_data *sp, sp_moogladder *p, SPFLOAT *in, SPFLOAT *o
         acr = p->oldacr;
         tune = p->oldtune;
     }
-    res4 = 4.0*(SPFLOAT)res*acr;
+    res4 = 4.0*(UTFLOAT)res*acr;
 
     /* oversampling  */
     for (j = 0; j < 2; j++) {
@@ -119,6 +119,6 @@ int sp_moogladder_compute(sp_data *sp, sp_moogladder *p, SPFLOAT *in, SPFLOAT *o
         delay[5] = (stg[3] + delay[4])*0.5;
         delay[4] = stg[3];
     }
-    *out = (SPFLOAT) delay[5];
-    return SP_OK;
+    *out = (UTFLOAT) delay[5];
+    return UT_OK;
 }

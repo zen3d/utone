@@ -1,42 +1,42 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_pareq *pareq;
-    sp_noise *noise;
-    sp_ftbl *ft; 
+    ut_pareq *pareq;
+    ut_noise *noise;
+    ut_ftbl *ft; 
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT noise = 0, pareq = 0;
-    sp_noise_compute(sp, ud->noise, NULL, &noise);
-    sp_pareq_compute(sp, ud->pareq, &noise, &pareq);
-    sp->out[0] = pareq;
+    UTFLOAT noise = 0, pareq = 0;
+    ut_noise_compute(ut, ud->noise, NULL, &noise);
+    ut_pareq_compute(ut, ud->pareq, &noise, &pareq);
+    ut->out[0] = pareq;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_pareq_create(&ud.pareq);
-    sp_noise_create(&ud.noise);
+    ut_pareq_create(&ud.pareq);
+    ut_noise_create(&ud.noise);
 
-    sp_pareq_init(sp, ud.pareq);
+    ut_pareq_init(ut, ud.pareq);
     ud.pareq->fc = 500;
-    sp_noise_init(sp, ud.noise);
+    ut_noise_init(ut, ud.noise);
     ud.noise->amp = 0.4;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_pareq_destroy(&ud.pareq);
-    sp_noise_destroy(&ud.noise);
+    ut_pareq_destroy(&ud.pareq);
+    ut_noise_destroy(&ud.noise);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

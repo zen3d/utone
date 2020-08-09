@@ -7,23 +7,23 @@ sptbl["butbp"] = {
     },
 
     func = {
-        create = "sp_butbp_create",
-        destroy = "sp_butbp_destroy",
-        init = "sp_butbp_init",
-        compute = "sp_butbp_compute",
+        create = "ut_butbp_create",
+        destroy = "ut_butbp_destroy",
+        init = "ut_butbp_init",
+        compute = "ut_butbp_compute",
     },
 
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Center Frequency. (in Hertz)",
                 default = 1000
             },
             {
                 name = "bw",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Bandwidth. (in Hertz)",
                 default = 10
             },

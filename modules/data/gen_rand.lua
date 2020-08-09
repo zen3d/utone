@@ -7,7 +7,7 @@ sptbl["gen_rand"] = {
     },
 
     func = {
-        name = "sp_gen_rand",
+        name = "ut_gen_rand",
     },
 
     params = {

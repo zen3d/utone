@@ -1,52 +1,52 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_tabread *tr;
-    sp_ftbl *ft;
-    sp_phasor *phasor;
+    ut_tabread *tr;
+    ut_ftbl *ft;
+    ut_phasor *phasor;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT tab = 0.0, phasor = 0.0;
-    sp_phasor_compute(sp, ud->phasor, NULL, &phasor);
+    UTFLOAT tab = 0.0, phasor = 0.0;
+    ut_phasor_compute(ut, ud->phasor, NULL, &phasor);
     ud->tr->index = phasor;
-    sp_tabread_compute(sp, ud->tr, NULL, &tab);
-    sp->out[0] = tab;
+    ut_tabread_compute(ut, ud->tr, NULL, &tab);
+    ut->out[0] = tab;
 }
 
 int main() {
     srand(time(NULL));
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_tabread_create(&ud.tr);
+    ut_tabread_create(&ud.tr);
 
-    sp_phasor_create(&ud.phasor);
+    ut_phasor_create(&ud.phasor);
 
-    sp_ftbl_create(sp, &ud.ft, 395393);
-    sp_gen_file(sp, ud.ft, "oneart.wav");
+    ut_ftbl_create(ut, &ud.ft, 395393);
+    ut_gen_file(ut, ud.ft, "oneart.wav");
 
-    sp_tabread_init(sp, ud.tr, ud.ft, 1);
+    ut_tabread_init(ut, ud.tr, ud.ft, 1);
 
     /* since mode = 1, offset 5% into file */
     ud.tr->offset = 0.05;
     /* no wraparound */
     ud.tr->wrap = 0;
 
-    sp_phasor_init(sp, ud.phasor, 0);
+    ut_phasor_init(ut, ud.phasor, 0);
     /* set playback rate to half speed, or 1/(t * 2) */
     ud.phasor->freq = 1 / (8.97 * 2);
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_phasor_destroy(&ud.phasor);
-    sp_tabread_destroy(&ud.tr);
-    sp_ftbl_destroy(&ud.ft);
-    sp_destroy(&sp);
+    ut_phasor_destroy(&ud.phasor);
+    ut_tabread_destroy(&ud.tr);
+    ut_ftbl_destroy(&ud.ft);
+    ut_destroy(&ut);
     return 0;
 }

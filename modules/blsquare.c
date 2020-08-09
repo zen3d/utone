@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "CUI.h"
 
 #define max(a,b) ((a < b) ? b : a)
@@ -133,34 +133,34 @@ void computeblsquare(blsquare* dsp, int count, FAUSTFLOAT** inputs, FAUSTFLOAT**
 
 static void addHorizontalSlider(void* ui_interface, const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
 {
-    sp_blsquare *p = ui_interface;
+    ut_blsquare *p = ui_interface;
     p->args[p->argpos] = zone;
     p->argpos++;
 }
 
-int sp_blsquare_create(sp_blsquare **p)
+int ut_blsquare_create(ut_blsquare **p)
 {
-    *p = malloc(sizeof(sp_blsquare));
-    return SP_OK;
+    *p = malloc(sizeof(ut_blsquare));
+    return UT_OK;
 }
 
-int sp_blsquare_destroy(sp_blsquare **p)
+int ut_blsquare_destroy(ut_blsquare **p)
 {
-    sp_blsquare *pp = *p;
+    ut_blsquare *pp = *p;
     blsquare *dsp = pp->ud;
     deleteblsquare (dsp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_blsquare_init(sp_data *sp, sp_blsquare *p)
+int ut_blsquare_init(ut_data *ut, ut_blsquare *p)
 {
     blsquare *dsp = newblsquare(); UIGlue UI;
     p->argpos = 0;
     UI.addHorizontalSlider= addHorizontalSlider;
     UI.uiInterface = p;
     buildUserInterfaceblsquare(dsp, &UI);
-    initblsquare(dsp, sp->sr);
+    initblsquare(dsp, ut->sr);
 
 
     p->freq = p->args[0];
@@ -168,18 +168,18 @@ int sp_blsquare_init(sp_data *sp, sp_blsquare *p)
     p->width = p->args[2];
 
     p->ud = dsp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_blsquare_compute(sp_data *sp, sp_blsquare *p, SPFLOAT *in, SPFLOAT *out)
+int ut_blsquare_compute(ut_data *ut, ut_blsquare *p, UTFLOAT *in, UTFLOAT *out)
 {
 
     blsquare *dsp = p->ud;
-    SPFLOAT out1 = 0;
-    SPFLOAT *faust_out[] = {&out1};
-    SPFLOAT *faust_in[] = {in};
+    UTFLOAT out1 = 0;
+    UTFLOAT *faust_out[] = {&out1};
+    UTFLOAT *faust_in[] = {in};
     computeblsquare(dsp, 1, faust_in, faust_out);
 
     *out = out1;
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,13 +1,13 @@
 typedef struct {
     void *faust;
     int argpos;
-    SPFLOAT *args[3];
-    SPFLOAT *level;
-    SPFLOAT *wah;
-    SPFLOAT *mix;
-} sp_autowah;
+    UTFLOAT *args[3];
+    UTFLOAT *level;
+    UTFLOAT *wah;
+    UTFLOAT *mix;
+} ut_autowah;
 
-int sp_autowah_create(sp_autowah **p);
-int sp_autowah_destroy(sp_autowah **p);
-int sp_autowah_init(sp_data *sp, sp_autowah *p);
-int sp_autowah_compute(sp_data *sp, sp_autowah *p, SPFLOAT *in, SPFLOAT *out);
+int ut_autowah_create(ut_autowah **p);
+int ut_autowah_destroy(ut_autowah **p);
+int ut_autowah_init(ut_data *ut, ut_autowah *p);
+int ut_autowah_compute(ut_data *ut, ut_autowah *p, UTFLOAT *in, UTFLOAT *out);

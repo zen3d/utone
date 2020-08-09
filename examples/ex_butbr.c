@@ -1,39 +1,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_butbr *butbr;
-    sp_noise *ns;
+    ut_butbr *butbr;
+    ut_noise *ns;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT noise = 0, butbr = 0;
-    sp_noise_compute(sp, ud->ns, NULL, &noise);
-    sp_butbr_compute(sp, ud->butbr, &noise, &butbr);
-    sp->out[0] = butbr;
+    UTFLOAT noise = 0, butbr = 0;
+    ut_noise_compute(ut, ud->ns, NULL, &noise);
+    ut_butbr_compute(ut, ud->butbr, &noise, &butbr);
+    ut->out[0] = butbr;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_butbr_create(&ud.butbr);
-    sp_noise_create(&ud.ns);
+    ut_butbr_create(&ud.butbr);
+    ut_noise_create(&ud.ns);
 
-    sp_butbr_init(sp, ud.butbr);
-    sp_noise_init(sp, ud.ns);
+    ut_butbr_init(ut, ud.butbr);
+    ut_noise_init(ut, ud.ns);
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_butbr_destroy(&ud.butbr);
-    sp_noise_destroy(&ud.ns);
+    ut_butbr_destroy(&ud.butbr);
+    ut_noise_destroy(&ud.ns);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

@@ -1,44 +1,44 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_drip *drip;
-    sp_dust *trig;
-    sp_revsc *rev;
+    ut_drip *drip;
+    ut_dust *trig;
+    ut_revsc *rev;
 } UserData;
 
-int t_drip(sp_test *tst, sp_data *sp, const char *hash) 
+int t_drip(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT trig, rev1, rev2, drip;
+    UTFLOAT trig, rev1, rev2, drip;
     UserData ud;
 
-    sp_revsc_create(&ud.rev);
-    sp_drip_create(&ud.drip);
-    sp_dust_create(&ud.trig);
+    ut_revsc_create(&ud.rev);
+    ut_drip_create(&ud.drip);
+    ut_dust_create(&ud.trig);
     
-    sp_dust_init(sp, ud.trig);
-    sp_drip_init(sp, ud.drip, 0.09);
+    ut_dust_init(ut, ud.trig);
+    ut_drip_init(ut, ud.drip, 0.09);
     ud.drip->amp = 0.3;
-    sp_revsc_init(sp, ud.rev);
+    ut_revsc_init(ut, ud.rev);
     ud.rev->feedback = 0.9;
     
     for(n = 0; n < tst->size; n++) {
-        sp_dust_compute(sp, ud.trig, NULL, &trig);
-        sp_drip_compute(sp, ud.drip, &trig, &drip);
-        sp_revsc_compute(sp, ud.rev, &drip, &drip, &rev1, &rev2);
-        sp_test_add_sample(tst, drip + rev1 * 0.05);
+        ut_dust_compute(ut, ud.trig, NULL, &trig);
+        ut_drip_compute(ut, ud.drip, &trig, &drip);
+        ut_revsc_compute(ut, ud.rev, &drip, &drip, &rev1, &rev2);
+        ut_test_add_sample(tst, drip + rev1 * 0.05);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
     
-    sp_drip_destroy(&ud.drip);
-    sp_dust_destroy(&ud.trig);
-    sp_revsc_destroy(&ud.rev);
+    ut_drip_destroy(&ud.drip);
+    ut_dust_destroy(&ud.trig);
+    ut_revsc_destroy(&ud.rev);
      
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

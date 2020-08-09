@@ -1,57 +1,57 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_tabread *tr;
-    sp_ftbl *ft;
-    sp_phasor *phasor;
+    ut_tabread *tr;
+    ut_ftbl *ft;
+    ut_phasor *phasor;
 } UserData;
 
-int t_tabread(sp_test *tst, sp_data *sp, const char *hash) 
+int t_tabread(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT tab = 0.0, phasor = 0.0;
+    UTFLOAT tab = 0.0, phasor = 0.0;
 
-    sp_srand(sp, 123456);
+    ut_srand(ut, 123456);
     UserData ud;
 
-    sp_tabread_create(&ud.tr);
+    ut_tabread_create(&ud.tr);
 
-    sp_phasor_create(&ud.phasor);
+    ut_phasor_create(&ud.phasor);
 
-    sp_ftbl_create(sp, &ud.ft, 395393);
-    sp_gen_file(sp, ud.ft, "oneart.wav");
+    ut_ftbl_create(ut, &ud.ft, 395393);
+    ut_gen_file(ut, ud.ft, "oneart.wav");
 
-    sp_tabread_init(sp, ud.tr, ud.ft, 1);
+    ut_tabread_init(ut, ud.tr, ud.ft, 1);
 
     /* since mode = 1, offset 5% into file */
     ud.tr->offset = 0.05;
     /* no wraparound */
     ud.tr->wrap = 0;
 
-    sp_phasor_init(sp, ud.phasor, 0);
-    /* set playback rate to half speed, or 1/(t * 2) */
+    ut_phasor_init(ut, ud.phasor, 0);
+    /* set playback rate to half.uteed, or 1/(t * 2) */
     ud.phasor->freq = 1 / (8.97 * 2);
-    sp->len = 44100 * 5;
+    ut->len = 44100 * 5;
 
 
     for(n = 0; n < tst->size; n++) {
         tab = 0.0; phasor = 0.0;
-        sp_phasor_compute(sp, ud.phasor, NULL, &phasor);
+        ut_phasor_compute(ut, ud.phasor, NULL, &phasor);
         ud.tr->index = phasor;
-        sp_tabread_compute(sp, ud.tr, NULL, &tab);
-        sp_test_add_sample(tst, 0);
+        ut_tabread_compute(ut, ud.tr, NULL, &tab);
+        ut_test_add_sample(tst, 0);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_phasor_destroy(&ud.phasor);
-    sp_tabread_destroy(&ud.tr);
-    sp_ftbl_destroy(&ud.ft);
+    ut_phasor_destroy(&ud.phasor);
+    ut_tabread_destroy(&ud.tr);
+    ut_ftbl_destroy(&ud.ft);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

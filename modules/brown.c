@@ -8,31 +8,31 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_brown_create(sp_brown **p)
+int ut_brown_create(ut_brown **p)
 {
-    *p = malloc(sizeof(sp_brown));
-    return SP_OK;
+    *p = malloc(sizeof(ut_brown));
+    return UT_OK;
 }
 
-int sp_brown_destroy(sp_brown **p)
+int ut_brown_destroy(ut_brown **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_brown_init(sp_data *sp, sp_brown *p)
+int ut_brown_init(ut_data *ut, ut_brown *p)
 {
     p->brown = 0.0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_brown_compute(sp_data *sp, sp_brown *p, SPFLOAT *in, SPFLOAT *out)
+int ut_brown_compute(ut_data *ut, ut_brown *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT r;
+    UTFLOAT r;
     while(1) {
-        r = (sp_rand(sp) % SP_RANDMAX) / (SPFLOAT)(SP_RANDMAX);
+        r = (ut_rand(ut) % UT_RANDMAX) / (UTFLOAT)(UT_RANDMAX);
         r = ((r * 2) - 1) * 0.5;
         p->brown += r;
         if(p->brown < -8.0f || p->brown > 8.0f) {
@@ -43,5 +43,5 @@ int sp_brown_compute(sp_data *sp, sp_brown *p, SPFLOAT *in, SPFLOAT *out)
     }
 
     *out = p->brown * 0.0625;
-    return SP_OK;
+    return UT_OK;
 }

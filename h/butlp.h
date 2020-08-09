@@ -1,11 +1,11 @@
 typedef struct  {
-    SPFLOAT sr, freq, istor;
-    SPFLOAT lkf;
-    SPFLOAT a[8];
-    SPFLOAT pidsr;
-} sp_butlp;
+    UTFLOAT sr, freq, istor;
+    UTFLOAT lkf;
+    UTFLOAT a[8];
+    UTFLOAT pidsr;
+} ut_butlp;
 
-int sp_butlp_create(sp_butlp **p);
-int sp_butlp_destroy(sp_butlp **p);
-int sp_butlp_init(sp_data *sp, sp_butlp *p);
-int sp_butlp_compute(sp_data *sp, sp_butlp *p, SPFLOAT *in, SPFLOAT *out);
+int ut_butlp_create(ut_butlp **p);
+int ut_butlp_destroy(ut_butlp **p);
+int ut_butlp_init(ut_data *ut, ut_butlp *p);
+int ut_butlp_compute(ut_data *ut, ut_butlp *p, UTFLOAT *in, UTFLOAT *out);

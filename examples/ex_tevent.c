@@ -1,59 +1,59 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_osc *osc;
-    sp_ftbl *ft; 
-    sp_tevent *te;
+    ut_osc *osc;
+    ut_ftbl *ft; 
+    ut_tevent *te;
     int counter;
-    SPFLOAT freq;
+    UTFLOAT freq;
 } UserData;
 
-void write_osc(sp_data *sp, void *udata) {
+void write_osc(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT trig = 0;
+    UTFLOAT trig = 0;
     if(ud->counter == 0){
         trig = 1.0;
     }
-    sp_tevent_compute(sp, ud->te, &trig, &ud->osc->freq);
-    sp_osc_compute(sp, ud->osc, NULL, &sp->out[0]);
+    ut_tevent_compute(ut, ud->te, &trig, &ud->osc->freq);
+    ut_osc_compute(ut, ud->osc, NULL, &ut->out[0]);
     ud->counter = (ud->counter + 1) % 4410;
 }
 
 void freq_reinit(void *ud){
-    SPFLOAT *freq = ud;
+    UTFLOAT *freq = ud;
     *freq = 500 + rand() % 2000;
 }
 
-void freq_compute(void *ud, SPFLOAT *out){
-    SPFLOAT *freq = ud;
+void freq_compute(void *ud, UTFLOAT *out){
+    UTFLOAT *freq = ud;
     *out = *freq;
 }
 
 int main() {
     srand(time(NULL));
     UserData ud;
-    SPFLOAT *freqp = &ud.freq;
+    UTFLOAT *freqp = &ud.freq;
     ud.counter = 0;
     ud.freq = 400;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_tevent_create(&ud.te);
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_osc_create(&ud.osc);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_tevent_create(&ud.te);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_osc_create(&ud.osc);
 
-    sp_tevent_init(sp, ud.te, freq_reinit, freq_compute, freqp);
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_tevent_init(ut, ud.te, freq_reinit, freq_compute, freqp);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
     ud.osc->freq = *freqp;
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, write_osc);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, write_osc);
 
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_tevent_destroy(&ud.te);
-    sp_destroy(&sp);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_tevent_destroy(&ud.te);
+    ut_destroy(&ut);
     return 0;
 }

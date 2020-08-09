@@ -1,14 +1,14 @@
 typedef struct {
     void *faust;
     int argpos;
-    SPFLOAT *args[4];
-    SPFLOAT *ratio;
-    SPFLOAT *thresh;
-    SPFLOAT *atk;
-    SPFLOAT *rel;
-} sp_compressor;
+    UTFLOAT *args[4];
+    UTFLOAT *ratio;
+    UTFLOAT *thresh;
+    UTFLOAT *atk;
+    UTFLOAT *rel;
+} ut_compressor;
 
-int sp_compressor_create(sp_compressor **p);
-int sp_compressor_destroy(sp_compressor **p);
-int sp_compressor_init(sp_data *sp, sp_compressor *p);
-int sp_compressor_compute(sp_data *sp, sp_compressor *p, SPFLOAT *in, SPFLOAT *out);
+int ut_compressor_create(ut_compressor **p);
+int ut_compressor_destroy(ut_compressor **p);
+int ut_compressor_init(ut_data *ut, ut_compressor *p);
+int ut_compressor_compute(ut_data *ut, ut_compressor *p, UTFLOAT *in, UTFLOAT *out);

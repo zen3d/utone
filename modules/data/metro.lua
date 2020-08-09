@@ -7,17 +7,17 @@ sptbl["metro"] = {
     },
 
     func = {
-        create = "sp_metro_create",
-        destroy = "sp_metro_destroy",
-        init = "sp_metro_init",
-        compute = "sp_metro_compute",
+        create = "ut_metro_create",
+        destroy = "ut_metro_destroy",
+        init = "ut_metro_init",
+        compute = "ut_metro_compute",
     },
 
     params = {
         optional = {
              {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "The frequency to repeat.",
                 default = 2.0
             },

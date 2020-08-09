@@ -7,12 +7,12 @@ sptbl["vdelay"] = {
     },
 
     func = {
-        create = "sp_vdelay_create",
-        destroy = "sp_vdelay_destroy",
-        init = "sp_vdelay_init",
-        compute = "sp_vdelay_compute",
+        create = "ut_vdelay_create",
+        destroy = "ut_vdelay_destroy",
+        init = "ut_vdelay_init",
+        compute = "ut_vdelay_compute",
         other = {
-            sp_vdelay_reset = {
+            ut_vdelay_reset = {
                 description = "Resets delay buffer and delay pointer.",
                 args = {
                 }
@@ -24,7 +24,7 @@ sptbl["vdelay"] = {
         mandatory = {
             {
                 name = "maxdel",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "The maximum delay time, in seconds.",
                 default = 1.0,
                 irate = true
@@ -34,13 +34,13 @@ sptbl["vdelay"] = {
         optional = {
             {
                 name = "del",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Delay time (in seconds) that can be changed during performance. This value must not exceed the maximum delay time.",
                 default = "maxdel * 0.5"
             },
             {
                 name = "feedback",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Amount of feedback in delay line. Should be in range 0-1.",
                 default = "0"
             },

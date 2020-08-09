@@ -2,9 +2,9 @@ typedef struct {
     int nbars, skip;
     int counter;
     uint32_t len;
-} sp_progress;
+} ut_progress;
 
-int sp_progress_create(sp_progress **p);
-int sp_progress_destroy(sp_progress **p);
-int sp_progress_init(sp_data *sp, sp_progress *p);
-int sp_progress_compute(sp_data *sp, sp_progress *p, SPFLOAT *in, SPFLOAT *out);
+int ut_progress_create(ut_progress **p);
+int ut_progress_destroy(ut_progress **p);
+int ut_progress_init(ut_data *ut, ut_progress *p);
+int ut_progress_compute(ut_data *ut, ut_progress *p, UTFLOAT *in, UTFLOAT *out);

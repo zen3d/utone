@@ -7,17 +7,17 @@ sptbl["tseq"] = {
     },
 
     func = {
-        create = "sp_tseq_create",
-        destroy = "sp_tseq_destroy",
-        init = "sp_tseq_init",
-        compute = "sp_tseq_compute",
+        create = "ut_tseq_create",
+        destroy = "ut_tseq_destroy",
+        init = "ut_tseq_init",
+        compute = "ut_tseq_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "ft",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "An ftable of values",
                 default = "N/A"
             },

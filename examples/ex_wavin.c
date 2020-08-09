@@ -1,34 +1,34 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_wavin *wavin;
+    ut_wavin *wavin;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT wavin = 0;
-    sp_wavin_compute(sp, ud->wavin, NULL, &wavin);
-    sp->out[0] = wavin;
+    UTFLOAT wavin = 0;
+    ut_wavin_compute(ut, ud->wavin, NULL, &wavin);
+    ut->out[0] = wavin;
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_wavin_create(&ud.wavin);
+    ut_wavin_create(&ud.wavin);
 
-    sp_wavin_init(sp, ud.wavin, "oneart.wav");
+    ut_wavin_init(ut, ud.wavin, "oneart.wav");
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_wavin_destroy(&ud.wavin);
+    ut_wavin_destroy(&ud.wavin);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

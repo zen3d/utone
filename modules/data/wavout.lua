@@ -7,10 +7,10 @@ sptbl["wavout"] = {
     },
 
     func = {
-        create = "sp_wavout_create",
-        destroy = "sp_wavout_destroy",
-        init = "sp_wavout_init",
-        compute = "sp_wavout_compute",
+        create = "ut_wavout_create",
+        destroy = "ut_wavout_destroy",
+        init = "ut_wavout_init",
+        compute = "ut_wavout_compute",
     },
 
     params = {

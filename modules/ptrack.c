@@ -13,7 +13,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #define MINFREQINBINS 5
 #define MAXHIST 3
@@ -38,20 +38,20 @@
 
 #define THRSH 10.
 
-#define COEF1 ((SPFLOAT)(.5 * 1.227054))
-#define COEF2 ((SPFLOAT)(.5 * -0.302385))
-#define COEF3 ((SPFLOAT)(.5 * 0.095326))
-#define COEF4 ((SPFLOAT)(.5 * -0.022748))
-#define COEF5 ((SPFLOAT)(.5 * 0.002533))
+#define COEF1 ((UTFLOAT)(.5 * 1.227054))
+#define COEF2 ((UTFLOAT)(.5 * -0.302385))
+#define COEF3 ((UTFLOAT)(.5 * 0.095326))
+#define COEF4 ((UTFLOAT)(.5 * -0.022748))
+#define COEF5 ((UTFLOAT)(.5 * 0.002533))
 #define FLTLEN 5
 
-#define NPARTIALONSET ((int)(sizeof(partialonset)/sizeof(SPFLOAT)))
+#define NPARTIALONSET ((int)(sizeof(partialonset)/sizeof(UTFLOAT)))
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif
 
-static const SPFLOAT partialonset[] =
+static const UTFLOAT partialonset[] =
 {
     0.0,
     48.0,
@@ -75,53 +75,53 @@ static const SPFLOAT partialonset[] =
 
 typedef struct histopeak
 {
-  SPFLOAT hpitch;
-  SPFLOAT hvalue;
-  SPFLOAT hloud;
+  UTFLOAT hpitch;
+  UTFLOAT hvalue;
+  UTFLOAT hloud;
   int hindex;
   int hused;
 } HISTOPEAK;
 
 typedef struct peak
 {
-  SPFLOAT pfreq;
-  SPFLOAT pwidth;
-  SPFLOAT ppow;
-  SPFLOAT ploudness;
+  UTFLOAT pfreq;
+  UTFLOAT pwidth;
+  UTFLOAT ppow;
+  UTFLOAT ploudness;
 } PEAK;
 
-int sp_ptrack_create(sp_ptrack **p)
+int ut_ptrack_create(ut_ptrack **p)
 {
-    *p = malloc(sizeof(sp_ptrack));
-    return SP_OK;
+    *p = malloc(sizeof(ut_ptrack));
+    return UT_OK;
 }
 
-int sp_ptrack_destroy(sp_ptrack **p)
+int ut_ptrack_destroy(ut_ptrack **p)
 {
-    sp_ptrack *pp = *p;
-    sp_auxdata_free(&pp->signal);
-    sp_auxdata_free(&pp->prev);
-    sp_auxdata_free(&pp->sin);
-    sp_auxdata_free(&pp->spec2);
-    sp_auxdata_free(&pp->spec1);
-    sp_auxdata_free(&pp->peakarray);
-    sp_fft_destroy(&pp->fft);
+    ut_ptrack *pp = *p;
+    ut_auxdata_free(&pp->signal);
+    ut_auxdata_free(&pp->prev);
+    ut_auxdata_free(&pp->sin);
+    ut_auxdata_free(&pp->spec2);
+    ut_auxdata_free(&pp->spec1);
+    ut_auxdata_free(&pp->peakarray);
+    ut_fft_destroy(&pp->fft);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_ptrack_init(sp_data *sp, sp_ptrack *p, int ihopsize, int ipeaks)
+int ut_ptrack_init(ut_data *ut, ut_ptrack *p, int ihopsize, int ipeaks)
 {
     p->size = ihopsize;
 
     int i, winsize = p->size*2, powtwo, tmp;
-    SPFLOAT *tmpb;
+    UTFLOAT *tmpb;
 
 
     /* TODO: fix this warning */
     if (winsize < MINWINSIZ || winsize > MAXWINSIZ) {
       fprintf(stderr, "Woops\n");
-      return SP_NOT_OK;
+      return UT_NOT_OK;
     }
 
     tmp = winsize;
@@ -135,39 +135,39 @@ int sp_ptrack_init(sp_data *sp, sp_ptrack *p, int ihopsize, int ipeaks)
 
     /* 3 days of debugging later... I found this off by one error */
     /* powtwo needs to be powtwo - 1 for fft_init */
-    sp_fft_init(&p->fft, powtwo - 1) ;
+    ut_fft_init(&p->fft, powtwo - 1) ;
 
     /* TODO: make this error better */
     if (winsize != (1 << powtwo)) {
         fprintf(stderr, "Woops\n");
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }
 
     p->hopsize = p->size;
 
-    sp_auxdata_alloc(&p->signal, p->hopsize * sizeof(SPFLOAT));
-    sp_auxdata_alloc(&p->prev, (p->hopsize*2 + 4*FLTLEN)*sizeof(SPFLOAT));
-    sp_auxdata_alloc(&p->sin, (p->hopsize*2)*sizeof(SPFLOAT));
-    sp_auxdata_alloc(&p->spec2, (winsize*4 + 4*FLTLEN)*sizeof(SPFLOAT));
-    sp_auxdata_alloc(&p->spec1, (winsize*4)*sizeof(SPFLOAT));
+    ut_auxdata_alloc(&p->signal, p->hopsize * sizeof(UTFLOAT));
+    ut_auxdata_alloc(&p->prev, (p->hopsize*2 + 4*FLTLEN)*sizeof(UTFLOAT));
+    ut_auxdata_alloc(&p->sin, (p->hopsize*2)*sizeof(UTFLOAT));
+    ut_auxdata_alloc(&p->spec2, (winsize*4 + 4*FLTLEN)*sizeof(UTFLOAT));
+    ut_auxdata_alloc(&p->spec1, (winsize*4)*sizeof(UTFLOAT));
 
-    for (i = 0, tmpb = (SPFLOAT *)p->signal.ptr; i < p->hopsize; i++)
+    for (i = 0, tmpb = (UTFLOAT *)p->signal.ptr; i < p->hopsize; i++)
         tmpb[i] = 0.0;
-    for (i = 0, tmpb = (SPFLOAT *)p->prev.ptr; i < winsize + 4 * FLTLEN; i++)
+    for (i = 0, tmpb = (UTFLOAT *)p->prev.ptr; i < winsize + 4 * FLTLEN; i++)
         tmpb[i] = 0.0;
-    for (i = 0, tmpb = (SPFLOAT *)p->sin.ptr; i < p->hopsize; i++) {
-        tmpb[2*i] =   (SPFLOAT) cos((M_PI*i)/(winsize));
-        tmpb[2*i+1] = -(SPFLOAT)sin((M_PI*i)/(winsize));
+    for (i = 0, tmpb = (UTFLOAT *)p->sin.ptr; i < p->hopsize; i++) {
+        tmpb[2*i] =   (UTFLOAT) cos((M_PI*i)/(winsize));
+        tmpb[2*i+1] = -(UTFLOAT)sin((M_PI*i)/(winsize));
     }
 
     p->cnt = 0;
     p->numpks = ipeaks;
 
-    sp_auxdata_alloc(&p->peakarray, (p->numpks+1)*sizeof(PEAK));
+    ut_auxdata_alloc(&p->peakarray, (p->numpks+1)*sizeof(PEAK));
 
     p->cnt = 0;
     p->histcnt = 0;
-    p->sr = sp->sr;
+    p->sr = ut->sr;
     for (i = 0; i < NPREV; i++) p->dbs[i] = -144.0;
     p->amplo = MINAMPS;
     p->amphi = MAXAMPS;
@@ -175,28 +175,28 @@ int sp_ptrack_init(sp_data *sp, sp_ptrack *p, int ihopsize, int ipeaks)
     p->dbfs = 32768.0;
     p->prevf = p->cps = 100.0;
 
-    return SP_OK;
+    return UT_OK;
 }
 
-static void ptrack(sp_data *sp, sp_ptrack *p)
+static void ptrack(ut_data *ut, ut_ptrack *p)
 {
-    SPFLOAT *spec = (SPFLOAT *)p->spec1.ptr;
-    SPFLOAT *spectmp = (SPFLOAT *)p->spec2.ptr;
-    SPFLOAT *sig = (SPFLOAT *)p->signal.ptr;
-    SPFLOAT *sinus  = (SPFLOAT *)p->sin.ptr;
-    SPFLOAT *prev  = (SPFLOAT *)p->prev.ptr;
+    UTFLOAT *spec = (UTFLOAT *)p->spec1.ptr;
+    UTFLOAT *spectmp = (UTFLOAT *)p->spec2.ptr;
+    UTFLOAT *sig = (UTFLOAT *)p->signal.ptr;
+    UTFLOAT *sinus  = (UTFLOAT *)p->sin.ptr;
+    UTFLOAT *prev  = (UTFLOAT *)p->prev.ptr;
     PEAK  *peaklist = (PEAK *)p->peakarray.ptr;
     HISTOPEAK histpeak;
     int i, j, k, hop = p->hopsize, n = 2*hop, npeak = 0, logn = -1, count, tmp;
-    SPFLOAT totalpower = 0, totalloudness = 0, totaldb = 0;
-    SPFLOAT maxbin,  *histogram = spectmp + BINGUARD;
-    SPFLOAT hzperbin = (SPFLOAT) p->sr / (n + n);
+    UTFLOAT totalpower = 0, totalloudness = 0, totaldb = 0;
+    UTFLOAT maxbin,  *histogram = spectmp + BINGUARD;
+    UTFLOAT hzperbin = (UTFLOAT) p->sr / (n + n);
     int numpks = p->numpks;
     int indx, halfhop = hop>>1;
-    SPFLOAT best;
-    SPFLOAT cumpow = 0, cumstrength = 0, freqnum = 0, freqden = 0;
+    UTFLOAT best;
+    UTFLOAT cumpow = 0, cumstrength = 0, freqnum = 0, freqden = 0;
     int npartials = 0,  nbelow8 = 0;
-    SPFLOAT putfreq;
+    UTFLOAT putfreq;
 
     count = p->histcnt + 1;
     if (count == NPREV) count = 0;
@@ -213,7 +213,7 @@ static void ptrack(sp_data *sp, sp_ptrack *p)
         spec[k+1] = sig[i] * sinus[k+1];
     }
 
-    sp_fft_cpx(&p->fft, spec, hop);
+    ut_fft_cpx(&p->fft, spec, hop);
 
     for (i = 0, k = 2*FLTLEN; i < hop; i+=2, k += 4) {
         spectmp[k]   = spec[i];
@@ -236,7 +236,7 @@ static void ptrack(sp_data *sp, sp_ptrack *p)
     }
 
     for (i = j = 0, k = 2*FLTLEN; i < halfhop; i++, j+=8, k+=2) {
-        SPFLOAT re,  im;
+        UTFLOAT re,  im;
 
         re= COEF1 * ( prev[k-2] - prev[k+1]  + spectmp[k-2] - prev[k+1]) +
             COEF2 * ( prev[k-3] - prev[k+2]  + spectmp[k-3]  - spectmp[ 2]) +
@@ -283,14 +283,14 @@ static void ptrack(sp_data *sp, sp_ptrack *p)
     for (i = 0; i < MINBIN; i++) spec[4*i + 2] = spec[4*i + 3] =0.0;
 
     for (i = 4*MINBIN, totalpower = 0; i < (n-2)*4; i += 4) {
-        SPFLOAT re = spec[i] - 0.5 * (spec[i-8] + spec[i+8]);
-        SPFLOAT im = spec[i+1] - 0.5 * (spec[i-7] + spec[i+9]);
+        UTFLOAT re = spec[i] - 0.5 * (spec[i-8] + spec[i+8]);
+        UTFLOAT im = spec[i+1] - 0.5 * (spec[i-7] + spec[i+9]);
         spec[i+3] = (totalpower += (spec[i+2] = re * re + im * im));
     }
 
     if (totalpower > 1.0e-9) {
-        totaldb = (SPFLOAT)DBSCAL * logf(totalpower/n);
-        totalloudness = (SPFLOAT)sqrtf((SPFLOAT)sqrtf(totalpower));
+        totaldb = (UTFLOAT)DBSCAL * logf(totalpower/n);
+        totalloudness = (UTFLOAT)sqrtf((UTFLOAT)sqrtf(totalpower));
         if (totaldb < 0) totaldb = 0;
     }
     else totaldb = totalloudness = 0.0;
@@ -301,8 +301,8 @@ static void ptrack(sp_data *sp, sp_ptrack *p)
         npeak = 0;
 
         for (i = 4*MINBIN;i < (4*(n-2)) && npeak < numpks; i+=4) {
-            SPFLOAT height = spec[i+2], h1 = spec[i-2], h2 = spec[i+6];
-            SPFLOAT totalfreq, peakfr, tmpfr1, tmpfr2, m, var, stdev;
+            UTFLOAT height = spec[i+2], h1 = spec[i-2], h2 = spec[i+6];
+            UTFLOAT totalfreq, peakfr, tmpfr1, tmpfr2, m, var, stdev;
 
             if (height < h1 || height < h2 ||
             h1 < 0.00001*totalpower ||
@@ -333,7 +333,7 @@ static void ptrack(sp_data *sp, sp_ptrack *p)
             if (var * totalpower > THRSH * height
             || var < 1.0e-30) continue;
 
-            stdev = (SPFLOAT)sqrt((SPFLOAT)var);
+            stdev = (UTFLOAT)sqrt((UTFLOAT)var);
             if (totalfreq < 4) totalfreq = 4;
 
 
@@ -347,15 +347,15 @@ static void ptrack(sp_data *sp, sp_ptrack *p)
           if (npeak > numpks) npeak = numpks;
           for (i = 0; i < maxbin; i++) histogram[i] = 0;
           for (i = 0; i < npeak; i++) {
-            SPFLOAT pit = (SPFLOAT)(BPEROOVERLOG2 * logf(peaklist[i].pfreq) - 96.0);
-            SPFLOAT binbandwidth = FACTORTOBINS * peaklist[i].pwidth/peaklist[i].pfreq;
-            SPFLOAT putbandwidth = (binbandwidth < 2.0 ? 2.0 : binbandwidth);
-            SPFLOAT weightbandwidth = (binbandwidth < 1.0 ? 1.0 : binbandwidth);
-            SPFLOAT weightamp = 4.0 * peaklist[i].ploudness / totalloudness;
+            UTFLOAT pit = (UTFLOAT)(BPEROOVERLOG2 * logf(peaklist[i].pfreq) - 96.0);
+            UTFLOAT binbandwidth = FACTORTOBINS * peaklist[i].pwidth/peaklist[i].pfreq;
+            UTFLOAT putbandwidth = (binbandwidth < 2.0 ? 2.0 : binbandwidth);
+            UTFLOAT weightbandwidth = (binbandwidth < 1.0 ? 1.0 : binbandwidth);
+            UTFLOAT weightamp = 4.0 * peaklist[i].ploudness / totalloudness;
             for (j = 0; j < NPARTIALONSET; j++) {
-              SPFLOAT bin = pit - partialonset[j];
+              UTFLOAT bin = pit - partialonset[j];
               if (bin < maxbin) {
-                SPFLOAT para, pphase, score = 30.0 * weightamp /
+                UTFLOAT para, pphase, score = 30.0 * weightamp /
                   ((j+p->npartial) * weightbandwidth);
                 int firstbin = bin + 0.5 - 0.5 * putbandwidth;
                 int lastbin = bin + 0.5 + 0.5 * putbandwidth;
@@ -384,14 +384,14 @@ static void ptrack(sp_data *sp, sp_ptrack *p)
         putfreq = expf((1.0 / BPEROOVERLOG2) * (histpeak.hindex + 96.0));
 
         for (j = 0; j < npeak; j++) {
-            SPFLOAT fpnum = peaklist[j].pfreq/putfreq;
+            UTFLOAT fpnum = peaklist[j].pfreq/putfreq;
             int pnum = (int)(fpnum + 0.5);
-            SPFLOAT fipnum = pnum;
-            SPFLOAT deviation;
+            UTFLOAT fipnum = pnum;
+            UTFLOAT deviation;
             if (pnum > 16 || pnum < 1) continue;
             deviation = 1.0 - fpnum/fipnum;
             if (deviation > -PARTIALDEVIANCE && deviation < PARTIALDEVIANCE) {
-                SPFLOAT stdev, weight;
+                UTFLOAT stdev, weight;
                 npartials++;
                 if (pnum < 8) nbelow8++;
                 cumpow += peaklist[j].ppow;
@@ -406,8 +406,8 @@ static void ptrack(sp_data *sp, sp_ptrack *p)
         if ((nbelow8 < 4 || npartials < 7) && cumpow < 0.01 * totalpower) {
             histpeak.hvalue = 0;
         } else {
-            SPFLOAT pitchpow = (cumstrength * cumstrength);
-            SPFLOAT freqinbins = freqnum/freqden;
+            UTFLOAT pitchpow = (cumstrength * cumstrength);
+            UTFLOAT freqinbins = freqnum/freqden;
             pitchpow = pitchpow * pitchpow;
 
             if (freqinbins < MINFREQINBINS) {
@@ -420,14 +420,14 @@ static void ptrack(sp_data *sp, sp_ptrack *p)
     }
 }
 
-int sp_ptrack_compute(sp_data *sp, sp_ptrack *p, SPFLOAT *in, SPFLOAT *freq, SPFLOAT *amp)
+int ut_ptrack_compute(ut_data *ut, ut_ptrack *p, UTFLOAT *in, UTFLOAT *freq, UTFLOAT *amp)
 {
-    SPFLOAT *buf = (SPFLOAT *)p->signal.ptr;
+    UTFLOAT *buf = (UTFLOAT *)p->signal.ptr;
     int pos = p->cnt, h = p->hopsize;
-    SPFLOAT scale = p->dbfs;
+    UTFLOAT scale = p->dbfs;
 
     if (pos == h) {
-        ptrack(sp,p);
+        ptrack(ut,p);
         pos = 0;
     }
     buf[pos] = *in * scale;
@@ -438,5 +438,5 @@ int sp_ptrack_compute(sp_data *sp, sp_ptrack *p, SPFLOAT *in, SPFLOAT *freq, SPF
     
     p->cnt = pos;
 
-    return SP_OK;
+    return UT_OK;
 }

@@ -10,31 +10,31 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_pdhalf_create(sp_pdhalf **p)
+int ut_pdhalf_create(ut_pdhalf **p)
 {
-    *p = malloc(sizeof(sp_pdhalf));
-    return SP_OK;
+    *p = malloc(sizeof(ut_pdhalf));
+    return UT_OK;
 }
 
-int sp_pdhalf_destroy(sp_pdhalf **p)
+int ut_pdhalf_destroy(ut_pdhalf **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_pdhalf_init(sp_data *sp, sp_pdhalf *p)
+int ut_pdhalf_init(ut_data *ut, ut_pdhalf *p)
 {
     p->ibipolar = 0;
     p->ifullscale = 1.0;
     p->amount = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_pdhalf_compute(sp_data *sp, sp_pdhalf *p, SPFLOAT *in, SPFLOAT *out)
+int ut_pdhalf_compute(ut_data *ut, ut_pdhalf *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT cur, maxampl, midpoint, leftslope, rightslope;
+    UTFLOAT cur, maxampl, midpoint, leftslope, rightslope;
 
     maxampl = p->ifullscale;
     if (maxampl == 0.0)  maxampl = 1.0;
@@ -55,7 +55,7 @@ int sp_pdhalf_compute(sp_data *sp, sp_pdhalf *p, SPFLOAT *in, SPFLOAT *out)
     if (cur < midpoint) *out = leftslope * (cur - midpoint);
     else *out = rightslope * (cur - midpoint);
     } else {
-        SPFLOAT halfmaxampl = 0.5 * maxampl;
+        UTFLOAT halfmaxampl = 0.5 * maxampl;
         midpoint =  (p->amount >= 1.0 ? maxampl :
                     (p->amount <= -1.0 ? 0.0 :
                     ((p->amount + 1.0) * halfmaxampl)));
@@ -75,5 +75,5 @@ int sp_pdhalf_compute(sp_data *sp, sp_pdhalf *p, SPFLOAT *in, SPFLOAT *out)
         }
     }
 
-    return SP_OK;
+    return UT_OK;
 }

@@ -7,17 +7,17 @@ sptbl["fold"] = {
     },
 
     func = {
-        create = "sp_fold_create",
-        destroy = "sp_fold_destroy",
-        init = "sp_fold_init",
-        compute = "sp_fold_compute",
+        create = "ut_fold_create",
+        destroy = "ut_fold_destroy",
+        init = "ut_fold_init",
+        compute = "ut_fold_compute",
     },
 
     params = {
         optional = {
             {
                 name = "incr",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Increment",
                 default = 1000
             },

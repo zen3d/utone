@@ -1,9 +1,9 @@
-typedef struct sp_rms{
-    SPFLOAT ihp, istor;
-    SPFLOAT c1, c2, prvq;
-} sp_rms;
+typedef struct ut_rms{
+    UTFLOAT ihp, istor;
+    UTFLOAT c1, c2, prvq;
+} ut_rms;
 
-int sp_rms_create(sp_rms **p);
-int sp_rms_destroy(sp_rms **p);
-int sp_rms_init(sp_data *sp, sp_rms *p);
-int sp_rms_compute(sp_data *sp, sp_rms *p, SPFLOAT *in, SPFLOAT *out);
+int ut_rms_create(ut_rms **p);
+int ut_rms_destroy(ut_rms **p);
+int ut_rms_init(ut_data *ut, ut_rms *p);
+int ut_rms_compute(ut_data *ut, ut_rms *p, UTFLOAT *in, UTFLOAT *out);

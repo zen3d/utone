@@ -7,17 +7,17 @@ sptbl["reverse"] = {
 	},
 
 	func = {
-	    create = "sp_reverse_create",
-	    destroy = "sp_reverse_destroy",
-	    init = "sp_reverse_init",
-	    compute = "sp_reverse_compute",
+	    create = "ut_reverse_create",
+	    destroy = "ut_reverse_destroy",
+	    init = "ut_reverse_init",
+	    compute = "ut_reverse_compute",
 	},
 
 	params = {
 	    mandatory = {
 	        {
 	            name = "delay",
-	            type = "SPFLOAT",
+	            type = "UTFLOAT",
 	            description = "Delay time in seconds.",
 	            default = "1.0"
 	        }

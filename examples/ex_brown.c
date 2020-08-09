@@ -1,34 +1,34 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_brown *brown;
+    ut_brown *brown;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT brown = 0;
-    sp_brown_compute(sp, ud->brown, NULL, &brown);
-    sp->out[0] = brown;
+    UTFLOAT brown = 0;
+    ut_brown_compute(ut, ud->brown, NULL, &brown);
+    ut->out[0] = brown;
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_brown_create(&ud.brown);
+    ut_brown_create(&ud.brown);
 
-    sp_brown_init(sp, ud.brown);
+    ut_brown_init(ut, ud.brown);
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_brown_destroy(&ud.brown);
+    ut_brown_destroy(&ud.brown);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

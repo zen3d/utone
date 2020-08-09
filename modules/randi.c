@@ -14,83 +14,83 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-#define sp_oneUp31Bit      (4.656612875245796924105750827168e-10)
+#define ut_oneUp31Bit      (4.656612875245796924105750827168e-10)
 
-#define sp_randGab   ((SPFLOAT)     \
+#define ut_randGab   ((UTFLOAT)     \
         (((p->holdrand = p->holdrand * 214013 + 2531011) >> 1)  \
-         & 0x7fffffff) * sp_oneUp31Bit)
+         & 0x7fffffff) * ut_oneUp31Bit)
 
 
-int sp_randi_create(sp_randi **p)
+int ut_randi_create(ut_randi **p)
 {
-    *p = malloc(sizeof(sp_randi));
-    return SP_OK;
+    *p = malloc(sizeof(ut_randi));
+    return UT_OK;
 }
 
-int sp_randi_destroy(sp_randi **p)
+int ut_randi_destroy(ut_randi **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_randi_init(sp_data *sp, sp_randi *p)
+int ut_randi_init(ut_data *ut, ut_randi *p)
 {
-    p->sicvt = 1.0 * SP_FT_MAXLEN / sp->sr;
+    p->sicvt = 1.0 * UT_FT_MAXLEN / ut->sr;
     p->phs = 0;
     p->min = 0;
     p->max = 1;
     p->cps = 3;
     p->mode = 3;
-    p->holdrand = sp_rand(sp);
+    p->holdrand = ut_rand(ut);
     p->fstval = 0;
 
     int mode = (int)(p->mode);
     switch (mode) {
     case 1: /* immediate interpolation between kmin and 1st random number */
         p->num1 = 0.0;
-        p->num2 = sp_randGab;
-        p->dfdmax = (p->num2 - p->num1) / SP_FT_MAXLEN * 1.0;
+        p->num2 = ut_randGab;
+        p->dfdmax = (p->num2 - p->num1) / UT_FT_MAXLEN * 1.0;
         break;
     case 2: /* immediate interpolation between ifirstval and 1st random number */
         p->num1 = (p->max - p->min) ?
           (p->fstval - p->min) / (p->max - p->min) : 0.0;
-        p->num2 = sp_randGab;
-        p->dfdmax = (p->num2 - p->num1) / SP_FT_MAXLEN * 1.0;
+        p->num2 = ut_randGab;
+        p->dfdmax = (p->num2 - p->num1) / UT_FT_MAXLEN * 1.0;
         break;
     case 3: /* immediate interpolation between 1st and 2nd random number */
-        p->num1 = sp_randGab;
-        p->num2 = sp_randGab;
-        p->dfdmax = (p->num2 - p->num1) / SP_FT_MAXLEN * 1.0;
+        p->num1 = ut_randGab;
+        p->num2 = ut_randGab;
+        p->dfdmax = (p->num2 - p->num1) / UT_FT_MAXLEN * 1.0;
         break;
     default: /* old behaviour as developped by Gabriel */
         p->num1 = p->num2 = 0.0;
         p->dfdmax = 0.0;
     }
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_randi_compute(sp_data *sp, sp_randi *p, SPFLOAT *in, SPFLOAT *out)
+int ut_randi_compute(ut_data *ut, ut_randi *p, UTFLOAT *in, UTFLOAT *out)
 {
     int32_t phs = p->phs, inc;
-    SPFLOAT cpsp;
-    SPFLOAT amp, min;
+    UTFLOAT cpsp;
+    UTFLOAT amp, min;
 
     cpsp = p->cps;
     min = p->min;
     amp =  (p->max - min);
     inc = (int32_t)(cpsp * p->sicvt);
 
-    *out = (p->num1 + (SPFLOAT)phs * p->dfdmax) * amp + min;
+    *out = (p->num1 + (UTFLOAT)phs * p->dfdmax) * amp + min;
     phs += inc;
-    if (phs >= SP_FT_MAXLEN) {
-        phs &= SP_FT_PHMASK;
+    if (phs >= UT_FT_MAXLEN) {
+        phs &= UT_FT_PHMASK;
         p->num1 = p->num2;
-        p->num2 = sp_randGab;
-        p->dfdmax = 1.0 * (p->num2 - p->num1) / SP_FT_MAXLEN;
+        p->num2 = ut_randGab;
+        p->dfdmax = 1.0 * (p->num2 - p->num1) / UT_FT_MAXLEN;
     }
     p->phs = phs;
 
-    return SP_OK;
+    return UT_OK;
 }

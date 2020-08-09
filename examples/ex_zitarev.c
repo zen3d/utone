@@ -1,43 +1,43 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_diskin *disk;
-    sp_zitarev *rev;
+    ut_diskin *disk;
+    ut_zitarev *rev;
     int counter;
 } UserData;
 
-void process(sp_data *sp , void *udata) {
+void process(ut_data *ut , void *udata) {
     UserData *ud = udata;
-    SPFLOAT in = 0;
-    SPFLOAT out = 0;
-    SPFLOAT foo = 0;
+    UTFLOAT in = 0;
+    UTFLOAT out = 0;
+    UTFLOAT foo = 0;
 
-    sp_diskin_compute(sp, ud->disk, NULL, &in);
-    sp_zitarev_compute(sp, ud->rev, &in, &in, &sp->out[0], &foo);
+    ut_diskin_compute(ut, ud->disk, NULL, &in);
+    ut_zitarev_compute(ut, ud->rev, &in, &in, &ut->out[0], &foo);
 }
 
 int main() {
     srand(time(NULL));
     UserData ud;
     ud.counter = 0;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_diskin_create(&ud.disk);
-    sp_zitarev_create(&ud.rev);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_diskin_create(&ud.disk);
+    ut_zitarev_create(&ud.rev);
 
-    sp_diskin_init(sp, ud.disk, "oneart.wav");
-    sp_zitarev_init(sp, ud.rev);
+    ut_diskin_init(ut, ud.disk, "oneart.wav");
+    ut_zitarev_init(ut, ud.rev);
     *ud.rev->level = 0;
     *ud.rev->in_delay = 20;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_diskin_destroy(&ud.disk);
-    sp_zitarev_destroy(&ud.rev);
-    sp_destroy(&sp);
+    ut_diskin_destroy(&ud.disk);
+    ut_zitarev_destroy(&ud.rev);
+    ut_destroy(&ut);
     return 0;
 }

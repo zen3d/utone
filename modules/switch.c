@@ -1,26 +1,26 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_switch_create(sp_switch **p)
+int ut_switch_create(ut_switch **p)
 {
-    *p = malloc(sizeof(sp_switch));
-    return SP_OK;
+    *p = malloc(sizeof(ut_switch));
+    return UT_OK;
 }
 
-int sp_switch_destroy(sp_switch **p)
+int ut_switch_destroy(ut_switch **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_switch_init(sp_data *sp, sp_switch *p)
+int ut_switch_init(ut_data *ut, ut_switch *p)
 {
     p->mode = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_switch_compute(sp_data *sp, sp_switch *p, SPFLOAT *trig,
-    SPFLOAT *in1, SPFLOAT *in2, SPFLOAT *out)
+int ut_switch_compute(ut_data *ut, ut_switch *p, UTFLOAT *trig,
+    UTFLOAT *in1, UTFLOAT *in2, UTFLOAT *out)
 {
     if (*trig) {
         p->mode = p->mode == 0 ? 1 : 0;
@@ -32,5 +32,5 @@ int sp_switch_compute(sp_data *sp, sp_switch *p, SPFLOAT *trig,
         *out = *in2;
     }
 
-    return SP_OK;
+    return UT_OK;
 }

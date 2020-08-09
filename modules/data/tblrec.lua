@@ -7,17 +7,17 @@ sptbl["tblrec"] = {
     },
 
     func = {
-        create = "sp_tblrec_create",
-        destroy = "sp_tblrec_destroy",
-        init = "sp_tblrec_init",
-        compute = "sp_tblrec_compute",
+        create = "ut_tblrec_create",
+        destroy = "ut_tblrec_destroy",
+        init = "ut_tblrec_init",
+        compute = "ut_tblrec_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "bar",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "",
                 default = "N/A"
             },
@@ -27,7 +27,7 @@ sptbl["tblrec"] = {
     modtype = "module",
 
     description = [[Record a signal to an ftable.
-This module will write audio-rate signals to a preallocated soundpipe ftable. 
+This module will write audio-rate signals to a preallocated utone ftable. 
 Every time record is enabled, it will got back to index 0 overwrite any
 previous information that was on it. 
 ]],

@@ -13,40 +13,40 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846	
 #endif 
 
-int sp_biquad_create(sp_biquad **p)
+int ut_biquad_create(ut_biquad **p)
 {
-    *p = malloc(sizeof(sp_biquad));
-    return SP_OK;
+    *p = malloc(sizeof(ut_biquad));
+    return UT_OK;
 }
 
-int sp_biquad_destroy(sp_biquad **p)
+int ut_biquad_destroy(ut_biquad **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_biquad_init(sp_data *sp, sp_biquad *p)
+int ut_biquad_init(ut_data *ut, ut_biquad *p)
 {
-    p->tpidsr = 2.0*M_PI / sp->sr;
-    p->sr = sp->sr;
+    p->tpidsr = 2.0*M_PI / ut->sr;
+    p->sr = ut->sr;
 
     p->cutoff = 500;
     p->res = 0.7;
     p->reinit = 0.0;
 
-    SPFLOAT fcon = p->cutoff * p->tpidsr;
-    SPFLOAT alpha = 1-2*p->res*cos(fcon)*cos(fcon)+p->res*p->res*cos(2*fcon);
-    SPFLOAT beta = p->res*p->res*sin(2*fcon)-2*p->res*cos(fcon)*sin(fcon);
-    SPFLOAT gamma = 1+cos(fcon);
-    SPFLOAT m1 = alpha*gamma+beta*sin(fcon);
-    SPFLOAT m2 = alpha*gamma-beta*sin(fcon);
-    SPFLOAT den = sqrt(m1*m1+m2*m2);
+    UTFLOAT fcon = p->cutoff * p->tpidsr;
+    UTFLOAT alpha = 1-2*p->res*cos(fcon)*cos(fcon)+p->res*p->res*cos(2*fcon);
+    UTFLOAT beta = p->res*p->res*sin(2*fcon)-2*p->res*cos(fcon)*sin(fcon);
+    UTFLOAT gamma = 1+cos(fcon);
+    UTFLOAT m1 = alpha*gamma+beta*sin(fcon);
+    UTFLOAT m2 = alpha*gamma-beta*sin(fcon);
+    UTFLOAT den = sqrt(m1*m1+m2*m2);
 
     p->b0 = 1.5*(alpha*alpha+beta*beta)/den;
     p->b1 = p->b0;
@@ -59,15 +59,15 @@ int sp_biquad_init(sp_data *sp, sp_biquad *p)
    if(p->reinit == 0.0){
       p->xnm1 = p->xnm2 = p->ynm1 = p->ynm2 = 0.0;
    }
-   return SP_OK; 
+   return UT_OK; 
 }
 
-int sp_biquad_compute(sp_data *sp, sp_biquad *p, SPFLOAT *in, SPFLOAT *out)
+int ut_biquad_compute(ut_data *ut, ut_biquad *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT xn, yn;
-    SPFLOAT a0 = p->a0, a1 = p->a1, a2 = p->a2;
-    SPFLOAT b0 = p->b0, b1 = p->b1, b2 = p->b2;
-    SPFLOAT xnm1 = p->xnm1, xnm2 = p->xnm2, ynm1 = p->ynm1, ynm2 = p->ynm2;
+    UTFLOAT xn, yn;
+    UTFLOAT a0 = p->a0, a1 = p->a1, a2 = p->a2;
+    UTFLOAT b0 = p->b0, b1 = p->b1, b2 = p->b2;
+    UTFLOAT xnm1 = p->xnm1, xnm2 = p->xnm2, ynm1 = p->ynm1, ynm2 = p->ynm2;
 
     xn = *in;
     yn = ( b0 * xn + b1 * xnm1 + b2 * xnm2 -
@@ -79,5 +79,5 @@ int sp_biquad_compute(sp_data *sp, sp_biquad *p, SPFLOAT *in, SPFLOAT *out)
     *out = yn;
     
     p->xnm1 = xnm1; p->xnm2 = xnm2; p->ynm1 = ynm1; p->ynm2 = ynm2;
-    return SP_OK;
+    return UT_OK;
 }

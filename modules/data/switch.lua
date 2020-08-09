@@ -7,10 +7,10 @@ sptbl["switch"] = {
     },
 
     func = {
-        create = "sp_switch_create",
-        destroy = "sp_switch_destroy",
-        init = "sp_switch_init",
-        compute = "sp_switch_compute",
+        create = "ut_switch_create",
+        destroy = "ut_switch_destroy",
+        init = "ut_switch_init",
+        compute = "ut_switch_compute",
     },
 
     params = {

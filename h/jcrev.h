@@ -1,8 +1,8 @@
 typedef struct {
     void *ud;
-} sp_jcrev;
+} ut_jcrev;
 
-int sp_jcrev_create(sp_jcrev **p);
-int sp_jcrev_destroy(sp_jcrev **p);
-int sp_jcrev_init(sp_data *sp, sp_jcrev *p);
-int sp_jcrev_compute(sp_data *sp, sp_jcrev *p, SPFLOAT *in, SPFLOAT *out);
+int ut_jcrev_create(ut_jcrev **p);
+int ut_jcrev_destroy(ut_jcrev **p);
+int ut_jcrev_init(ut_data *ut, ut_jcrev *p);
+int ut_jcrev_compute(ut_data *ut, ut_jcrev *p, UTFLOAT *in, UTFLOAT *out);

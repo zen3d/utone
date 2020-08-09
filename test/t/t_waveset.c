@@ -1,40 +1,40 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_waveset *waveset;
-    sp_diskin *diskin;
+    ut_waveset *waveset;
+    ut_diskin *diskin;
 } UserData;
 
-int t_waveset(sp_test *tst, sp_data *sp, const char *hash) 
+int t_waveset(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT wav = 0, waveset = 0;
+    UTFLOAT wav = 0, waveset = 0;
 
     UserData ud;
-    sp_srand(sp, 1234567);
+    ut_srand(ut, 1234567);
 
-    sp_waveset_create(&ud.waveset);
-    sp_diskin_create(&ud.diskin);
+    ut_waveset_create(&ud.waveset);
+    ut_diskin_create(&ud.diskin);
 
-    sp_waveset_init(sp, ud.waveset, 1.0);
+    ut_waveset_init(ut, ud.waveset, 1.0);
     ud.waveset->rep = 3.0;
-    sp_diskin_init(sp, ud.diskin, SAMPDIR "oneart.wav");
+    ut_diskin_init(ut, ud.diskin, SAMPDIR "oneart.wav");
 
     for(n = 0; n < tst->size; n++) {
         wav = 0; waveset = 0;
-        sp_diskin_compute(sp, ud.diskin, NULL, &wav);
-        sp_waveset_compute(sp, ud.waveset, &wav, &waveset);
-        sp_test_add_sample(tst, waveset);
+        ut_diskin_compute(ut, ud.diskin, NULL, &wav);
+        ut_waveset_compute(ut, ud.waveset, &wav, &waveset);
+        ut_test_add_sample(tst, waveset);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_waveset_destroy(&ud.waveset);
-    sp_diskin_destroy(&ud.diskin);
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    ut_waveset_destroy(&ud.waveset);
+    ut_diskin_destroy(&ud.diskin);
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

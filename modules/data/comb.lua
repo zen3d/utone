@@ -7,17 +7,17 @@ sptbl["comb"] = {
     },
 
     func = {
-        create = "sp_comb_create",
-        destroy = "sp_comb_destroy",
-        init = "sp_comb_init",
-        compute = "sp_comb_compute",
+        create = "ut_comb_create",
+        destroy = "ut_comb_destroy",
+        init = "ut_comb_init",
+        compute = "ut_comb_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "looptime",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "The loop time of the filter, in seconds. This can also be thought of as the delay time.",
                 default = 0.1
             }
@@ -26,7 +26,7 @@ sptbl["comb"] = {
         optional = {
             {
                 name = "revtime",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Reverberation time, in seconds (RT-60).",
                 default = 3.5
             },

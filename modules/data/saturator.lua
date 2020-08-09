@@ -7,23 +7,23 @@ sptbl["saturator"] = {
     },
 
     func = {
-        create = "sp_saturator_create",
-        destroy = "sp_saturator_destroy",
-        init = "sp_saturator_init",
-        compute = "sp_saturator_compute",
+        create = "ut_saturator_create",
+        destroy = "ut_saturator_destroy",
+        init = "ut_saturator_init",
+        compute = "ut_saturator_compute",
     },
 
     params = {
         optional = {
             {
                 name = "drive",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Input gain into the distortion section, in decibels. Controls overall amount of distortion.",
                 default = 1.0
             },
             {
                 name = "dcoffset",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Constant linear offset applied to the signal. A small offset will introduce odd harmonics into the distoration spectrum, whereas a zero offset will have only even harmonics.",
                 default = 0.0
             },

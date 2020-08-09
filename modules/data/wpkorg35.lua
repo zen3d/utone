@@ -7,29 +7,29 @@ sptbl["wpkorg35"] = {
     },
 
     func = {
-        create = "sp_wpkorg35_create",
-        destroy = "sp_wpkorg35_destroy",
-        init = "sp_wpkorg35_init",
-        compute = "sp_wpkorg35_compute",
+        create = "ut_wpkorg35_create",
+        destroy = "ut_wpkorg35_destroy",
+        init = "ut_wpkorg35_init",
+        compute = "ut_wpkorg35_compute",
     },
 
     params = {
         optional = {
             {
                 name = "cutoff",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Filter cutoff",
                 default = 1000
             },
             {
                 name = "res",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Filter resonance (should be between 0-2)",
                 default = 1.0
             },
             {
                 name = "saturation",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Filter saturation.",
                 default = 0.0
             },

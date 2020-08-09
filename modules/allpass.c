@@ -12,39 +12,39 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_allpass_create(sp_allpass **p)
+int ut_allpass_create(ut_allpass **p)
 {
-    *p = malloc(sizeof(sp_allpass));
-    return SP_OK;
+    *p = malloc(sizeof(ut_allpass));
+    return UT_OK;
 }
 
-int sp_allpass_destroy(sp_allpass **p)
+int ut_allpass_destroy(ut_allpass **p)
 {
-    sp_allpass *pp = *p;
-    sp_auxdata_free(&pp->aux);
+    ut_allpass *pp = *p;
+    ut_auxdata_free(&pp->aux);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_allpass_init(sp_data *sp, sp_allpass *p, SPFLOAT looptime)
+int ut_allpass_init(ut_data *ut, ut_allpass *p, UTFLOAT looptime)
 {
     p->revtime = 3.5;
     p->looptime = looptime;
-    p->bufsize = 0.5 + looptime * sp->sr;
-    sp_auxdata_alloc(&p->aux, p->bufsize * sizeof(SPFLOAT));
+    p->bufsize = 0.5 + looptime * ut->sr;
+    ut_auxdata_alloc(&p->aux, p->bufsize * sizeof(UTFLOAT));
     p->prvt = 0.0;
     p->coef = 0.0;
     p->bufpos = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_allpass_compute(sp_data *sp, sp_allpass *p, SPFLOAT *in, SPFLOAT *out)
+int ut_allpass_compute(ut_data *ut, ut_allpass *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT y, z;
-    SPFLOAT coef = p->coef;
-    SPFLOAT *buf = (SPFLOAT *)p->aux.ptr;
+    UTFLOAT y, z;
+    UTFLOAT coef = p->coef;
+    UTFLOAT *buf = (UTFLOAT *)p->aux.ptr;
     if(p->prvt != p->revtime) {
         p->prvt = p->revtime;
         coef = p->coef = exp(-6.9078 * p->looptime / p->prvt);
@@ -56,5 +56,5 @@ int sp_allpass_compute(sp_data *sp, sp_allpass *p, SPFLOAT *in, SPFLOAT *out)
 
     p->bufpos++;
     p->bufpos %= p->bufsize; 
-    return SP_OK;
+    return UT_OK;
 }

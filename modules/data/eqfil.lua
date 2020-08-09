@@ -7,10 +7,10 @@ sptbl["eqfil"] = {
     },
 
     func = {
-        create = "sp_eqfil_create",
-        destroy = "sp_eqfil_destroy",
-        init = "sp_eqfil_init",
-        compute = "sp_eqfil_compute",
+        create = "ut_eqfil_create",
+        destroy = "ut_eqfil_destroy",
+        init = "ut_eqfil_init",
+        compute = "ut_eqfil_compute",
     },
 
     params = {
@@ -18,19 +18,19 @@ sptbl["eqfil"] = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "The center frequency of the filter",
                 default = 1000
             },
             {
                 name = "bw",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="The peak/notch bandwidth in Hertz",
                 default = 125
             },
             {
                 name = "gain",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="The peak/notch gain",
                 default = 2
             },

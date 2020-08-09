@@ -7,10 +7,10 @@ sptbl["clock"] = {
     },
 
     func = {
-        create = "sp_clock_create",
-        destroy = "sp_clock_destroy",
-        init = "sp_clock_init",
-        compute = "sp_clock_compute",
+        create = "ut_clock_create",
+        destroy = "ut_clock_destroy",
+        init = "ut_clock_init",
+        compute = "ut_clock_compute",
     },
 
     params = {
@@ -18,13 +18,13 @@ sptbl["clock"] = {
         optional = {
             {
                 name = "bpm",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Clock tempo, in beats per minute.",
                 default = 120
             },
             {
                 name = "subdiv",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Clock subdivision. 2 = eighths, 4 = 16ths, etc.",
                 default = 1
             },

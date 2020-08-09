@@ -12,27 +12,27 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_expon_create(sp_expon **p)
+int ut_expon_create(ut_expon **p)
 {
-    *p = malloc(sizeof(sp_expon));
-    return SP_OK;
+    *p = malloc(sizeof(ut_expon));
+    return UT_OK;
 }
 
-int sp_expon_destroy(sp_expon **p)
+int ut_expon_destroy(ut_expon **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-static void expon_reinit(sp_data *sp, sp_expon *p)
+static void expon_reinit(ut_data *ut, ut_expon *p)
 {
     p->stime = 0;
-    p->sdur = p->dur * sp->sr;
-    SPFLOAT onedsr = 1.0 / sp->sr;
+    p->sdur = p->dur * ut->sr;
+    UTFLOAT onedsr = 1.0 / ut->sr;
     if((p->a * p->b) > 0.0) {
-        p->incr = pow((SPFLOAT)(p->b / p->a), onedsr / p->dur);
+        p->incr = pow((UTFLOAT)(p->b / p->a), onedsr / p->dur);
     } else {
         fprintf(stderr, "Warning: p values must be non-zero\n");
         p->incr = 1;
@@ -42,35 +42,35 @@ static void expon_reinit(sp_data *sp, sp_expon *p)
     p->val = p->a;
 }
 
-int sp_expon_init(sp_data *sp, sp_expon *p)
+int ut_expon_init(ut_data *ut, ut_expon *p)
 {
     p->a = 0.000001;
     p->b = 1;
     p->dur = 1;
-    expon_reinit(sp, p);
+    expon_reinit(ut, p);
     p->init = 1;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_expon_compute(sp_data *sp, sp_expon *p, SPFLOAT *in, SPFLOAT *out)
+int ut_expon_compute(ut_data *ut, ut_expon *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(*in) {
-        expon_reinit(sp, p);
+        expon_reinit(ut, p);
         p->init = 0;
     }
 
     if(p->init) {
         *out = 0;
-        return SP_OK;
+        return UT_OK;
     }
 
     if(p->stime < p->sdur) {
-        SPFLOAT val = p->val;
+        UTFLOAT val = p->val;
         p->val *= p->incr;
         p->stime++;
         *out = val;
     } else {
         *out = p->b;
     }
-    return SP_OK;
+    return UT_OK;
 }

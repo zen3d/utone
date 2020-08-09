@@ -7,17 +7,17 @@ sptbl["thresh"] = {
     },
 
     func = {
-        create = "sp_thresh_create",
-        destroy = "sp_thresh_destroy",
-        init = "sp_thresh_init",
-        compute = "sp_thresh_compute",
+        create = "ut_thresh_create",
+        destroy = "ut_thresh_destroy",
+        init = "ut_thresh_init",
+        compute = "ut_thresh_compute",
     },
 
     params = {
         optional = {
             {
                 name = "thresh",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Threshold level",
                 default = 1.5
             },

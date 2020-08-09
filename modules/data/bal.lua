@@ -7,10 +7,10 @@ sptbl["bal"] = {
     },
 
     func = {
-        create = "sp_bal_create",
-        destroy = "sp_bal_destroy",
-        init = "sp_bal_init",
-        compute = "sp_bal_compute",
+        create = "ut_bal_create",
+        destroy = "ut_bal_destroy",
+        init = "ut_bal_init",
+        compute = "ut_bal_compute",
     },
 
     params = {

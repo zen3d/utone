@@ -7,10 +7,10 @@ sptbl["tin"] = {
     },
     
     func = {
-        create = "sp_tin_create",
-        destroy = "sp_tin_destroy",
-        init = "sp_tin_init",
-        compute = "sp_tin_compute",
+        create = "ut_tin_create",
+        destroy = "ut_tin_destroy",
+        init = "ut_tin_init",
+        compute = "ut_tin_compute",
     },
     
     params = {
@@ -18,7 +18,7 @@ sptbl["tin"] = {
     
     modtype = "module",
     
-    description = [[Similar to in, tin reads SPFLOATs (by default, this is a 4 byte binary float) from standard input every time it is triggered. behaves like a sample and hold, retaining the previous value (initial set to 0) until triggered. ]], 
+    description = [[Similar to in, tin reads UTFLOATs (by default, this is a 4 byte binary float) from standard input every time it is triggered. behaves like a sample and hold, retaining the previous value (initial set to 0) until triggered. ]], 
     
     ninputs = 1,
     noutputs = 1,
@@ -26,7 +26,7 @@ sptbl["tin"] = {
     inputs = { 
         {
             name = "trig",
-            description = "When non-zero, reads a single SPFLOAT from standard input."
+            description = "When non-zero, reads a single UTFLOAT from standard input."
         },
     },
     

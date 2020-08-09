@@ -5,93 +5,93 @@
 #ifndef NO_LIBSNDFILE
 #include <sndfile.h>
 #endif
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_create(sp_data **spp)
+int ut_create(ut_data **utp)
 {
-    *spp = (sp_data *) malloc(sizeof(sp_data));
-    sp_data *sp = *spp;
-    sprintf(sp->filename, "test.wav");
-    sp->nchan = 1;
-    SPFLOAT *out = malloc(sizeof(SPFLOAT) * sp->nchan);
+    *utp = (ut_data *) malloc(sizeof(ut_data));
+    ut_data *ut = *utp;
+    sprintf(ut->filename, "test.wav");
+    ut->nchan = 1;
+    UTFLOAT *out = malloc(sizeof(UTFLOAT) * ut->nchan);
     *out = 0;
-    sp->out = out;
-    sp->sr = 44100;
-    sp->len = 5 * sp->sr;
-    sp->pos = 0;
-    sp->rand = 0;
+    ut->out = out;
+    ut->sr = 44100;
+    ut->len = 5 * ut->sr;
+    ut->pos = 0;
+    ut->rand = 0;
     return 0;
 }
 
-int sp_createn(sp_data **spp, int nchan)
+int ut_createn(ut_data **utp, int nchan)
 {
-    *spp = (sp_data *) malloc(sizeof(sp_data));
-    sp_data *sp = *spp;
-    sprintf(sp->filename, "test.wav");
-    sp->nchan = nchan;
-    SPFLOAT *out = malloc(sizeof(SPFLOAT) * sp->nchan);
+    *utp = (ut_data *) malloc(sizeof(ut_data));
+    ut_data *ut = *utp;
+    sprintf(ut->filename, "test.wav");
+    ut->nchan = nchan;
+    UTFLOAT *out = malloc(sizeof(UTFLOAT) * ut->nchan);
     *out = 0;
-    sp->out = out;
-    sp->sr = 44100;
-    sp->len = 5 * sp->sr;
-    sp->pos = 0;
-    sp->rand = 0;
+    ut->out = out;
+    ut->sr = 44100;
+    ut->len = 5 * ut->sr;
+    ut->pos = 0;
+    ut->rand = 0;
     return 0;
 }
 
-int sp_destroy(sp_data **spp)
+int ut_destroy(ut_data **utp)
 {
-    sp_data *sp = *spp;
-    free(sp->out);
-    free(*spp);
+    ut_data *ut = *utp;
+    free(ut->out);
+    free(*utp);
     return 0;
 }
 
 #ifndef NO_LIBSNDFILE
 
-int sp_process(sp_data *sp, void *ud, void (*callback)(sp_data *, void *))
+int ut_process(ut_data *ut, void *ud, void (*callback)(ut_data *, void *))
 {
-    SNDFILE *sf[sp->nchan];
+    SNDFILE *sf[ut->nchan];
     char tmp[140];
     SF_INFO info;
     memset(&info, 0, sizeof(SF_INFO));
-    SPFLOAT buf[sp->nchan][SP_BUFSIZE];
-    info.samplerate = sp->sr;
+    UTFLOAT buf[ut->nchan][UT_BUFSIZE];
+    info.samplerate = ut->sr;
     info.channels = 1;
     info.format = SF_FORMAT_WAV | SF_FORMAT_PCM_24;
     int numsamps, i, chan;
-    if(sp->nchan == 1) {
-        sf[0] = sf_open(sp->filename, SFM_WRITE, &info);
+    if(ut->nchan == 1) {
+        sf[0] = sf_open(ut->filename, SFM_WRITE, &info);
     } else {
-        for(chan = 0; chan < sp->nchan; chan++) {
-            sprintf(tmp, "%02d_%s", chan, sp->filename);
+        for(chan = 0; chan < ut->nchan; chan++) {
+            sprintf(tmp, "%02d_%s", chan, ut->filename);
             sf[chan] = sf_open(tmp, SFM_WRITE, &info);
         }
     }
 
-    while(sp->len > 0){
-        if(sp->len < SP_BUFSIZE) {
-            numsamps = sp->len;
+    while(ut->len > 0){
+        if(ut->len < UT_BUFSIZE) {
+            numsamps = ut->len;
         }else{
-            numsamps = SP_BUFSIZE;
+            numsamps = UT_BUFSIZE;
         }
         for(i = 0; i < numsamps; i++){
-            callback(sp, ud);
-            for(chan = 0; chan < sp->nchan; chan++) {
-                buf[chan][i] = sp->out[chan];
+            callback(ut, ud);
+            for(chan = 0; chan < ut->nchan; chan++) {
+                buf[chan][i] = ut->out[chan];
             }
-            sp->pos++;
+            ut->pos++;
         }
-        for(chan = 0; chan < sp->nchan; chan++) {
+        for(chan = 0; chan < ut->nchan; chan++) {
 #ifdef USE_DOUBLE
             sf_write_double(sf[chan], buf[chan], numsamps);
 #else
             sf_write_float(sf[chan], buf[chan], numsamps);
 #endif
         }
-        sp->len -= numsamps;
+        ut->len -= numsamps;
     }
-    for(i = 0; i < sp->nchan; i++) {
+    for(i = 0; i < ut->nchan; i++) {
         sf_close(sf[i]);
     }
     return 0;
@@ -99,99 +99,99 @@ int sp_process(sp_data *sp, void *ud, void (*callback)(sp_data *, void *))
 
 #endif
 
-int sp_process_raw(sp_data *sp, void *ud, void (*callback)(sp_data *, void *))
+int ut_process_raw(ut_data *ut, void *ud, void (*callback)(ut_data *, void *))
 {
     int chan;
-    if(sp->len == 0) {
+    if(ut->len == 0) {
         while(1) {
-            callback(sp, ud);
-            for (chan = 0; chan < sp->nchan; chan++) {
-                fwrite(&sp->out[chan], sizeof(SPFLOAT), 1, stdout);
+            callback(ut, ud);
+            for (chan = 0; chan < ut->nchan; chan++) {
+                fwrite(&ut->out[chan], sizeof(UTFLOAT), 1, stdout);
             }
-            sp->len--;
+            ut->len--;
         }
     } else {
-        while(sp->len > 0) {
-            callback(sp, ud);
-            for (chan = 0; chan < sp->nchan; chan++) {
-                fwrite(&sp->out[chan], sizeof(SPFLOAT), 1, stdout);
+        while(ut->len > 0) {
+            callback(ut, ud);
+            for (chan = 0; chan < ut->nchan; chan++) {
+                fwrite(&ut->out[chan], sizeof(UTFLOAT), 1, stdout);
             }
-            sp->len--;
-            sp->pos++;
+            ut->len--;
+            ut->pos++;
         }
     }
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_process_plot(sp_data *sp, void *ud, void (*callback)(sp_data *, void *))
+int ut_process_plot(ut_data *ut, void *ud, void (*callback)(ut_data *, void *))
 {
     int chan;
-    fprintf(stdout, "sp_out =  [ ... \n");
-    while(sp->len > 0) {
-        callback(sp, ud);
-        for (chan = 0; chan < sp->nchan; chan++) {
-            /* fwrite(&sp->out[chan], sizeof(SPFLOAT), 1, stdout); */
-            fprintf(stdout, "%g ", sp->out[chan]);
+    fprintf(stdout, "ut_out =  [ ... \n");
+    while(ut->len > 0) {
+        callback(ut, ud);
+        for (chan = 0; chan < ut->nchan; chan++) {
+            /* fwrite(&ut->out[chan], sizeof(UTFLOAT), 1, stdout); */
+            fprintf(stdout, "%g ", ut->out[chan]);
         }
         fprintf(stdout, "; ...\n");
-        sp->len--;
-        sp->pos++;
+        ut->len--;
+        ut->pos++;
     }
     fprintf(stdout, "];\n");
 
-    fprintf(stdout, "plot(sp_out);\n");
+    fprintf(stdout, "plot(ut_out);\n");
     fprintf(stdout, "title('Plot generated by Soundpipe');\n");
     fprintf(stdout, "xlabel('Time (samples)');\n");
     fprintf(stdout, "ylabel('Amplitude');\n");
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_auxdata_alloc(sp_auxdata *aux, size_t size)
+int ut_auxdata_alloc(ut_auxdata *aux, size_t size)
 {
     aux->ptr = malloc(size);
     aux->size = size;
     memset(aux->ptr, 0, size);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_auxdata_free(sp_auxdata *aux)
+int ut_auxdata_free(ut_auxdata *aux)
 {
     free(aux->ptr);
-    return SP_OK;
+    return UT_OK;
 }
 
 
-SPFLOAT sp_midi2cps(SPFLOAT nn)
+UTFLOAT ut_midi2cps(UTFLOAT nn)
 {
     return pow(2, (nn - 69.0) / 12.0) * 440.0;
 }
 
-int sp_set(sp_param *p, SPFLOAT val) {
+int ut_set(ut_param *p, UTFLOAT val) {
     p->state = 1;
     p->val = val;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_out(sp_data *sp, uint32_t chan, SPFLOAT val)
+int ut_out(ut_data *ut, uint32_t chan, UTFLOAT val)
 {
-    if(chan > sp->nchan - 1) {
-        fprintf(stderr, "sp_out: Invalid channel\n");
-        return SP_NOT_OK;
+    if(chan > ut->nchan - 1) {
+        fprintf(stderr, "ut_out: Invalid channel\n");
+        return UT_NOT_OK;
     }
-    sp->out[chan] = val;
-    return SP_OK;
+    ut->out[chan] = val;
+    return UT_OK;
 }
 
-uint32_t sp_rand(sp_data *sp)
+uint32_t ut_rand(ut_data *ut)
 {
-    uint32_t val = (1103515245 * sp->rand + 12345) % SP_RANDMAX;
-    sp->rand = val;
+    uint32_t val = (1103515245 * ut->rand + 12345) % UT_RANDMAX;
+    ut->rand = val;
     return val;
 }
 
-void sp_srand(sp_data *sp, uint32_t val)
+void ut_srand(ut_data *ut, uint32_t val)
 {
-    sp->rand = val;
+    ut->rand = val;
 }
 
 

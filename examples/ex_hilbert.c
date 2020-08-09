@@ -1,58 +1,58 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_hilbert *hilbert;
-    sp_osc *cos, *sin;
-    sp_ftbl *ft; 
-    sp_diskin *diskin;
+    ut_hilbert *hilbert;
+    ut_osc *cos, *sin;
+    ut_ftbl *ft; 
+    ut_diskin *diskin;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT disk= 0;
-    SPFLOAT real = 0, imag = 0;
-    SPFLOAT diskin = 0;
-    SPFLOAT sin = 0, cos = 0;
+    UTFLOAT disk= 0;
+    UTFLOAT real = 0, imag = 0;
+    UTFLOAT diskin = 0;
+    UTFLOAT sin = 0, cos = 0;
 
-    sp_diskin_compute(sp, ud->diskin, NULL, &diskin);
-    sp_osc_compute(sp, ud->sin, NULL, &sin);
-    sp_osc_compute(sp, ud->cos, NULL, &cos);
-    sp_hilbert_compute(sp, ud->hilbert, &diskin, &real, &imag);
-    sp->out[0] = ((cos * real) + (sin * real)) * 0.7;
+    ut_diskin_compute(ut, ud->diskin, NULL, &diskin);
+    ut_osc_compute(ut, ud->sin, NULL, &sin);
+    ut_osc_compute(ut, ud->cos, NULL, &cos);
+    ut_hilbert_compute(ut, ud->hilbert, &diskin, &real, &imag);
+    ut->out[0] = ((cos * real) + (sin * real)) * 0.7;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_hilbert_create(&ud.hilbert);
-    sp_osc_create(&ud.sin);
-    sp_osc_create(&ud.cos);
-    sp_diskin_create(&ud.diskin);
-    sp_ftbl_create(sp, &ud.ft, 8192);
+    ut_hilbert_create(&ud.hilbert);
+    ut_osc_create(&ud.sin);
+    ut_osc_create(&ud.cos);
+    ut_diskin_create(&ud.diskin);
+    ut_ftbl_create(ut, &ud.ft, 8192);
 
-    sp_hilbert_init(sp, ud.hilbert);
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.sin, ud.ft, 0);
-    sp_osc_init(sp, ud.cos, ud.ft, 0.25);
+    ut_hilbert_init(ut, ud.hilbert);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.sin, ud.ft, 0);
+    ut_osc_init(ut, ud.cos, ud.ft, 0.25);
     ud.sin->freq = 1000;
     ud.cos->freq = 1000;
-    sp_diskin_init(sp, ud.diskin, "oneart.wav");
+    ut_diskin_init(ut, ud.diskin, "oneart.wav");
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_hilbert_destroy(&ud.hilbert);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.sin);
-    sp_osc_destroy(&ud.cos);
-    sp_diskin_destroy(&ud.diskin);
+    ut_hilbert_destroy(&ud.hilbert);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.sin);
+    ut_osc_destroy(&ud.cos);
+    ut_diskin_destroy(&ud.diskin);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

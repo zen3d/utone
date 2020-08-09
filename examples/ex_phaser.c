@@ -1,39 +1,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_phaser *phaser;
-    sp_diskin *disk;
+    ut_phaser *phaser;
+    ut_diskin *disk;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT disk1 = 0, disk2 = 0, phaser = 0, foo = 0;
-    sp_diskin_compute(sp, ud->disk, NULL, &disk1);
+    UTFLOAT disk1 = 0, disk2 = 0, phaser = 0, foo = 0;
+    ut_diskin_compute(ut, ud->disk, NULL, &disk1);
     disk2 = disk1;
-    sp_phaser_compute(sp, ud->phaser, &disk1, &disk2, &phaser, &foo);
-    sp->out[0] = phaser;
+    ut_phaser_compute(ut, ud->phaser, &disk1, &disk2, &phaser, &foo);
+    ut->out[0] = phaser;
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_phaser_create(&ud.phaser);
-    sp_diskin_create(&ud.disk);
+    ut_phaser_create(&ud.phaser);
+    ut_diskin_create(&ud.disk);
 
-    sp_diskin_init(sp, ud.disk, "oneart.wav");
-    sp_phaser_init(sp, ud.phaser);
+    ut_diskin_init(ut, ud.disk, "oneart.wav");
+    ut_phaser_init(ut, ud.phaser);
     
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_phaser_destroy(&ud.phaser);
-    sp_diskin_destroy(&ud.disk);
+    ut_phaser_destroy(&ud.phaser);
+    ut_diskin_destroy(&ud.disk);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

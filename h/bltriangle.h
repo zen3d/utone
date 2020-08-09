@@ -1,13 +1,13 @@
 typedef struct {
     void *ud;
     int argpos;
-    SPFLOAT *args[2];
-    SPFLOAT *freq;
-    SPFLOAT *amp;
-} sp_bltriangle;
+    UTFLOAT *args[2];
+    UTFLOAT *freq;
+    UTFLOAT *amp;
+} ut_bltriangle;
 
-int sp_bltriangle_create(sp_bltriangle **p);
-int sp_bltriangle_destroy(sp_bltriangle **p);
-int sp_bltriangle_init(sp_data *sp, sp_bltriangle *p);
-int sp_bltriangle_compute(sp_data *sp, sp_bltriangle *p, SPFLOAT *in, SPFLOAT *out);
+int ut_bltriangle_create(ut_bltriangle **p);
+int ut_bltriangle_destroy(ut_bltriangle **p);
+int ut_bltriangle_init(ut_data *ut, ut_bltriangle *p);
+int ut_bltriangle_compute(ut_data *ut, ut_bltriangle *p, UTFLOAT *in, UTFLOAT *out);
 

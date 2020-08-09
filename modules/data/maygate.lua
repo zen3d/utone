@@ -7,17 +7,17 @@ sptbl["maygate"] = {
     },
 
     func = {
-        create = "sp_maygate_create",
-        destroy = "sp_maygate_destroy",
-        init = "sp_maygate_init",
-        compute = "sp_maygate_compute",
+        create = "ut_maygate_create",
+        destroy = "ut_maygate_destroy",
+        init = "ut_maygate_init",
+        compute = "ut_maygate_compute",
     },
 
     params = {
         optional = {
             {
                 name = "prob",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Probability of maygate. This is a value between 0-1. The closer to 1, the more likely the maygate will let a signal through.",
                 default = 0
             },

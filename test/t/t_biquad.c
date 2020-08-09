@@ -1,42 +1,42 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct udata {
-    sp_noise *ns;
-    sp_biquad *tn;
+    ut_noise *ns;
+    ut_biquad *tn;
 } UserData;
 
-int t_biquad(sp_test *tst, sp_data *sp, const char *hash) 
+int t_biquad(ut_test *tst, ut_data *ut, const char *hash) 
 {
-    sp_srand(sp, 0); 
+    ut_srand(ut, 0); 
     uint32_t n;
     int fail = 0;
-    SPFLOAT in = 0;
-    SPFLOAT out = 0;
+    UTFLOAT in = 0;
+    UTFLOAT out = 0;
 
     UserData ud;
 
-    sp_noise_create(&ud.ns);
-    sp_biquad_create(&ud.tn);
+    ut_noise_create(&ud.ns);
+    ut_biquad_create(&ud.tn);
 
-    sp_noise_init(sp, ud.ns);
-    sp_biquad_init(sp, ud.tn);
+    ut_noise_init(ut, ud.ns);
+    ut_biquad_init(ut, ud.tn);
 
     for(n = 0; n < tst->size; n++) {
         in = 0;
         out = 0;
-        sp_noise_compute(sp, ud.ns, NULL, &in);
-        sp_biquad_compute(sp, ud.tn, &in, &out); 
-        sp_test_add_sample(tst, out);
+        ut_noise_compute(ut, ud.ns, NULL, &in);
+        ut_biquad_compute(ut, ud.tn, &in, &out); 
+        ut_test_add_sample(tst, out);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
     
-    sp_noise_destroy(&ud.ns);
-    sp_biquad_destroy(&ud.tn);
+    ut_noise_destroy(&ud.ns);
+    ut_biquad_destroy(&ud.tn);
      
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

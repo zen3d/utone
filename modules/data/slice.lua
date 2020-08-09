@@ -7,23 +7,23 @@ sptbl["slice"] = {
     },
 
     func = {
-        create = "sp_slice_create",
-        destroy = "sp_slice_destroy",
-        init = "sp_slice_init",
-        compute = "sp_slice_compute",
+        create = "ut_slice_create",
+        destroy = "ut_slice_destroy",
+        init = "ut_slice_init",
+        compute = "ut_slice_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "vals",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "A table containing slice points, in samples",
                 default = "N/A"
             },
             {
                 name = "buf",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "The buffer containing the audio samples.",
                 default = "N/A"
             }
@@ -32,7 +32,7 @@ sptbl["slice"] = {
         optional = {
             {
                 name = "id",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Value position.",
                 default = 0
             },

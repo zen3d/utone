@@ -1,14 +1,14 @@
-typedef struct sp_padsynth {
-    SPFLOAT cps;
-    SPFLOAT bw;
-    sp_ftbl *amps;
-} sp_padsynth;
+typedef struct ut_padsynth {
+    UTFLOAT cps;
+    UTFLOAT bw;
+    ut_ftbl *amps;
+} ut_padsynth;
 
-int sp_gen_padsynth(sp_data *sp, sp_ftbl *ps, sp_ftbl *amps, SPFLOAT f, SPFLOAT bw);
+int ut_gen_padsynth(ut_data *ut, ut_ftbl *ps, ut_ftbl *amps, UTFLOAT f, UTFLOAT bw);
 
-SPFLOAT sp_padsynth_profile(SPFLOAT fi, SPFLOAT bwi);
+UTFLOAT ut_padsynth_profile(UTFLOAT fi, UTFLOAT bwi);
 
-int sp_padsynth_ifft(int N, SPFLOAT *freq_amp, 
-        SPFLOAT *freq_phase, SPFLOAT *smp); 
+int ut_padsynth_ifft(int N, UTFLOAT *freq_amp, 
+        UTFLOAT *freq_phase, UTFLOAT *smp); 
 
-int sp_padsynth_normalize(int N, SPFLOAT *smp);
+int ut_padsynth_normalize(int N, UTFLOAT *smp);

@@ -7,23 +7,23 @@ sptbl["conv"] = {
     },
 
     func = {
-        create = "sp_conv_create",
-        destroy = "sp_conv_destroy",
-        init = "sp_conv_init",
-        compute = "sp_conv_compute",
+        create = "ut_conv_create",
+        destroy = "ut_conv_destroy",
+        init = "ut_conv_init",
+        compute = "ut_conv_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "ft",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "Ftable used as the impulse response. ",
                 default = "N/A"
             },
             {
                 name = "iPartLen",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = [[Partition length (in samples). 
 Must be a power of 2. Lower values will add less latency, at the cost 
 of requiring more CPU power. 

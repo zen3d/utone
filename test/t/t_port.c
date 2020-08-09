@@ -1,61 +1,61 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_osc *osc;
-    sp_metro *mt;
-    sp_ftbl *sine, *nn;
-    sp_tseq *seq;
-    sp_port *prt;
+    ut_osc *osc;
+    ut_metro *mt;
+    ut_ftbl *sine, *nn;
+    ut_tseq *seq;
+    ut_port *prt;
 } UserData;
 
-int t_port(sp_test *tst, sp_data *sp, const char *hash) 
+int t_port(ut_test *tst, ut_data *ut, const char *hash) 
 {
-    sp_srand(sp,123456);
+    ut_srand(ut,123456);
     uint32_t n;
     int fail = 0;
     UserData ud;
-    SPFLOAT osc, mt, nn, freq, pfreq;
+    UTFLOAT osc, mt, nn, freq, pfreq;
     
-    sp_metro_create(&ud.mt);
-    sp_ftbl_create(sp, &ud.sine, 2048);
-    sp_ftbl_create(sp, &ud.nn, 1);
-    sp_osc_create(&ud.osc);
-    sp_port_create(&ud.prt);
+    ut_metro_create(&ud.mt);
+    ut_ftbl_create(ut, &ud.sine, 2048);
+    ut_ftbl_create(ut, &ud.nn, 1);
+    ut_osc_create(&ud.osc);
+    ut_port_create(&ud.prt);
     
-    sp_gen_vals(sp, ud.nn, "60 63 65 60 63 67");
-    sp_tseq_create(&ud.seq);
-    sp_tseq_init(sp, ud.seq, ud.nn);
+    ut_gen_vals(ut, ud.nn, "60 63 65 60 63 67");
+    ut_tseq_create(&ud.seq);
+    ut_tseq_init(ut, ud.seq, ud.nn);
 
-    sp_port_init(sp, ud.prt, 0.02);
-    sp_metro_init(sp, ud.mt);
+    ut_port_init(ut, ud.prt, 0.02);
+    ut_metro_init(ut, ud.mt);
     ud.mt->freq = 4.0;
-    sp_gen_sine(sp, ud.sine);
-    sp_osc_init(sp, ud.osc, ud.sine, 0);
+    ut_gen_sine(ut, ud.sine);
+    ut_osc_init(ut, ud.osc, ud.sine, 0);
 
 
     for(n = 0; n < tst->size; n++) {
-        sp_metro_compute(sp, ud.mt, NULL, &mt);
-        sp_tseq_compute(sp, ud.seq, &mt, &nn);
-        freq = sp_midi2cps(nn);
-        sp_port_compute(sp, ud.prt, &freq, &pfreq);
+        ut_metro_compute(ut, ud.mt, NULL, &mt);
+        ut_tseq_compute(ut, ud.seq, &mt, &nn);
+        freq = ut_midi2cps(nn);
+        ut_port_compute(ut, ud.prt, &freq, &pfreq);
         ud.osc->freq = pfreq;
-        sp_osc_compute(sp, ud.osc, NULL, &osc);
-        sp->out[0] = osc;
-        sp_test_add_sample(tst, sp->out[0]);
+        ut_osc_compute(ut, ud.osc, NULL, &osc);
+        ut->out[0] = osc;
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
     
-    sp_port_destroy(&ud.prt);
-    sp_tseq_destroy(&ud.seq);
-    sp_metro_destroy(&ud.mt);
-    sp_ftbl_destroy(&ud.sine);
-    sp_ftbl_destroy(&ud.nn);
-    sp_osc_destroy(&ud.osc);
+    ut_port_destroy(&ud.prt);
+    ut_tseq_destroy(&ud.seq);
+    ut_metro_destroy(&ud.mt);
+    ut_ftbl_destroy(&ud.sine);
+    ut_ftbl_destroy(&ud.nn);
+    ut_osc_destroy(&ud.osc);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

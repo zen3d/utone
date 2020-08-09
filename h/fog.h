@@ -1,25 +1,25 @@
-typedef struct sp_fog_overlap {
-    struct sp_fog_overlap *nxtact;
-    struct sp_fog_overlap *nxtfree;
+typedef struct ut_fog_overlap {
+    struct ut_fog_overlap *nxtact;
+    struct ut_fog_overlap *nxtfree;
     int32_t timrem, dectim, formphs, forminc;
     uint32_t risphs;
     int32_t risinc, decphs, decinc;
-    SPFLOAT curamp, expamp;
-    SPFLOAT pos, inc;
-} sp_fog_overlap;
+    UTFLOAT curamp, expamp;
+    UTFLOAT pos, inc;
+} ut_fog_overlap;
 
 typedef struct {
-    SPFLOAT amp, dens, trans, spd, oct, band, ris, dur, dec;
-    SPFLOAT iolaps, iphs, itmode;
-    sp_fog_overlap basovrlap;
+    UTFLOAT amp, dens, trans, spd, oct, band, ris, dur, dec;
+    UTFLOAT iolaps, iphs, itmode;
+    ut_fog_overlap basovrlap;
     int32_t durtogo, fundphs, fofcount, prvsmps, spdphs;
-    SPFLOAT prvband, expamp, preamp, fogcvt; 
+    UTFLOAT prvband, expamp, preamp, fogcvt; 
     int16_t formcod, fmtmod, speedcod;
-    sp_auxdata auxch;
-    sp_ftbl *ftp1, *ftp2;
-} sp_fog;
+    ut_auxdata auxch;
+    ut_ftbl *ftp1, *ftp2;
+} ut_fog;
 
-int sp_fog_create(sp_fog **p);
-int sp_fog_destroy(sp_fog **p);
-int sp_fog_init(sp_data *sp, sp_fog *p, sp_ftbl *wav, sp_ftbl *win, int iolaps, SPFLOAT iphs);
-int sp_fog_compute(sp_data *sp, sp_fog *p, SPFLOAT *in, SPFLOAT *out);
+int ut_fog_create(ut_fog **p);
+int ut_fog_destroy(ut_fog **p);
+int ut_fog_init(ut_data *ut, ut_fog *p, ut_ftbl *wav, ut_ftbl *win, int iolaps, UTFLOAT iphs);
+int ut_fog_compute(ut_data *ut, ut_fog *p, UTFLOAT *in, UTFLOAT *out);

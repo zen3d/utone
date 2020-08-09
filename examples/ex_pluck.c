@@ -1,44 +1,44 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_pluck *pluck;
-    sp_metro *met;
+    ut_pluck *pluck;
+    ut_metro *met;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT pluck = 0, met = 0;
-    sp_metro_compute(sp, ud->met, NULL, &met);
-    SPFLOAT notes[] = {60, 63, 67, 70, 74};
+    UTFLOAT pluck = 0, met = 0;
+    ut_metro_compute(ut, ud->met, NULL, &met);
+    UTFLOAT notes[] = {60, 63, 67, 70, 74};
     if(met) {
-        ud->pluck->freq = sp_midi2cps(notes[sp_rand(sp) % 5]);
+        ud->pluck->freq = ut_midi2cps(notes[ut_rand(ut) % 5]);
     }
-    sp_pluck_compute(sp, ud->pluck, &met, &pluck);
-    sp->out[0] = pluck;
+    ut_pluck_compute(ut, ud->pluck, &met, &pluck);
+    ut->out[0] = pluck;
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_pluck_create(&ud.pluck);
-    sp_metro_create(&ud.met);
+    ut_pluck_create(&ud.pluck);
+    ut_metro_create(&ud.met);
 
-    sp_pluck_init(sp, ud.pluck, 400);
-    sp_metro_init(sp, ud.met);
+    ut_pluck_init(ut, ud.pluck, 400);
+    ut_metro_init(ut, ud.met);
     ud.met->freq = 4;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_pluck_destroy(&ud.pluck);
-    sp_metro_destroy(&ud.met);
+    ut_pluck_destroy(&ud.pluck);
+    ut_metro_destroy(&ud.met);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

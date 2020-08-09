@@ -7,17 +7,17 @@ sptbl["pluck"] = {
     },
     
     func = {
-        create = "sp_pluck_create",
-        destroy = "sp_pluck_destroy",
-        init = "sp_pluck_init",
-        compute = "sp_pluck_compute",
+        create = "ut_pluck_create",
+        destroy = "ut_pluck_destroy",
+        init = "ut_pluck_init",
+        compute = "ut_pluck_compute",
     },
     
     params = {
         mandatory = {
             {
                 name = "ifreq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Sets the initial frequency. This frequency is used to allocate all the buffers needed for the delay. This should be the lowest frequency you plan on using.",
                 default = 110
             }
@@ -26,14 +26,14 @@ sptbl["pluck"] = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = [[Variable frequency. Values less than the initial 
 frequency (ifreq) will be doubled until it is greater than or equal to ifreq.]],
                 default = "ifreq"
             },
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Amplitude",
                 default = 0.5
             },

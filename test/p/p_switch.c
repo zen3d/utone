@@ -1,32 +1,32 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "config.h"
 
 int main() {
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 12345);
-    sp->sr = SR;
-    sp->len = sp->sr * LEN;
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 12345);
+    ut->sr = SR;
+    ut->len = ut->sr * LEN;
     uint32_t t, u;
-    SPFLOAT trig = 0, in1 = 0, in2 = 0, out = 0;
+    UTFLOAT trig = 0, in1 = 0, in2 = 0, out = 0;
 
-    sp_switch *unit[NUM];
+    ut_switch *unit[NUM];
 
     for(u = 0; u < NUM; u++) { 
-        sp_switch_create(&unit[u]);
-        sp_switch_init(sp, unit[u]);
+        ut_switch_create(&unit[u]);
+        ut_switch_init(ut, unit[u]);
     }
 
-    for(t = 0; t < sp->len; t++) {
-        for(u = 0; u < NUM; u++) sp_switch_compute(sp, unit[u], 
+    for(t = 0; t < ut->len; t++) {
+        for(u = 0; u < NUM; u++) ut_switch_compute(ut, unit[u], 
                 &trig, &in1, &in2, &out);
     }
 
-    for(u = 0; u < NUM; u++) sp_switch_destroy(&unit[u]);
+    for(u = 0; u < NUM; u++) ut_switch_destroy(&unit[u]);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }
 

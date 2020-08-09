@@ -7,23 +7,23 @@ sptbl["blsaw"] = {
     },
 
     func = {
-        create = "sp_blsaw_create",
-        destroy = "sp_blsaw_destroy",
-        init = "sp_blsaw_init",
-        compute = "sp_blsaw_compute",
+        create = "ut_blsaw_create",
+        destroy = "ut_blsaw_destroy",
+        init = "ut_blsaw_init",
+        compute = "ut_blsaw_compute",
     },
 
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description = "Frequency, (range 0-20000)",
                 default = 440
             },
             {
                 name = "amp",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Amplitude (range 0-1).",
 		default = 1.0
             },

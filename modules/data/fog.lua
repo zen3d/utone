@@ -7,23 +7,23 @@ sptbl["fog"] = {
     },
 
     func = {
-        create = "sp_fog_create",
-        destroy = "sp_fog_destroy",
-        init = "sp_fog_init",
-        compute = "sp_fog_compute",
+        create = "ut_fog_create",
+        destroy = "ut_fog_destroy",
+        init = "ut_fog_init",
+        compute = "ut_fog_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "wav",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "ftable for sample.",
                 default = "N/A"
             },
             {
                 name = "win",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "Ftable for envelope function (use either gen_line or gen_sinecomp)",
                 default = "N/A"
             },
@@ -35,7 +35,7 @@ sptbl["fog"] = {
             },
             {
                 name = "iphs",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Phase",
                 default = 0
             }
@@ -44,55 +44,55 @@ sptbl["fog"] = {
         optional = {
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Overall amplitude",
                 default = 0.5
             },
             {
                 name = "dens",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Density. The frequency of grains/second.",
                 default = 80 
             },
             {
                 name = "trans",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Transposition, in terms of playback speed",
                 default = 1
             },
             {
                 name = "spd",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Starting sample index, normalized 0-1.",
                 default = 0
             },
             {
                 name = "oct",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Octaviation index, if greater than zero, lowers the effective fund frequency by attenuating odd-numbered sine bursts. whole numbers are full octaves. fractions transpositional.",
                 default = 0
             },
             {
                 name = "band",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Bandwidth (in -6db) expressed in Hz. The bandwidth determines the rate of exponential decay throughout the sineburst, before the enveloping is applied.",
                 default = 50
             },
             {
                 name = "ris",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Rise of sinusoid burst (in seconds)",
                 default = 0.003
             },
             {
                 name = "dec",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Decay of the sinusoid burst (in seconds).",
                 default = 0.0007
             },
             {
                 name = "dur",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "OVerall duration of sinusoid burst (in seconds).",
                 default = 0.02
             },

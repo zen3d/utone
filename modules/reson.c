@@ -17,46 +17,46 @@
 #define M_PI		3.14159265358979323846	
 #endif 
 
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_reson_create(sp_reson **p)
+int ut_reson_create(ut_reson **p)
 {
-    *p = malloc(sizeof(sp_reson));
-    return SP_OK;
+    *p = malloc(sizeof(ut_reson));
+    return UT_OK;
 }
 
-int sp_reson_destroy(sp_reson **p)
+int ut_reson_destroy(ut_reson **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_reson_init(sp_data *sp, sp_reson *p)
+int ut_reson_init(ut_data *ut, ut_reson *p)
 {
     p->scale = 0;
     p->freq = 4000;
     p->bw = 1000;
     p->prvfreq = p->prvbw = -100.0;
-    p->tpidsr = (2.0 * M_PI) / sp->sr * 1.0;
+    p->tpidsr = (2.0 * M_PI) / ut->sr * 1.0;
     p->yt1 = p->yt2 = 0.0;
-    return SP_OK;
+    return UT_OK;
 }
 
 
-int sp_reson_compute(sp_data *sp, sp_reson *p, SPFLOAT *in, SPFLOAT *out)
+int ut_reson_compute(ut_data *ut, ut_reson *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT c3p1, c3t4;
-    SPFLOAT yt1, yt2, c1 = p->c1, c2 = p->c2, c3 = p->c3;
+    UTFLOAT c3p1, c3t4;
+    UTFLOAT yt1, yt2, c1 = p->c1, c2 = p->c2, c3 = p->c3;
     int flag = 0;
 
     yt1 = p->yt1; 
     yt2 = p->yt2;
     
-    SPFLOAT yt0;
-    SPFLOAT cf = p->freq;
+    UTFLOAT yt0;
+    UTFLOAT cf = p->freq;
     
     /* bw needs to stay positive so it doesn't blow the filter up */
-    SPFLOAT bw = fabs(p->bw);
+    UTFLOAT bw = fabs(p->bw);
     
     if (cf != p->prvfreq ) {
         p->prvfreq = cf;
@@ -83,5 +83,5 @@ int sp_reson_compute(sp_data *sp, sp_reson *p, SPFLOAT *in, SPFLOAT *out)
     yt2 = yt1;
     yt1 = yt0;
     p->yt1 = yt1; p->yt2 = yt2;
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,29 +1,29 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_slice_create(sp_slice **p)
+int ut_slice_create(ut_slice **p)
 {
-    *p = malloc(sizeof(sp_slice));
-    return SP_OK;
+    *p = malloc(sizeof(ut_slice));
+    return UT_OK;
 }
 
-int sp_slice_destroy(sp_slice **p)
+int ut_slice_destroy(ut_slice **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_slice_init(sp_data *sp, sp_slice *p, sp_ftbl *vals, sp_ftbl *buf)
+int ut_slice_init(ut_data *ut, ut_slice *p, ut_ftbl *vals, ut_ftbl *buf)
 {
     p->vals = vals;
     p->buf = buf;
     p->pos = 0;
     p->nextpos = 0;
     p->id = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_slice_compute(sp_data *sp, sp_slice *p, SPFLOAT *in, SPFLOAT *out)
+int ut_slice_compute(ut_data *ut, ut_slice *p, UTFLOAT *in, UTFLOAT *out)
 {
     *out = 0;
     if(*in != 0) {
@@ -42,5 +42,5 @@ int sp_slice_compute(sp_data *sp, sp_slice *p, SPFLOAT *in, SPFLOAT *out)
         p->pos++;
     }
 
-    return SP_OK;
+    return UT_OK;
 }

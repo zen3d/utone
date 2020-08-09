@@ -7,10 +7,10 @@ sptbl["diskin"] = {
     },
 
     func = {
-        create = "sp_diskin_create",
-        destroy = "sp_diskin_destroy",
-        init = "sp_diskin_init",
-        compute = "sp_diskin_compute",
+        create = "ut_diskin_create",
+        destroy = "ut_diskin_destroy",
+        init = "ut_diskin_init",
+        compute = "ut_diskin_compute",
     },
 
     params = {

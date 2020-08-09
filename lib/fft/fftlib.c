@@ -19,7 +19,7 @@
 #define POW2(m) ((uint32_t) 1 << (m))       /* integer power of 2 for m<32 */
 
 /* fft's with M bigger than this bust primary cache */
-#define MCACHE  (11 - (sizeof(SPFLOAT) / 8))
+#define MCACHE  (11 - (sizeof(UTFLOAT) / 8))
 
 /* some math constants to 40 decimal places */
 #define MYPI      3.141592653589793238462643383279502884197   /* pi         */
@@ -31,7 +31,7 @@
 * routines to initialize tables used by fft routines *
 *****************************************************/
 
-static void fftCosInit(int M, SPFLOAT *Utbl)
+static void fftCosInit(int M, UTFLOAT *Utbl)
 {
     /* Compute Utbl, the cosine table for ffts  */
     /* of size (pow(2,M)/4 +1)                  */
@@ -44,7 +44,7 @@ static void fftCosInit(int M, SPFLOAT *Utbl)
 
     Utbl[0] = 1.0;
     for (i1 = 1; i1 < fftN/4; i1++)
-      Utbl[i1] = cos((2.0 * M_PI * (SPFLOAT)i1) / (SPFLOAT)fftN);
+      Utbl[i1] = cos((2.0 * M_PI * (UTFLOAT)i1) / (UTFLOAT)fftN);
     Utbl[fftN/4] = 0.0;
 }
 
@@ -77,33 +77,33 @@ void fftBRInit(int M, int16_t *BRLow)
 * parts of ffts1 *
 *****************/
 
-static void bitrevR2(SPFLOAT *ioptr, int M, int16_t *BRLow)
+static void bitrevR2(UTFLOAT *ioptr, int M, int16_t *BRLow)
 {
     /*** bit reverse and first radix 2 stage of forward or inverse fft ***/
-    SPFLOAT f0r;
-    SPFLOAT f0i;
-    SPFLOAT f1r;
-    SPFLOAT f1i;
-    SPFLOAT f2r;
-    SPFLOAT f2i;
-    SPFLOAT f3r;
-    SPFLOAT f3i;
-    SPFLOAT f4r;
-    SPFLOAT f4i;
-    SPFLOAT f5r;
-    SPFLOAT f5i;
-    SPFLOAT f6r;
-    SPFLOAT f6i;
-    SPFLOAT f7r;
-    SPFLOAT f7i;
-    SPFLOAT t0r;
-    SPFLOAT t0i;
-    SPFLOAT t1r;
-    SPFLOAT t1i;
-    SPFLOAT *p0r;
-    SPFLOAT *p1r;
-    SPFLOAT *IOP;
-    SPFLOAT *iolimit;
+    UTFLOAT f0r;
+    UTFLOAT f0i;
+    UTFLOAT f1r;
+    UTFLOAT f1i;
+    UTFLOAT f2r;
+    UTFLOAT f2i;
+    UTFLOAT f3r;
+    UTFLOAT f3i;
+    UTFLOAT f4r;
+    UTFLOAT f4i;
+    UTFLOAT f5r;
+    UTFLOAT f5i;
+    UTFLOAT f6r;
+    UTFLOAT f6i;
+    UTFLOAT f7r;
+    UTFLOAT f7i;
+    UTFLOAT t0r;
+    UTFLOAT t0i;
+    UTFLOAT t1r;
+    UTFLOAT t1i;
+    UTFLOAT *p0r;
+    UTFLOAT *p1r;
+    UTFLOAT *IOP;
+    UTFLOAT *iolimit;
     int Colstart;
     int iCol;
     unsigned int posA;
@@ -214,11 +214,11 @@ static void bitrevR2(SPFLOAT *ioptr, int M, int16_t *BRLow)
     }
 }
 
-static void fft2pt(SPFLOAT *ioptr)
+static void fft2pt(UTFLOAT *ioptr)
 {
     /***   RADIX 2 fft      ***/
-    SPFLOAT f0r, f0i, f1r, f1i;
-    SPFLOAT t0r, t0i;
+    UTFLOAT f0r, f0i, f1r, f1i;
+    UTFLOAT t0r, t0i;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -244,11 +244,11 @@ static void fft2pt(SPFLOAT *ioptr)
     ioptr[3] = f1i;
 }
 
-static void fft4pt(SPFLOAT *ioptr)
+static void fft4pt(UTFLOAT *ioptr)
 {
     /***   RADIX 4 fft      ***/
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT t0r, t0i, t1r, t1i;
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT t0r, t0i, t1r, t1i;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -299,14 +299,14 @@ static void fft4pt(SPFLOAT *ioptr)
     ioptr[7] = f3i;
 }
 
-static void fft8pt(SPFLOAT *ioptr)
+static void fft8pt(UTFLOAT *ioptr)
 {
     /***   RADIX 8 fft      ***/
-    SPFLOAT w0r = (SPFLOAT)(1.0 / MYROOT2);    /* cos(pi/4)   */
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
-    SPFLOAT t0r, t0i, t1r, t1i;
-    const SPFLOAT Two = 2.0;
+    UTFLOAT w0r = (UTFLOAT)(1.0 / MYROOT2);    /* cos(pi/4)   */
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
+    UTFLOAT t0r, t0i, t1r, t1i;
+    const UTFLOAT Two = 2.0;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -416,7 +416,7 @@ static void fft8pt(SPFLOAT *ioptr)
     ioptr[15] = f6i;
 }
 
-static void bfR2(SPFLOAT *ioptr, int M, int NDiffU)
+static void bfR2(UTFLOAT *ioptr, int M, int NDiffU)
 {
     /*** 2nd radix 2 stage ***/
     unsigned int pos;
@@ -426,11 +426,11 @@ static void bfR2(SPFLOAT *ioptr, int M, int NDiffU)
     unsigned int NSameU;
     unsigned int SameUCnt;
 
-    SPFLOAT *pstrt;
-    SPFLOAT *p0r, *p1r, *p2r, *p3r;
+    UTFLOAT *pstrt;
+    UTFLOAT *p0r, *p1r, *p2r, *p3r;
 
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
 
     pinc = NDiffU * 2;            /* 2 floats per complex */
     pnext = pinc * 4;
@@ -523,7 +523,7 @@ static void bfR2(SPFLOAT *ioptr, int M, int NDiffU)
     }
 }
 
-static void bfR4(SPFLOAT *ioptr, int M, int NDiffU)
+static void bfR4(UTFLOAT *ioptr, int M, int NDiffU)
 {
     /*** 1 radix 4 stage ***/
     unsigned int pos;
@@ -534,14 +534,14 @@ static void bfR4(SPFLOAT *ioptr, int M, int NDiffU)
     unsigned int NSameU;
     unsigned int SameUCnt;
 
-    SPFLOAT *pstrt;
-    SPFLOAT *p0r, *p1r, *p2r, *p3r;
+    UTFLOAT *pstrt;
+    UTFLOAT *p0r, *p1r, *p2r, *p3r;
 
-    SPFLOAT w1r = 1.0 / MYROOT2;    /* cos(pi/4)   */
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
-    SPFLOAT t1r, t1i;
-    const SPFLOAT Two = 2.0;
+    UTFLOAT w1r = 1.0 / MYROOT2;    /* cos(pi/4)   */
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
+    UTFLOAT t1r, t1i;
+    const UTFLOAT Two = 2.0;
 
     pinc = NDiffU * 2;            /* 2 floats per complex */
     pnext = pinc * 4;
@@ -730,7 +730,7 @@ static void bfR4(SPFLOAT *ioptr, int M, int NDiffU)
     *(p0r + posi) = f4i;
 }
 
-static void bfstages(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int Ustride,
+static void bfstages(UTFLOAT *ioptr, int M, UTFLOAT *Utbl, int Ustride,
                      int NDiffU, int StageCnt)
 {
     /***   RADIX 8 Stages   ***/
@@ -746,15 +746,15 @@ static void bfstages(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int Ustride,
     unsigned int SameUCnt;
     unsigned int U2toU3;
 
-    SPFLOAT *pstrt;
-    SPFLOAT *p0r, *p1r, *p2r, *p3r;
-    SPFLOAT *u0r, *u0i, *u1r, *u1i, *u2r, *u2i;
+    UTFLOAT *pstrt;
+    UTFLOAT *p0r, *p1r, *p2r, *p3r;
+    UTFLOAT *u0r, *u0i, *u1r, *u1i, *u2r, *u2i;
 
-    SPFLOAT w0r, w0i, w1r, w1i, w2r, w2i, w3r, w3i;
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
-    SPFLOAT t0r, t0i, t1r, t1i;
-    const SPFLOAT Two = 2.0;
+    UTFLOAT w0r, w0i, w1r, w1i, w2r, w2i, w3r, w3i;
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
+    UTFLOAT t0r, t0i, t1r, t1i;
+    const UTFLOAT Two = 2.0;
 
     pinc = NDiffU * 2;            /* 2 floats per complex */
     pnext = pinc * 8;
@@ -1050,7 +1050,7 @@ static void bfstages(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int Ustride,
     }
 }
 
-static void fftrecurs(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int Ustride, int NDiffU,
+static void fftrecurs(UTFLOAT *ioptr, int M, UTFLOAT *Utbl, int Ustride, int NDiffU,
                       int StageCnt)
 {
     /* recursive bfstages calls to maximize on chip cache efficiency */
@@ -1067,7 +1067,7 @@ static void fftrecurs(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int Ustride, int NDi
     }
 }
 
-static void ffts1(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int16_t *BRLow)
+static void ffts1(UTFLOAT *ioptr, int M, UTFLOAT *Utbl, int16_t *BRLow)
 {
     /* Compute in-place complex fft on the rows of the input array  */
     /* INPUTS                                                       */
@@ -1116,33 +1116,33 @@ static void ffts1(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int16_t *BRLow)
 * parts of iffts1 *
 ******************/
 
-static void scbitrevR2(SPFLOAT *ioptr, int M, int16_t *BRLow, SPFLOAT scale)
+static void scbitrevR2(UTFLOAT *ioptr, int M, int16_t *BRLow, UTFLOAT scale)
 {
     /*** scaled bit reverse and first radix 2 stage forward or inverse fft ***/
-    SPFLOAT f0r;
-    SPFLOAT f0i;
-    SPFLOAT f1r;
-    SPFLOAT f1i;
-    SPFLOAT f2r;
-    SPFLOAT f2i;
-    SPFLOAT f3r;
-    SPFLOAT f3i;
-    SPFLOAT f4r;
-    SPFLOAT f4i;
-    SPFLOAT f5r;
-    SPFLOAT f5i;
-    SPFLOAT f6r;
-    SPFLOAT f6i;
-    SPFLOAT f7r;
-    SPFLOAT f7i;
-    SPFLOAT t0r;
-    SPFLOAT t0i;
-    SPFLOAT t1r;
-    SPFLOAT t1i;
-    SPFLOAT *p0r;
-    SPFLOAT *p1r;
-    SPFLOAT *IOP;
-    SPFLOAT *iolimit;
+    UTFLOAT f0r;
+    UTFLOAT f0i;
+    UTFLOAT f1r;
+    UTFLOAT f1i;
+    UTFLOAT f2r;
+    UTFLOAT f2i;
+    UTFLOAT f3r;
+    UTFLOAT f3i;
+    UTFLOAT f4r;
+    UTFLOAT f4i;
+    UTFLOAT f5r;
+    UTFLOAT f5i;
+    UTFLOAT f6r;
+    UTFLOAT f6i;
+    UTFLOAT f7r;
+    UTFLOAT f7i;
+    UTFLOAT t0r;
+    UTFLOAT t0i;
+    UTFLOAT t1r;
+    UTFLOAT t1i;
+    UTFLOAT *p0r;
+    UTFLOAT *p1r;
+    UTFLOAT *IOP;
+    UTFLOAT *iolimit;
     int Colstart;
     int iCol;
     unsigned int posA;
@@ -1253,11 +1253,11 @@ static void scbitrevR2(SPFLOAT *ioptr, int M, int16_t *BRLow, SPFLOAT scale)
     }
 }
 
-static void ifft2pt(SPFLOAT *ioptr, SPFLOAT scale)
+static void ifft2pt(UTFLOAT *ioptr, UTFLOAT scale)
 {
     /***   RADIX 2 ifft     ***/
-    SPFLOAT f0r, f0i, f1r, f1i;
-    SPFLOAT t0r, t0i;
+    UTFLOAT f0r, f0i, f1r, f1i;
+    UTFLOAT t0r, t0i;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -1283,11 +1283,11 @@ static void ifft2pt(SPFLOAT *ioptr, SPFLOAT scale)
     ioptr[3] = scale * f1i;
 }
 
-static void ifft4pt(SPFLOAT *ioptr, SPFLOAT scale)
+static void ifft4pt(UTFLOAT *ioptr, UTFLOAT scale)
 {
     /***   RADIX 4 ifft     ***/
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT t0r, t0i, t1r, t1i;
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT t0r, t0i, t1r, t1i;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -1338,14 +1338,14 @@ static void ifft4pt(SPFLOAT *ioptr, SPFLOAT scale)
     ioptr[7] = scale * f3i;
 }
 
-static void ifft8pt(SPFLOAT *ioptr, SPFLOAT scale)
+static void ifft8pt(UTFLOAT *ioptr, UTFLOAT scale)
 {
     /***   RADIX 8 ifft     ***/
-    SPFLOAT w0r = 1.0 / MYROOT2;    /* cos(pi/4)   */
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
-    SPFLOAT t0r, t0i, t1r, t1i;
-    const SPFLOAT Two = 2.0;
+    UTFLOAT w0r = 1.0 / MYROOT2;    /* cos(pi/4)   */
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
+    UTFLOAT t0r, t0i, t1r, t1i;
+    const UTFLOAT Two = 2.0;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -1456,7 +1456,7 @@ static void ifft8pt(SPFLOAT *ioptr, SPFLOAT scale)
     ioptr[15] = scale * f6i;
 }
 
-static void ibfR2(SPFLOAT *ioptr, int M, int NDiffU)
+static void ibfR2(UTFLOAT *ioptr, int M, int NDiffU)
 {
     /*** 2nd radix 2 stage ***/
     unsigned int pos;
@@ -1466,11 +1466,11 @@ static void ibfR2(SPFLOAT *ioptr, int M, int NDiffU)
     unsigned int NSameU;
     unsigned int SameUCnt;
 
-    SPFLOAT *pstrt;
-    SPFLOAT *p0r, *p1r, *p2r, *p3r;
+    UTFLOAT *pstrt;
+    UTFLOAT *p0r, *p1r, *p2r, *p3r;
 
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
 
     pinc = NDiffU * 2;            /* 2 floats per complex */
     pnext = pinc * 4;
@@ -1563,7 +1563,7 @@ static void ibfR2(SPFLOAT *ioptr, int M, int NDiffU)
     }
 }
 
-static void ibfR4(SPFLOAT *ioptr, int M, int NDiffU)
+static void ibfR4(UTFLOAT *ioptr, int M, int NDiffU)
 {
     /*** 1 radix 4 stage ***/
     unsigned int pos;
@@ -1574,14 +1574,14 @@ static void ibfR4(SPFLOAT *ioptr, int M, int NDiffU)
     unsigned int NSameU;
     unsigned int SameUCnt;
 
-    SPFLOAT *pstrt;
-    SPFLOAT *p0r, *p1r, *p2r, *p3r;
+    UTFLOAT *pstrt;
+    UTFLOAT *p0r, *p1r, *p2r, *p3r;
 
-    SPFLOAT w1r = 1.0 / MYROOT2;    /* cos(pi/4)   */
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
-    SPFLOAT t1r, t1i;
-    const SPFLOAT Two = 2.0;
+    UTFLOAT w1r = 1.0 / MYROOT2;    /* cos(pi/4)   */
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
+    UTFLOAT t1r, t1i;
+    const UTFLOAT Two = 2.0;
 
     pinc = NDiffU * 2;            /* 2 floats per complex */
     pnext = pinc * 4;
@@ -1770,7 +1770,7 @@ static void ibfR4(SPFLOAT *ioptr, int M, int NDiffU)
     *(p0r + posi) = f4i;
 }
 
-static void ibfstages(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int Ustride,
+static void ibfstages(UTFLOAT *ioptr, int M, UTFLOAT *Utbl, int Ustride,
                       int NDiffU, int StageCnt)
 {
     /***   RADIX 8 Stages   ***/
@@ -1786,15 +1786,15 @@ static void ibfstages(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int Ustride,
     unsigned int SameUCnt;
     unsigned int U2toU3;
 
-    SPFLOAT *pstrt;
-    SPFLOAT *p0r, *p1r, *p2r, *p3r;
-    SPFLOAT *u0r, *u0i, *u1r, *u1i, *u2r, *u2i;
+    UTFLOAT *pstrt;
+    UTFLOAT *p0r, *p1r, *p2r, *p3r;
+    UTFLOAT *u0r, *u0i, *u1r, *u1i, *u2r, *u2i;
 
-    SPFLOAT w0r, w0i, w1r, w1i, w2r, w2i, w3r, w3i;
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
-    SPFLOAT t0r, t0i, t1r, t1i;
-    const SPFLOAT Two = 2.0;
+    UTFLOAT w0r, w0i, w1r, w1i, w2r, w2i, w3r, w3i;
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
+    UTFLOAT t0r, t0i, t1r, t1i;
+    const UTFLOAT Two = 2.0;
 
     pinc = NDiffU * 2;            /* 2 floats per complex */
     pnext = pinc * 8;
@@ -2093,7 +2093,7 @@ static void ibfstages(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int Ustride,
     }
 }
 
-static void ifftrecurs(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int Ustride,
+static void ifftrecurs(UTFLOAT *ioptr, int M, UTFLOAT *Utbl, int Ustride,
                        int NDiffU, int StageCnt)
 {
     /* recursive bfstages calls to maximize on chip cache efficiency */
@@ -2110,7 +2110,7 @@ static void ifftrecurs(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int Ustride,
     }
 }
 
-static void iffts1(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int16_t *BRLow)
+static void iffts1(UTFLOAT *ioptr, int M, UTFLOAT *Utbl, int16_t *BRLow)
 {
     /* Compute in-place inverse complex fft on the rows of the input array  */
     /* INPUTS                                                               */
@@ -2123,7 +2123,7 @@ static void iffts1(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int16_t *BRLow)
 
     int StageCnt;
     int NDiffU;
-    const SPFLOAT scale = 1.0 / POW2(M);
+    const UTFLOAT scale = 1.0 / POW2(M);
 
     switch (M) {
     case 0:
@@ -2161,11 +2161,11 @@ static void iffts1(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int16_t *BRLow)
 * parts of rffts1 *
 ******************/
 
-static void rfft1pt(SPFLOAT *ioptr)
+static void rfft1pt(UTFLOAT *ioptr)
 {
     /***   RADIX 2 rfft     ***/
-    SPFLOAT f0r, f0i;
-    SPFLOAT t0r, t0i;
+    UTFLOAT f0r, f0i;
+    UTFLOAT t0r, t0i;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -2180,11 +2180,11 @@ static void rfft1pt(SPFLOAT *ioptr)
     ioptr[1] = t0i;
 }
 
-static void rfft2pt(SPFLOAT *ioptr)
+static void rfft2pt(UTFLOAT *ioptr)
 {
     /***   RADIX 4 rfft     ***/
-    SPFLOAT f0r, f0i, f1r, f1i;
-    SPFLOAT t0r, t0i;
+    UTFLOAT f0r, f0i, f1r, f1i;
+    UTFLOAT t0r, t0i;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -2213,14 +2213,14 @@ static void rfft2pt(SPFLOAT *ioptr)
     ioptr[3] = f1i;
 }
 
-static void rfft4pt(SPFLOAT *ioptr)
+static void rfft4pt(UTFLOAT *ioptr)
 {
     /***   RADIX 8 rfft     ***/
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT t0r, t0i, t1r, t1i;
-    SPFLOAT w0r = 1.0 / MYROOT2;    /* cos(pi/4)   */
-    const SPFLOAT Two = 2.0;
-    const SPFLOAT scale = 0.5;
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT t0r, t0i, t1r, t1i;
+    UTFLOAT w0r = 1.0 / MYROOT2;    /* cos(pi/4)   */
+    const UTFLOAT Two = 2.0;
+    const UTFLOAT scale = 0.5;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -2286,17 +2286,17 @@ static void rfft4pt(SPFLOAT *ioptr)
     ioptr[7] = scale * f3i;
 }
 
-static void rfft8pt(SPFLOAT *ioptr)
+static void rfft8pt(UTFLOAT *ioptr)
 {
     /***   RADIX 16 rfft    ***/
-    SPFLOAT w0r = 1.0 / MYROOT2;    /* cos(pi/4)   */
-    SPFLOAT w1r = MYCOSPID8;        /* cos(pi/8)     */
-    SPFLOAT w1i = MYSINPID8;        /* sin(pi/8)     */
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
-    SPFLOAT t0r, t0i, t1r, t1i;
-    const SPFLOAT Two = 2.0;
-    const SPFLOAT scale = 0.5;
+    UTFLOAT w0r = 1.0 / MYROOT2;    /* cos(pi/4)   */
+    UTFLOAT w1r = MYCOSPID8;        /* cos(pi/8)     */
+    UTFLOAT w1i = MYSINPID8;        /* sin(pi/8)     */
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
+    UTFLOAT t0r, t0i, t1r, t1i;
+    const UTFLOAT Two = 2.0;
+    const UTFLOAT scale = 0.5;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -2442,7 +2442,7 @@ static void rfft8pt(SPFLOAT *ioptr)
     ioptr[15] = scale * f6i;
 }
 
-static void frstage(SPFLOAT *ioptr, int M, SPFLOAT *Utbl)
+static void frstage(UTFLOAT *ioptr, int M, UTFLOAT *Utbl)
 {
     /*      Finish RFFT             */
 
@@ -2450,13 +2450,13 @@ static void frstage(SPFLOAT *ioptr, int M, SPFLOAT *Utbl)
     unsigned int posi;
     unsigned int diffUcnt;
 
-    SPFLOAT *p0r, *p1r;
-    SPFLOAT *u0r, *u0i;
+    UTFLOAT *p0r, *p1r;
+    UTFLOAT *u0r, *u0i;
 
-    SPFLOAT w0r, w0i;
-    SPFLOAT f0r, f0i, f1r, f1i, f4r, f4i, f5r, f5i;
-    SPFLOAT t0r, t0i, t1r, t1i;
-    const SPFLOAT Two = 2.0;
+    UTFLOAT w0r, w0i;
+    UTFLOAT f0r, f0i, f1r, f1i, f4r, f4i, f5r, f5i;
+    UTFLOAT t0r, t0i, t1r, t1i;
+    const UTFLOAT Two = 2.0;
 
     pos = POW2(M - 1);
     posi = pos + 1;
@@ -2565,7 +2565,7 @@ static void frstage(SPFLOAT *ioptr, int M, SPFLOAT *Utbl)
     }
 }
 
-static void rffts1(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int16_t *BRLow)
+static void rffts1(UTFLOAT *ioptr, int M, UTFLOAT *Utbl, int16_t *BRLow)
 {
     /* Compute in-place real fft on the rows of the input array           */
     /* The result is the complex spectra of the positive frequencies      */
@@ -2581,7 +2581,7 @@ static void rffts1(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int16_t *BRLow)
     /*     Re(x[0]), Re(x[N/2]), Re(x[1]), Im(x[1]), Re(x[2]), Im(x[2]),  */
     /*     ... Re(x[N/2-1]), Im(x[N/2-1]).                                */
 
-    SPFLOAT scale;
+    UTFLOAT scale;
     int StageCnt;
     int NDiffU;
 
@@ -2627,11 +2627,11 @@ static void rffts1(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int16_t *BRLow)
 * parts of riffts1 *
 *******************/
 
-static void rifft1pt(SPFLOAT *ioptr, SPFLOAT scale)
+static void rifft1pt(UTFLOAT *ioptr, UTFLOAT scale)
 {
     /***   RADIX 2 rifft    ***/
-    SPFLOAT f0r, f0i;
-    SPFLOAT t0r, t0i;
+    UTFLOAT f0r, f0i;
+    UTFLOAT t0r, t0i;
 
     /* bit reversed load */
     f0r = ioptr[0];
@@ -2646,12 +2646,12 @@ static void rifft1pt(SPFLOAT *ioptr, SPFLOAT scale)
     ioptr[1] = scale * t0i;
 }
 
-static void rifft2pt(SPFLOAT *ioptr, SPFLOAT scale)
+static void rifft2pt(UTFLOAT *ioptr, UTFLOAT scale)
 {
     /***   RADIX 4 rifft    ***/
-    SPFLOAT f0r, f0i, f1r, f1i;
-    SPFLOAT t0r, t0i;
-    const SPFLOAT Two = 2.0;
+    UTFLOAT f0r, f0i, f1r, f1i;
+    UTFLOAT t0r, t0i;
+    const UTFLOAT Two = 2.0;
 
     /* bit reversed load */
     t0r = ioptr[0];
@@ -2680,13 +2680,13 @@ static void rifft2pt(SPFLOAT *ioptr, SPFLOAT scale)
     ioptr[3] = scale * f1i;
 }
 
-static void rifft4pt(SPFLOAT *ioptr, SPFLOAT scale)
+static void rifft4pt(UTFLOAT *ioptr, UTFLOAT scale)
 {
     /***   RADIX 8 rifft    ***/
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT t0r, t0i, t1r, t1i;
-    SPFLOAT w0r = 1.0 / MYROOT2;    /* cos(pi/4)   */
-    const SPFLOAT Two = 2.0;
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT t0r, t0i, t1r, t1i;
+    UTFLOAT w0r = 1.0 / MYROOT2;    /* cos(pi/4)   */
+    const UTFLOAT Two = 2.0;
 
     /* bit reversed load */
     t0r = ioptr[0];
@@ -2751,16 +2751,16 @@ static void rifft4pt(SPFLOAT *ioptr, SPFLOAT scale)
     ioptr[7] = scale * f3i;
 }
 
-static void rifft8pt(SPFLOAT *ioptr, SPFLOAT scale)
+static void rifft8pt(UTFLOAT *ioptr, UTFLOAT scale)
 {
     /***   RADIX 16 rifft   ***/
-    SPFLOAT w0r = (SPFLOAT) (1.0 / MYROOT2);    /* cos(pi/4)    */
-    SPFLOAT w1r = MYCOSPID8;                  /* cos(pi/8)    */
-    SPFLOAT w1i = MYSINPID8;                  /* sin(pi/8)    */
-    SPFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
-    SPFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
-    SPFLOAT t0r, t0i, t1r, t1i;
-    const SPFLOAT Two = 2.0;
+    UTFLOAT w0r = (UTFLOAT) (1.0 / MYROOT2);    /* cos(pi/4)    */
+    UTFLOAT w1r = MYCOSPID8;                  /* cos(pi/8)    */
+    UTFLOAT w1i = MYSINPID8;                  /* sin(pi/8)    */
+    UTFLOAT f0r, f0i, f1r, f1i, f2r, f2i, f3r, f3i;
+    UTFLOAT f4r, f4i, f5r, f5i, f6r, f6i, f7r, f7i;
+    UTFLOAT t0r, t0i, t1r, t1i;
+    const UTFLOAT Two = 2.0;
 
     /* bit reversed load */
     t0r = ioptr[0];
@@ -2905,7 +2905,7 @@ static void rifft8pt(SPFLOAT *ioptr, SPFLOAT scale)
     ioptr[15] = scale * f6i;
 }
 
-static void ifrstage(SPFLOAT *ioptr, int M, SPFLOAT *Utbl)
+static void ifrstage(UTFLOAT *ioptr, int M, UTFLOAT *Utbl)
 {
     /*      Start RIFFT             */
 
@@ -2913,13 +2913,13 @@ static void ifrstage(SPFLOAT *ioptr, int M, SPFLOAT *Utbl)
     unsigned int posi;
     unsigned int diffUcnt;
 
-    SPFLOAT *p0r, *p1r;
-    SPFLOAT *u0r, *u0i;
+    UTFLOAT *p0r, *p1r;
+    UTFLOAT *u0r, *u0i;
 
-    SPFLOAT w0r, w0i;
-    SPFLOAT f0r, f0i, f1r, f1i, f4r, f4i, f5r, f5i;
-    SPFLOAT t0r, t0i, t1r, t1i;
-    const SPFLOAT Two = 2.0;
+    UTFLOAT w0r, w0i;
+    UTFLOAT f0r, f0i, f1r, f1i, f4r, f4i, f5r, f5i;
+    UTFLOAT t0r, t0i, t1r, t1i;
+    const UTFLOAT Two = 2.0;
 
     pos = POW2(M - 1);
     posi = pos + 1;
@@ -3028,7 +3028,7 @@ static void ifrstage(SPFLOAT *ioptr, int M, SPFLOAT *Utbl)
     }
 }
 
-static void riffts1(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int16_t *BRLow)
+static void riffts1(UTFLOAT *ioptr, int M, UTFLOAT *Utbl, int16_t *BRLow)
 {
     /* Compute in-place real ifft on the rows of the input array    */
     /* data order as from rffts1                                    */
@@ -3042,11 +3042,11 @@ static void riffts1(SPFLOAT *ioptr, int M, SPFLOAT *Utbl, int16_t *BRLow)
     /* OUTPUTS                                                      */
     /*   *ioptr = real output data array                            */
 
-    SPFLOAT scale;
+    UTFLOAT scale;
     int StageCnt;
     int NDiffU;
 
-    scale = (SPFLOAT)(1.0 / (double)((int)POW2(M)));
+    scale = (UTFLOAT)(1.0 / (double)((int)POW2(M)));
     M = M - 1;
     switch (M) {
     case -1:

@@ -1,43 +1,43 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_compressor *compressor;
-    sp_diskin *diskin;
+    ut_compressor *compressor;
+    ut_diskin *diskin;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT diskin = 0, compressor = 0;
-    sp_diskin_compute(sp, ud->diskin, NULL, &diskin);
-    sp_compressor_compute(sp, ud->compressor, &diskin, &compressor);
-    sp->out[0] = compressor;
+    UTFLOAT diskin = 0, compressor = 0;
+    ut_diskin_compute(ut, ud->diskin, NULL, &diskin);
+    ut_compressor_compute(ut, ud->compressor, &diskin, &compressor);
+    ut->out[0] = compressor;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_compressor_create(&ud.compressor);
-    sp_diskin_create(&ud.diskin);
+    ut_compressor_create(&ud.compressor);
+    ut_diskin_create(&ud.diskin);
 
-    sp_compressor_init(sp, ud.compressor);
+    ut_compressor_init(ut, ud.compressor);
     *ud.compressor->ratio = 4;
     *ud.compressor->thresh = -30;
     *ud.compressor->atk = 0.2;
     *ud.compressor->rel = 0.2;
-    sp_diskin_init(sp, ud.diskin, "oneart.wav");
+    ut_diskin_init(ut, ud.diskin, "oneart.wav");
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_compressor_destroy(&ud.compressor);
-    sp_diskin_destroy(&ud.diskin);
+    ut_compressor_destroy(&ud.compressor);
+    ut_diskin_destroy(&ud.diskin);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

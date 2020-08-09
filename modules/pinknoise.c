@@ -10,7 +10,7 @@
  */
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 
 static uint32_t ctz[64] =
@@ -25,32 +25,32 @@ static uint32_t ctz[64] =
     3, 0, 1, 0, 2, 0, 1, 0,
 };
 
-int sp_pinknoise_create(sp_pinknoise **p)
+int ut_pinknoise_create(ut_pinknoise **p)
 {
-    *p = malloc(sizeof(sp_pinknoise));
-    return SP_OK;
+    *p = malloc(sizeof(ut_pinknoise));
+    return UT_OK;
 }
 
-int sp_pinknoise_destroy(sp_pinknoise **p)
+int ut_pinknoise_destroy(ut_pinknoise **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_pinknoise_init(sp_data *sp, sp_pinknoise *p)
+int ut_pinknoise_init(ut_data *ut, ut_pinknoise *p)
 {
     int i;
     p->amp = 1.0;
-    p->seed = sp_rand(sp);
+    p->seed = ut_rand(ut);
     p->total = 0;
     p->counter = 0;
     for(i = 0; i < 7; i++) {
         p->dice[i] = 0;
     }
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_pinknoise_compute(sp_data *sp, sp_pinknoise *p, SPFLOAT *in, SPFLOAT *out) 
+int ut_pinknoise_compute(ut_data *ut, ut_pinknoise *p, UTFLOAT *in, UTFLOAT *out) 
 {
     uint32_t k = ctz[p->counter & 63];
     p->prevrand = p->dice[k];
@@ -62,7 +62,7 @@ int sp_pinknoise_compute(sp_data *sp, sp_pinknoise *p, SPFLOAT *in, SPFLOAT *out
     p->newrand = p->seed >> 3;
     short tmp = (short) ((((p->total + p->newrand) * (1.0f / (3 << 29)) - 1) - .25f) * 16384.0f);
     
-    *out = ((SPFLOAT) tmp / 32767) * p->amp;
+    *out = ((UTFLOAT) tmp / 32767) * p->amp;
     p->counter = (p->counter + 1) % 0xFFFFFFFF;
-    return SP_OK;
+    return UT_OK;
 }

@@ -7,12 +7,12 @@ sptbl["nsmp"] = {
     },
 
     func = {
-        create = "sp_nsmp_create",
-        destroy = "sp_nsmp_destroy",
-        init = "sp_nsmp_init",
-        compute = "sp_nsmp_compute",
+        create = "ut_nsmp_create",
+        destroy = "ut_nsmp_destroy",
+        init = "ut_nsmp_init",
+        compute = "ut_nsmp_compute",
         other = {
-            sp_nsmp_print_index = {
+            ut_nsmp_print_index = {
                 description = "Prints the index and their corresponding keyword",
                 args = {
                 }
@@ -24,7 +24,7 @@ sptbl["nsmp"] = {
         mandatory = {
             {
                 name = "ft",
-                type = "sp_ftbl*",
+                type = "ut_ftbl*",
                 description = "ftbl of the audio file. It should be mono.",
                 default = "N/A"
             },
@@ -56,7 +56,7 @@ sptbl["nsmp"] = {
 
     description = [[Nanosamp: a tiny sampler built for Soundpipe
 
-    A nanosamp file is comprised of a mono audio file and an ini file. Nanosamp is geared towards percussive and found sound sample players, and is intended to be combined with soundpipe modules.
+    A nanosamp file is comprised of a mono audio file and an ini file. Nanosamp is geared towards percussive and found sound sample players, and is intended to be combined with utone modules.
 
 The ini file contains mappings that correspond to the audio file. Such an entry would look like this:
 

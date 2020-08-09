@@ -7,7 +7,7 @@ sptbl["gen_sine"] = {
     },
 
     func = {
-        name = "sp_gen_sine",
+        name = "ut_gen_sine",
     },
 
     modtype = "gen",

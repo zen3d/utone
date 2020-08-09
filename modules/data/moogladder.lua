@@ -7,23 +7,23 @@ sptbl["moogladder"] = {
     },
 
     func = {
-        create = "sp_moogladder_create",
-        destroy = "sp_moogladder_destroy",
-        init = "sp_moogladder_init",
-        compute = "sp_moogladder_compute",
+        create = "ut_moogladder_create",
+        destroy = "ut_moogladder_destroy",
+        init = "ut_moogladder_init",
+        compute = "ut_moogladder_compute",
     },
 
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Filter cutoff frequency.",
                 default = 1000
             },
             {
                 name = "res",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Filter resonance",
                 default = 0.4
             },

@@ -7,29 +7,29 @@ sptbl["fofilt"] = {
     },
 
     func = {
-        create = "sp_fofilt_create",
-        destroy = "sp_fofilt_destroy",
-        init = "sp_fofilt_init",
-        compute = "sp_fofilt_compute",
+        create = "ut_fofilt_create",
+        destroy = "ut_fofilt_destroy",
+        init = "ut_fofilt_init",
+        compute = "ut_fofilt_compute",
     },
 
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Center frequency.",
                 default = 1000
             },
             {
                 name = "atk",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Impulse response attack time (in seconds).",
                 default = 0.007
             },
             {
                 name = "dec",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Impulse reponse decay time (in seconds)",
                 default = 0.04
             },

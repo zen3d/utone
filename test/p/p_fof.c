@@ -1,40 +1,40 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "config.h"
 
 int main() {
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 12345);
-    sp->sr = SR;
-    sp->len = sp->sr * LEN;
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 12345);
+    ut->sr = SR;
+    ut->len = ut->sr * LEN;
     uint32_t t, u;
-    SPFLOAT in = 0, out = 0;
+    UTFLOAT in = 0, out = 0;
 
-    sp_fof *unit[NUM];
+    ut_fof *unit[NUM];
 
-    sp_ftbl *sine;
-    sp_ftbl *win;
+    ut_ftbl *sine;
+    ut_ftbl *win;
 
-    sp_ftbl_create(sp, &sine, 2048);
-    sp_ftbl_create(sp, &win, 1024);
+    ut_ftbl_create(ut, &sine, 2048);
+    ut_ftbl_create(ut, &win, 1024);
 
     for(u = 0; u < NUM; u++) { 
-        sp_fof_create(&unit[u]);
-        sp_fof_init(sp, unit[u], sine, win, 100, 0);
+        ut_fof_create(&unit[u]);
+        ut_fof_init(ut, unit[u], sine, win, 100, 0);
     }
     
 
-    for(t = 0; t < sp->len; t++) {
-        for(u = 0; u < NUM; u++) sp_fof_compute(sp, unit[u], &in, &out);
+    for(t = 0; t < ut->len; t++) {
+        for(u = 0; u < NUM; u++) ut_fof_compute(ut, unit[u], &in, &out);
     }
 
-    for(u = 0; u < NUM; u++) sp_fof_destroy(&unit[u]);
-    sp_ftbl_destroy(&sine);
-    sp_ftbl_destroy(&win);
+    for(u = 0; u < NUM; u++) ut_fof_destroy(&unit[u]);
+    ut_ftbl_destroy(&sine);
+    ut_ftbl_destroy(&win);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }
 

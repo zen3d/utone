@@ -1,13 +1,13 @@
 typedef struct {
-    SPFLOAT time;
-    SPFLOAT feedback;
-    SPFLOAT last;
-    sp_auxdata buf;
+    UTFLOAT time;
+    UTFLOAT feedback;
+    UTFLOAT last;
+    ut_auxdata buf;
     uint32_t bufsize;
     uint32_t bufpos;
-} sp_delay;
+} ut_delay;
 
-int sp_delay_create(sp_delay **p);
-int sp_delay_destroy(sp_delay **p);
-int sp_delay_init(sp_data *sp, sp_delay *p, SPFLOAT time);
-int sp_delay_compute(sp_data *sp, sp_delay *p, SPFLOAT *in, SPFLOAT *out);
+int ut_delay_create(ut_delay **p);
+int ut_delay_destroy(ut_delay **p);
+int ut_delay_init(ut_data *ut, ut_delay *p, UTFLOAT time);
+int ut_delay_compute(ut_data *ut, ut_delay *p, UTFLOAT *in, UTFLOAT *out);

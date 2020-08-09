@@ -7,25 +7,25 @@ sptbl["gen_padsynth"] = {
     },
 
     func = {
-        name = "sp_gen_padsynth",
+        name = "ut_gen_padsynth",
     },
 
     params = {
         {
             name = "amps",
-            type = "sp_ftbl *",
+            type = "ut_ftbl *",
             description = [[ftable of amplitudes to use]],
             default = "N/A"
         },
         {
             name = "f",
-            type = "SPFLOAT",
+            type = "UTFLOAT",
             description = [[Base frequency.]],
             default = 440.0
         },
         {
             name = "bw",
-            type = "SPFLOAT",
+            type = "UTFLOAT",
             description = [[Bandwidth.]],
             default = 40.0
         },

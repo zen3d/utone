@@ -7,23 +7,23 @@ sptbl["scale"] = {
     },
 
     func = {
-        create = "sp_scale_create",
-        destroy = "sp_scale_destroy",
-        init = "sp_scale_init",
-        compute = "sp_scale_compute",
+        create = "ut_scale_create",
+        destroy = "ut_scale_destroy",
+        init = "ut_scale_init",
+        compute = "ut_scale_compute",
     },
 
     params = {
         optional = {
             {
                 name = "min",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Minimum value to scale to.",
                 default = 0
             },
             {
                 name = "max",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Maximum value to scale to.",
                 default = 1
             },

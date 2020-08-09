@@ -1,1 +1,1 @@
-int sp_gen_scrambler(sp_data *sp, sp_ftbl *src, sp_ftbl **dest);
+int ut_gen_scrambler(ut_data *ut, ut_ftbl *src, ut_ftbl **dest);

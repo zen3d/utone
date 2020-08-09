@@ -12,28 +12,28 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif
 
 
-int sp_bar_create(sp_bar **p)
+int ut_bar_create(ut_bar **p)
 {
-    *p = malloc(sizeof(sp_bar));
-    return SP_OK;
+    *p = malloc(sizeof(ut_bar));
+    return UT_OK;
 }
 
-int sp_bar_destroy(sp_bar **p)
+int ut_bar_destroy(ut_bar **p)
 {
-    sp_bar *pp = *p;
-    sp_auxdata_free(&pp->w_aux);
+    ut_bar *pp = *p;
+    ut_auxdata_free(&pp->w_aux);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_bar_init(sp_data *sp, sp_bar *p, SPFLOAT iK, SPFLOAT ib)
+int ut_bar_init(ut_data *ut, ut_bar *p, UTFLOAT iK, UTFLOAT ib)
 {
     p->bcL = 1;
     p->bcR = 1;
@@ -45,17 +45,17 @@ int sp_bar_init(sp_data *sp, sp_bar *p, SPFLOAT iK, SPFLOAT ib)
     p->vel = 500;
     p->wid = 0.05;
 
-    SPFLOAT K = p->iK;       /* ~=3.0  stiffness parameter, dimensionless */
-    SPFLOAT T30 = p->T30;   /* ~=5.0; 30 db decay time (s) */
-    SPFLOAT b = p->ib;       /* ~=0.001 high-frequency loss parameter
+    UTFLOAT K = p->iK;       /* ~=3.0  stiffness parameter, dimensionless */
+    UTFLOAT T30 = p->T30;   /* ~=5.0; 30 db decay time (s) */
+    UTFLOAT b = p->ib;       /* ~=0.001 high-frequency loss parameter
                                (keep small) */
 
     /* derived parameters */
-    SPFLOAT dt = 1.0 / sp->sr;
-    SPFLOAT sig = (2.0 * sp->sr) * (pow(10.0, 3.0 * dt / T30) - 1.0);
-    SPFLOAT dxmin = sqrt(dt * (b+hypot(b, K+K) ));
+    UTFLOAT dt = 1.0 / ut->sr;
+    UTFLOAT sig = (2.0 * ut->sr) * (pow(10.0, 3.0 * dt / T30) - 1.0);
+    UTFLOAT dxmin = sqrt(dt * (b+hypot(b, K+K) ));
     int N = (int) (1.0/dxmin);
-    SPFLOAT dx = 1.0/N;
+    UTFLOAT dx = 1.0/N;
 
     /* scheme coefficients */
     p->s0 = (2.0-6.0*K*K*dt*dt/(dx*dx*dx*dx)-2.0*b*dt/(dx*dx))/(1.0+sig*dt*0.5);
@@ -64,44 +64,44 @@ int sp_bar_init(sp_data *sp, sp_bar *p, SPFLOAT iK, SPFLOAT ib)
     p->t0 = (-1.0+2.0*b*dt/(dx*dx)+sig*dt*0.5)/(1.0+sig*dt*0.5);
     p->t1 = (-b*dt)/(dx*dx*(1.0+sig*dt*0.5));
 
-    sp_auxdata_alloc(&p->w_aux, (size_t) 3 * ((N + 5) * sizeof(SPFLOAT)));
-    p->w = (SPFLOAT *) p->w_aux.ptr;
+    ut_auxdata_alloc(&p->w_aux, (size_t) 3 * ((N + 5) * sizeof(UTFLOAT)));
+    p->w = (UTFLOAT *) p->w_aux.ptr;
     p->w1 = &(p->w[N + 5]);
     p->w2 = &(p->w1[N + 5]);
     p->step = p->first = 0;
     p->N = N;
     p->first = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_bar_compute(sp_data *sp, sp_bar *p, SPFLOAT *in, SPFLOAT *out)
+int ut_bar_compute(ut_data *ut, ut_bar *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT xofreq = 2 * M_PI * (p->scan)/sp->sr;
-    SPFLOAT xo, xofrac;
+    UTFLOAT xofreq = 2 * M_PI * (p->scan)/ut->sr;
+    UTFLOAT xo, xofrac;
     int xoint;
     int step = p->step;
     int first = p->first;
     int N = p->N, rr;
-    SPFLOAT *w = p->w, *w1 = p->w1, *w2 = p->w2;
-    SPFLOAT s0 = p->s0, s1 = p->s1, s2 = p->s2, t0 = p->t0, t1 = p->t1;
-    int bcL = (int)lrintf((SPFLOAT)p->bcL);
-    int bcR = (int)lrintf((SPFLOAT)p->bcR);
-    SPFLOAT SINNW = sin(xofreq*step);
-    SPFLOAT COSNW = cos(xofreq*step);
-    SPFLOAT SIN1W = sin(xofreq);
-    SPFLOAT COS1W = cos(xofreq);
+    UTFLOAT *w = p->w, *w1 = p->w1, *w2 = p->w2;
+    UTFLOAT s0 = p->s0, s1 = p->s1, s2 = p->s2, t0 = p->t0, t1 = p->t1;
+    int bcL = (int)lrintf((UTFLOAT)p->bcL);
+    int bcR = (int)lrintf((UTFLOAT)p->bcR);
+    UTFLOAT SINNW = sin(xofreq*step);
+    UTFLOAT COSNW = cos(xofreq*step);
+    UTFLOAT SIN1W = sin(xofreq);
+    UTFLOAT COS1W = cos(xofreq);
 
     if(*in) {
         p->first = 0;
-        SPFLOAT K = p->iK;
-        SPFLOAT T30 = p->T30;
-        SPFLOAT b = p->ib;
+        UTFLOAT K = p->iK;
+        UTFLOAT T30 = p->T30;
+        UTFLOAT b = p->ib;
 
-        SPFLOAT dt = 1.0 / sp->sr;
-        SPFLOAT sig = (2.0 * sp->sr) * (pow(10.0, 3.0 * dt / T30) - 1.0);
-        SPFLOAT dxmin = sqrt(dt * (b+hypot(b, K+K) ));
+        UTFLOAT dt = 1.0 / ut->sr;
+        UTFLOAT sig = (2.0 * ut->sr) * (pow(10.0, 3.0 * dt / T30) - 1.0);
+        UTFLOAT dxmin = sqrt(dt * (b+hypot(b, K+K) ));
         int N = (int) (1.0/dxmin);
-        SPFLOAT dx = 1.0/N;
+        UTFLOAT dx = 1.0/N;
 
         p->s0 = (2.0-6.0*K*K*dt*dt/(dx*dx*dx*dx)-2.0*b*dt/(dx*dx))/(1.0+sig*dt*0.5);
         p->s1 = (4.0*K*K*dt*dt/(dx*dx*dx*dx)+b*dt/(dx*dx))/(1.0+sig*dt*0.5);
@@ -118,8 +118,8 @@ int sp_bar_compute(sp_data *sp, sp_bar *p, SPFLOAT *in, SPFLOAT *out)
 
     if ((bcL|bcR)&(~3) && (bcL|bcR)!=0) {
         fprintf(stderr,
-                "sp_bar: Ends must be clamped(1), pivoting(2), or free(3)\n");
-        return SP_NOT_OK;
+                "ut_bar: Ends must be clamped(1), pivoting(2), or free(3)\n");
+        return UT_NOT_OK;
     }
 
     if (bcL == 3) {
@@ -157,15 +157,15 @@ int sp_bar_compute(sp_data *sp, sp_bar *p, SPFLOAT *in, SPFLOAT *out)
     if (first == 0) {
         p->first = first = 1;
         for (rr = 0; rr < N; rr++) {
-            if (fabs(rr/(SPFLOAT)N - p->pos) <= p->wid) {
-                w[rr+2] += (1.0/sp->sr)*(p->vel)*0.5*
-                    (1.0+cos(M_PI*fabs(rr/(SPFLOAT)N-(p->pos))/(p->wid)));
+            if (fabs(rr/(UTFLOAT)N - p->pos) <= p->wid) {
+                w[rr+2] += (1.0/ut->sr)*(p->vel)*0.5*
+                    (1.0+cos(M_PI*fabs(rr/(UTFLOAT)N-(p->pos))/(p->wid)));
             }
         }
     }
     {
-        SPFLOAT xx = SINNW*COS1W + COSNW*SIN1W;
-        SPFLOAT yy = COSNW*COS1W - SINNW*SIN1W;
+        UTFLOAT xx = SINNW*COS1W + COSNW*SIN1W;
+        UTFLOAT yy = COSNW*COS1W - SINNW*SIN1W;
 
         SINNW = xx;
         COSNW = yy;
@@ -177,7 +177,7 @@ int sp_bar_compute(sp_data *sp, sp_bar *p, SPFLOAT *in, SPFLOAT *out)
     *out = ((1.0-xofrac)*w[xoint] + xofrac*w[xoint+1]);
     step++;
     {
-        SPFLOAT *ww = w2;
+        UTFLOAT *ww = w2;
 
         w2 = w1;
         w1 = w;
@@ -187,5 +187,5 @@ int sp_bar_compute(sp_data *sp, sp_bar *p, SPFLOAT *in, SPFLOAT *out)
     p->w = w;
     p->w1 = w1;
     p->w2 = w2;
-    return SP_OK;
+    return UT_OK;
 }

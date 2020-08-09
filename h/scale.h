@@ -1,8 +1,8 @@
 typedef struct {
-    SPFLOAT min, max;
-} sp_scale;
+    UTFLOAT min, max;
+} ut_scale;
 
-int sp_scale_create(sp_scale **p);
-int sp_scale_destroy(sp_scale **p);
-int sp_scale_init(sp_data *sp, sp_scale *p);
-int sp_scale_compute(sp_data *sp, sp_scale *p, SPFLOAT *in, SPFLOAT *out);
+int ut_scale_create(ut_scale **p);
+int ut_scale_destroy(ut_scale **p);
+int ut_scale_init(ut_data *ut, ut_scale *p);
+int ut_scale_compute(ut_data *ut, ut_scale *p, UTFLOAT *in, UTFLOAT *out);

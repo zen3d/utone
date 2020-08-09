@@ -1,32 +1,32 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_brown *brown;
+    ut_brown *brown;
 } UserData;
 
-int t_brown(sp_test *tst, sp_data *sp, const char *hash) 
+int t_brown(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT brown = 0;
+    UTFLOAT brown = 0;
 
     UserData ud;
-    sp_brown_create(&ud.brown);
+    ut_brown_create(&ud.brown);
 
-    sp_brown_init(sp, ud.brown);
+    ut_brown_init(ut, ud.brown);
 
     for(n = 0; n < tst->size; n++) {
-        sp_brown_compute(sp, ud.brown, NULL, &brown);
-        sp_test_add_sample(tst, brown);
+        ut_brown_compute(ut, ud.brown, NULL, &brown);
+        ut_test_add_sample(tst, brown);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
     
-    sp_brown_destroy(&ud.brown);
+    ut_brown_destroy(&ud.brown);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

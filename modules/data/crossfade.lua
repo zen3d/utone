@@ -7,10 +7,10 @@ sptbl["crossfade"] = {
     },
 
     func = {
-        create = "sp_crossfade_create",
-        destroy = "sp_crossfade_destroy",
-        init = "sp_crossfade_init",
-        compute = "sp_crossfade_compute",
+        create = "ut_crossfade_create",
+        destroy = "ut_crossfade_destroy",
+        init = "ut_crossfade_init",
+        compute = "ut_crossfade_compute",
     },
 
     params = {
@@ -20,7 +20,7 @@ sptbl["crossfade"] = {
         optional = {
             {
                 name = "pos",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Crossfade position. 0 = all signal 1, 1 = all signal 2",
                 default = 0.5
             },

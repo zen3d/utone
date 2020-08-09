@@ -1,18 +1,18 @@
-sptbl["sparec"] = {
+sptbl["utarec"] = {
 
     files = {
-        module = "sparec.c",
-        header = "sparec.h",
-        example = "ex_sparec.c",
+        module = "utarec.c",
+        header = "utarec.h",
+        example = "ex_utarec.c",
     },
 
     func = {
-        create = "sp_sparec_create",
-        destroy = "sp_sparec_destroy",
-        init = "sp_sparec_init",
-        compute = "sp_sparec_compute",
+        create = "ut_utarec_create",
+        destroy = "ut_utarec_destroy",
+        init = "ut_utarec_init",
+        compute = "ut_utarec_compute",
         other = {
-            sp_sparec_close = {
+            ut_utarec_close = {
                 description = "Close spa file and writes the rest of the data in the buffer.",
                 args = {
                 }

@@ -8,31 +8,31 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 
-int sp_diode_create(sp_diode **p)
+int ut_diode_create(ut_diode **p)
 {
-    *p = malloc(sizeof(sp_diode));
-    return SP_OK;
+    *p = malloc(sizeof(ut_diode));
+    return UT_OK;
 }
 
-int sp_diode_destroy(sp_diode **p)
+int ut_diode_destroy(ut_diode **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-static SPFLOAT sp_diode_opva_fdbk_out(sp_data *sp, sp_diode *p, int filt)
+static UTFLOAT ut_diode_opva_fdbk_out(ut_data *ut, ut_diode *p, int filt)
 {
     return p->opva_beta[filt] * 
         (p->opva_z1[filt] + p->opva_fdbk[filt] * p->opva_delta[filt]);
 }
 
-static SPFLOAT sp_diode_opva_compute(sp_data *sp, sp_diode *p, SPFLOAT in, int filt)
+static UTFLOAT ut_diode_opva_compute(ut_data *ut, ut_diode *p, UTFLOAT in, int filt)
 {
     /*
 	double x_in = (xn*m_dGamma + m_dFeedback + m_dEpsilon*getFeedbackOutput());
@@ -44,24 +44,24 @@ static SPFLOAT sp_diode_opva_compute(sp_data *sp, sp_diode *p, SPFLOAT in, int f
 
 	/* m_dBeta*(m_dZ1 + m_dFeedback*m_dDelta); */
 
-	SPFLOAT x_in = (in*p->opva_gamma[filt]
+	UTFLOAT x_in = (in*p->opva_gamma[filt]
         + p->opva_fdbk[filt]
-        + p->opva_eps[filt] * sp_diode_opva_fdbk_out(sp, p, filt));
-	SPFLOAT vn = (p->opva_a0[filt]*x_in - 
+        + p->opva_eps[filt] * ut_diode_opva_fdbk_out(ut, p, filt));
+	UTFLOAT vn = (p->opva_a0[filt]*x_in - 
         p->opva_z1[filt])*p->opva_alpha[filt];
-	SPFLOAT out = vn + p->opva_z1[filt];
+	UTFLOAT out = vn + p->opva_z1[filt];
 	p->opva_z1[filt] = vn + out;
     return out;
 }
 
-static void sp_diode_update(sp_data *sp, sp_diode *p)
+static void ut_diode_update(ut_data *ut, ut_diode *p)
 {
 	/* calculate alphas */
-	SPFLOAT G1, G2, G3, G4;
-	SPFLOAT wd = 2*M_PI*p->freq;          
-	SPFLOAT T  = 1/(SPFLOAT)sp->sr;             
-	SPFLOAT wa = (2/T)*tan(wd*T/2); 
-	SPFLOAT g = wa*T/2;  
+	UTFLOAT G1, G2, G3, G4;
+	UTFLOAT wd = 2*M_PI*p->freq;          
+	UTFLOAT T  = 1/(UTFLOAT)ut->sr;             
+	UTFLOAT wa = (2/T)*tan(wd*T/2); 
+	UTFLOAT g = wa*T/2;  
     int i;
 
     /* Big G's */
@@ -103,7 +103,7 @@ static void sp_diode_update(sp_data *sp, sp_diode *p)
 	p->opva_eps[2] = G4;
 }
 
-int sp_diode_init(sp_data *sp, sp_diode *p)
+int ut_diode_init(ut_data *ut, ut_diode *p)
 {
     int i;
     /* initialize the 4 one-pole VA filters */
@@ -142,36 +142,36 @@ int sp_diode_init(sp_data *sp, sp_diode *p)
     p->res = 0;
     /* update filter coefs */
 
-    sp_diode_update(sp, p);
-    return SP_OK;
+    ut_diode_update(ut, p);
+    return UT_OK;
 }
 
-int sp_diode_compute(sp_data *sp, sp_diode *p, SPFLOAT *in, SPFLOAT *out)
+int ut_diode_compute(ut_data *ut, ut_diode *p, UTFLOAT *in, UTFLOAT *out)
 {
     int i;
-    SPFLOAT sigma;
-    SPFLOAT un;
-    SPFLOAT tmp = 0.0;
+    UTFLOAT sigma;
+    UTFLOAT un;
+    UTFLOAT tmp = 0.0;
 
     /* update filter coefficients */
     p->K = p->res * 17;
-    sp_diode_update(sp, p);
+    ut_diode_update(ut, p);
 
-    p->opva_fdbk[2] = sp_diode_opva_fdbk_out(sp, p, 3);
-    p->opva_fdbk[1] = sp_diode_opva_fdbk_out(sp, p, 2);
-    p->opva_fdbk[0] = sp_diode_opva_fdbk_out(sp, p, 1);
+    p->opva_fdbk[2] = ut_diode_opva_fdbk_out(ut, p, 3);
+    p->opva_fdbk[1] = ut_diode_opva_fdbk_out(ut, p, 2);
+    p->opva_fdbk[0] = ut_diode_opva_fdbk_out(ut, p, 1);
 
     sigma = 
-        p->SG[0] * sp_diode_opva_fdbk_out(sp, p, 0) +
-        p->SG[1] * sp_diode_opva_fdbk_out(sp, p, 1) +
-        p->SG[2] * sp_diode_opva_fdbk_out(sp, p, 2) +
-        p->SG[3] * sp_diode_opva_fdbk_out(sp, p, 3);
+        p->SG[0] * ut_diode_opva_fdbk_out(ut, p, 0) +
+        p->SG[1] * ut_diode_opva_fdbk_out(ut, p, 1) +
+        p->SG[2] * ut_diode_opva_fdbk_out(ut, p, 2) +
+        p->SG[3] * ut_diode_opva_fdbk_out(ut, p, 3);
 
     un = (*in - p->K * sigma) / (1 + p->K * p->gamma);
     tmp = un;
     for(i = 0; i < 4; i++) {
-        tmp = sp_diode_opva_compute(sp, p, tmp, i);
+        tmp = ut_diode_opva_compute(ut, p, tmp, i);
     }
     *out = tmp;
-    return SP_OK;
+    return UT_OK;
 }

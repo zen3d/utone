@@ -1,42 +1,42 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_bitcrush *bitcrush;
-    sp_diskin *file;
-    sp_ftbl *ft;
+    ut_bitcrush *bitcrush;
+    ut_diskin *file;
+    ut_ftbl *ft;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT disk = 0, bitcrush = 0;
-    sp_diskin_compute(sp, ud->file, NULL, &disk);
-    sp_bitcrush_compute(sp, ud->bitcrush, &disk, &bitcrush);
-    sp->out[0] = bitcrush;
+    UTFLOAT disk = 0, bitcrush = 0;
+    ut_diskin_compute(ut, ud->file, NULL, &disk);
+    ut_bitcrush_compute(ut, ud->bitcrush, &disk, &bitcrush);
+    ut->out[0] = bitcrush;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_bitcrush_create(&ud.bitcrush);
-    sp_diskin_create(&ud.file);
+    ut_bitcrush_create(&ud.bitcrush);
+    ut_diskin_create(&ud.file);
 
-    sp_diskin_init(sp, ud.file, "oneart.wav");
-    sp_bitcrush_init(sp, ud.bitcrush);
+    ut_diskin_init(ut, ud.file, "oneart.wav");
+    ut_bitcrush_init(ut, ud.bitcrush);
     ud.bitcrush->bitdepth = 8;
     ud.bitcrush->srate = 10000;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_bitcrush_destroy(&ud.bitcrush);
-    sp_diskin_destroy(&ud.file);
+    ut_bitcrush_destroy(&ud.bitcrush);
+    ut_diskin_destroy(&ud.file);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

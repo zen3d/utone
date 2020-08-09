@@ -1,34 +1,34 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_noise *ns;
-    sp_buthp *buthp;
+    ut_noise *ns;
+    ut_buthp *buthp;
 } UserData;
 
-void write_noise(sp_data *data, void *ud) {
+void write_noise(ut_data *data, void *ud) {
     UserData *udata = ud;
-    SPFLOAT in = 0;
-    SPFLOAT out = 0;
-    sp_noise_compute(data, udata->ns, NULL, &in);
-    sp_buthp_compute(data, udata->buthp, &in, &data->out[0]); 
+    UTFLOAT in = 0;
+    UTFLOAT out = 0;
+    ut_noise_compute(data, udata->ns, NULL, &in);
+    ut_buthp_compute(data, udata->buthp, &in, &data->out[0]); 
 }
 int main() {
     srand(time(NULL));
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_noise_create(&ud.ns);
-    sp_buthp_create(&ud.buthp);
-    sp_noise_init(sp, ud.ns);
-    sp_buthp_init(sp, ud.buthp);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_noise_create(&ud.ns);
+    ut_buthp_create(&ud.buthp);
+    ut_noise_init(ut, ud.ns);
+    ut_buthp_init(ut, ud.buthp);
     ud.buthp->freq = 5000;
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, write_noise);
-    sp_noise_destroy(&ud.ns);
-    sp_buthp_destroy(&ud.buthp);
-    sp_destroy(&sp);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, write_noise);
+    ut_noise_destroy(&ud.ns);
+    ut_buthp_destroy(&ud.buthp);
+    ut_destroy(&ut);
     return 0;
 }

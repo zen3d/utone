@@ -7,29 +7,29 @@ sptbl["jitter"] = {
     },
 
     func = {
-        create = "sp_jitter_create",
-        destroy = "sp_jitter_destroy",
-        init = "sp_jitter_init",
-        compute = "sp_jitter_compute",
+        create = "ut_jitter_create",
+        destroy = "ut_jitter_destroy",
+        init = "ut_jitter_init",
+        compute = "ut_jitter_compute",
     },
 
     params = {
         optional = {
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="The amplitude of the line. Will produce values in the range of (+/-)amp.",
                 default = 0.5
             },
             {
                 name = "cpsMin",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "The minimum frequency of change in Hz.",
                 default = 0.5
             },
             {
                 name = "cpsMax",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="The maximum frequency of change in Hz.",
                 default = 4
             },

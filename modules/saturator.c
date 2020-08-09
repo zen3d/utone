@@ -1,15 +1,15 @@
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI    3.14159265358979323846
 #endif
 
-static void bilinear_transform(SPFLOAT acoefs[], SPFLOAT dcoefs[], SPFLOAT fs)
+static void bilinear_transform(UTFLOAT acoefs[], UTFLOAT dcoefs[], UTFLOAT fs)
 {
-    SPFLOAT b0, b1, b2, a0, a1, a2;
-    SPFLOAT bz0, bz1, bz2, az0, az1, az2;
+    UTFLOAT b0, b1, b2, a0, a1, a2;
+    UTFLOAT bz0, bz1, bz2, az0, az1, az2;
 
     b0 = acoefs[0]; b1 = acoefs[1]; b2 = acoefs[2];
     a0 = acoefs[3]; a1 = acoefs[4]; a2 = acoefs[5];
@@ -29,22 +29,22 @@ static void bilinear_transform(SPFLOAT acoefs[], SPFLOAT dcoefs[], SPFLOAT fs)
     dcoefs[3] = az1; dcoefs[4] = az2;
 }
 
-int sp_saturator_create(sp_saturator **p)
+int ut_saturator_create(ut_saturator **p)
 {
-    *p = malloc(sizeof(sp_saturator));
-    return SP_OK;
+    *p = malloc(sizeof(ut_saturator));
+    return UT_OK;
 }
 
-int sp_saturator_destroy(sp_saturator **p)
+int ut_saturator_destroy(ut_saturator **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_saturator_init(sp_data *sp, sp_saturator *p)
+int ut_saturator_init(ut_data *ut, ut_saturator *p)
 {
     int i, j;
-    const SPFLOAT aacoefs[6][7] =
+    const UTFLOAT aacoefs[6][7] =
     {
         {2.60687e-05, 2.98697e-05, 2.60687e-05, -1.31885, 0.437162, 0.0, 0.0},
         {1, -0.800256, 1, -1.38301, 0.496576, 0.0, 0.0},
@@ -54,9 +54,9 @@ int sp_saturator_init(sp_data *sp, sp_saturator *p)
         {1, -1.75999, 1, -1.84111, 0.938811, 0.0, 0.0}
     };
 
-    SPFLOAT wc_dc = 5*2*M_PI;
-    SPFLOAT scoeffs[6] = {  0, 1, 0, wc_dc, 1, 0 };
-    SPFLOAT zcoeffs[5];
+    UTFLOAT wc_dc = 5*2*M_PI;
+    UTFLOAT scoeffs[6] = {  0, 1, 0, wc_dc, 1, 0 };
+    UTFLOAT zcoeffs[5];
     p->drive = 1;
     p->dcoffset = 0;
 
@@ -66,30 +66,30 @@ int sp_saturator_init(sp_data *sp, sp_saturator *p)
             p->ai[i][j] =  aacoefs[i][j];
         }
     }
-    bilinear_transform(scoeffs, zcoeffs, sp->sr*8);
+    bilinear_transform(scoeffs, zcoeffs, ut->sr*8);
     for(i = 0; i < 2; i++){
         for(j = 0; j < 5; j++)
             p->dcblocker[i][j] = zcoeffs[j];
         p->dcblocker[i][5] = 0.0;
         p->dcblocker[i][6] = 0.0;
     }
-        return SP_OK;
+        return UT_OK;
 }
 
-static int quad_compute(SPFLOAT p[7],  SPFLOAT *input, SPFLOAT* output)
+static int quad_compute(UTFLOAT p[7],  UTFLOAT *input, UTFLOAT* output)
 {
-    SPFLOAT in = *input;
+    UTFLOAT in = *input;
     *output = p[5] + in * p[0];
     p[5] = p[6] + in * p[1] - *output*p[3];
     p[6] = in * p[2] - *output*p[4];
-    return SP_OK;
+    return UT_OK;
 }
 
 
-int sp_saturator_compute(sp_data *sp, sp_saturator *p, SPFLOAT *in, SPFLOAT *out)
+int ut_saturator_compute(ut_data *ut, ut_saturator *p, UTFLOAT *in, UTFLOAT *out)
 {
     int i, j;
-    SPFLOAT fsignal, usignal, dsignal;
+    UTFLOAT fsignal, usignal, dsignal;
 
     fsignal = p->drive * *in;
     for(i = 0; i < 8; i++){
@@ -105,5 +105,5 @@ int sp_saturator_compute(sp_data *sp, sp_saturator *p, SPFLOAT *in, SPFLOAT *out
         for(j = 0; j < 6; j++)
             quad_compute(p->aa[j], &dsignal, out);
     }
-    return SP_OK;
+    return UT_OK;
 }

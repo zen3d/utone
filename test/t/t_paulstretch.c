@@ -1,40 +1,40 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_paulstretch *paulstretch;
-    sp_ftbl *ft; 
+    ut_paulstretch *paulstretch;
+    ut_ftbl *ft; 
 } UserData;
 
-int t_paulstretch(sp_test *tst, sp_data *sp, const char *hash) 
+int t_paulstretch(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT paulstretch = 0;
+    UTFLOAT paulstretch = 0;
 
-    sp_srand(sp, 1234567);
+    ut_srand(ut, 1234567);
     UserData ud;
 
-    sp_paulstretch_create(&ud.paulstretch);
-    sp_ftbl_loadfile(sp, &ud.ft, SAMPDIR "oneart.wav");
+    ut_paulstretch_create(&ud.paulstretch);
+    ut_ftbl_loadfile(ut, &ud.ft, SAMPDIR "oneart.wav");
 
-    sp_paulstretch_init(sp, ud.paulstretch, ud.ft, 1.0, 10);
+    ut_paulstretch_init(ut, ud.paulstretch, ud.ft, 1.0, 10);
 
 
     for(n = 0; n < tst->size; n++) {
         paulstretch = 0;
-        sp_paulstretch_compute(sp, ud.paulstretch, NULL, &paulstretch);
-        sp->out[0] = paulstretch;
-        sp_test_add_sample(tst, sp->out[0]);
+        ut_paulstretch_compute(ut, ud.paulstretch, NULL, &paulstretch);
+        ut->out[0] = paulstretch;
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_paulstretch_destroy(&ud.paulstretch);
-    sp_ftbl_destroy(&ud.ft);
+    ut_paulstretch_destroy(&ud.paulstretch);
+    ut_ftbl_destroy(&ud.ft);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

@@ -1,11 +1,11 @@
 typedef struct {
-    SPFLOAT step;
-    SPFLOAT min;
-    SPFLOAT max;
-    SPFLOAT val;
-} sp_incr;
+    UTFLOAT step;
+    UTFLOAT min;
+    UTFLOAT max;
+    UTFLOAT val;
+} ut_incr;
 
-int sp_incr_create(sp_incr **p);
-int sp_incr_destroy(sp_incr **p);
-int sp_incr_init(sp_data *sp, sp_incr *p, SPFLOAT val);
-int sp_incr_compute(sp_data *sp, sp_incr *p, SPFLOAT *in, SPFLOAT *out);
+int ut_incr_create(ut_incr **p);
+int ut_incr_destroy(ut_incr **p);
+int ut_incr_init(ut_data *ut, ut_incr *p, UTFLOAT val);
+int ut_incr_compute(ut_data *ut, ut_incr *p, UTFLOAT *in, UTFLOAT *out);

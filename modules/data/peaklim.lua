@@ -7,29 +7,29 @@ sptbl["peaklim"] = {
     },
 
     func = {
-        create = "sp_peaklim_create",
-        destroy = "sp_peaklim_destroy",
-        init = "sp_peaklim_init",
-        compute = "sp_peaklim_compute",
+        create = "ut_peaklim_create",
+        destroy = "ut_peaklim_destroy",
+        init = "ut_peaklim_init",
+        compute = "ut_peaklim_compute",
     },
 
     params = {
         optional = {
             {
                 name = "atk",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Attack time, in seconds",
                 default = 0.01
             },
             {
                 name = "rel",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Release time, in seconds",
                 default = 0.1
             },
             {
                 name = "thresh",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Threshold, in dB",
                 default = 0
             },

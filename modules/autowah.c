@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "CUI.h"
 
 #define max(a,b) ((a < b) ? b : a)
@@ -163,27 +163,27 @@ void computeautowah(autowah* dsp, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** o
 
 static void addVerticalSlider(void* ui_interface, const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
 {
-    sp_autowah *p = ui_interface;
+    ut_autowah *p = ui_interface;
     p->args[p->argpos] = zone;
     p->argpos++;
 }
 
-int sp_autowah_create(sp_autowah **p)
+int ut_autowah_create(ut_autowah **p)
 {
-    *p = malloc(sizeof(sp_autowah));
-    return SP_OK;
+    *p = malloc(sizeof(ut_autowah));
+    return UT_OK;
 }
 
-int sp_autowah_destroy(sp_autowah **p)
+int ut_autowah_destroy(ut_autowah **p)
 {
-    sp_autowah *pp = *p;
+    ut_autowah *pp = *p;
     autowah *dsp = pp->faust;
     deleteautowah (dsp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_autowah_init(sp_data *sp, sp_autowah *p)
+int ut_autowah_init(ut_data *ut, ut_autowah *p)
 {
     autowah *dsp = newautowah(); 
     UIGlue UI;
@@ -191,21 +191,21 @@ int sp_autowah_init(sp_data *sp, sp_autowah *p)
     UI.addVerticalSlider= addVerticalSlider;
     UI.uiInterface = p;
     buildUserInterfaceautowah(dsp, &UI);
-    initautowah(dsp, sp->sr);
+    initautowah(dsp, ut->sr);
     
     p->level = p->args[0]; 
     p->wah = p->args[1]; 
     p->mix = p->args[2];
 
     p->faust = dsp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_autowah_compute(sp_data *sp, sp_autowah *p, SPFLOAT *in, SPFLOAT *out) 
+int ut_autowah_compute(ut_data *ut, ut_autowah *p, UTFLOAT *in, UTFLOAT *out) 
 {
     autowah *dsp = p->faust;
-    SPFLOAT *faust_out[] = {out};
-    SPFLOAT *faust_in[] = {in};
+    UTFLOAT *faust_out[] = {out};
+    UTFLOAT *faust_in[] = {in};
     computeautowah(dsp, 1, faust_in, faust_out);
-    return SP_OK;
+    return UT_OK;
 }

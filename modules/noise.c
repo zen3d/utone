@@ -1,29 +1,29 @@
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_noise_create(sp_noise **ns)
+int ut_noise_create(ut_noise **ns)
 {
-    *ns = malloc(sizeof(sp_noise));
-    return SP_OK;
+    *ns = malloc(sizeof(ut_noise));
+    return UT_OK;
 }
 
-int sp_noise_init(sp_data *sp, sp_noise *ns)
+int ut_noise_init(ut_data *ut, ut_noise *ns)
 {
     ns->amp = 1.0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_noise_compute(sp_data *sp, sp_noise *ns, SPFLOAT *in, SPFLOAT *out)
+int ut_noise_compute(ut_data *ut, ut_noise *ns, UTFLOAT *in, UTFLOAT *out)
 {
-    *out = ((sp_rand(sp) % SP_RANDMAX) / (SP_RANDMAX * 1.0));
+    *out = ((ut_rand(ut) % UT_RANDMAX) / (UT_RANDMAX * 1.0));
     *out = (*out * 2) - 1;
     *out *= ns->amp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_noise_destroy(sp_noise **ns)
+int ut_noise_destroy(ut_noise **ns)
 {
     free(*ns);
-    return SP_OK;
+    return UT_OK;
 }

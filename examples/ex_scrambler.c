@@ -1,28 +1,28 @@
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_ftbl *src;
-    sp_ftbl *dest;
+    ut_ftbl *src;
+    ut_ftbl *dest;
 } UserData;
 
-static void process(sp_data *sp, void *userdata)
+static void process(ut_data *ut, void *userdata)
 {
     UserData *ud = userdata;
-    sp_out(sp, 0, ud->dest->tbl[sp->pos]);
+    ut_out(ut, 0, ud->dest->tbl[ut->pos]);
 }
 
 int main()
 {
-    sp_data *sp;
+    ut_data *ut;
     UserData ud;
-    sp_create(&sp);
-    sp_srand(sp, 12345);
-    sp_ftbl_loadfile(sp, &ud.src, "oneart.wav");
-    sp_gen_scrambler(sp, ud.src, &ud.dest);
-    sp->len = ud.src->size;
-    sp_process(sp, &ud, process);
-    sp_ftbl_destroy(&ud.src);
-    sp_ftbl_destroy(&ud.dest);
-    sp_destroy(&sp);
+    ut_create(&ut);
+    ut_srand(ut, 12345);
+    ut_ftbl_loadfile(ut, &ud.src, "oneart.wav");
+    ut_gen_scrambler(ut, ud.src, &ud.dest);
+    ut->len = ud.src->size;
+    ut_process(ut, &ud, process);
+    ut_ftbl_destroy(&ud.src);
+    ut_ftbl_destroy(&ud.dest);
+    ut_destroy(&ut);
     return 0;
 }

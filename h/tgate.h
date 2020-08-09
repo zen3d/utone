@@ -1,9 +1,9 @@
 typedef struct {
-    SPFLOAT time;
+    UTFLOAT time;
     uint32_t timer;
-} sp_tgate;
+} ut_tgate;
 
-int sp_tgate_create(sp_tgate **p);
-int sp_tgate_destroy(sp_tgate **p);
-int sp_tgate_init(sp_data *sp, sp_tgate *p);
-int sp_tgate_compute(sp_data *sp, sp_tgate *p, SPFLOAT *in, SPFLOAT *out);
+int ut_tgate_create(ut_tgate **p);
+int ut_tgate_destroy(ut_tgate **p);
+int ut_tgate_init(ut_data *ut, ut_tgate *p);
+int ut_tgate_compute(ut_data *ut, ut_tgate *p, UTFLOAT *in, UTFLOAT *out);

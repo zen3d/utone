@@ -1,21 +1,21 @@
 typedef struct {
     void *faust;
     int argpos;
-    SPFLOAT *args[10];
-    SPFLOAT *MaxNotch1Freq;
-    SPFLOAT *MinNotch1Freq;
-    SPFLOAT *Notch_width;
-    SPFLOAT *NotchFreq;
-    SPFLOAT *VibratoMode;
-    SPFLOAT *depth;
-    SPFLOAT *feedback_gain;
-    SPFLOAT *invert;
-    SPFLOAT *level;
-    SPFLOAT *lfobpm;
-} sp_phaser;
+    UTFLOAT *args[10];
+    UTFLOAT *MaxNotch1Freq;
+    UTFLOAT *MinNotch1Freq;
+    UTFLOAT *Notch_width;
+    UTFLOAT *NotchFreq;
+    UTFLOAT *VibratoMode;
+    UTFLOAT *depth;
+    UTFLOAT *feedback_gain;
+    UTFLOAT *invert;
+    UTFLOAT *level;
+    UTFLOAT *lfobpm;
+} ut_phaser;
 
-int sp_phaser_create(sp_phaser **p);
-int sp_phaser_destroy(sp_phaser **p);
-int sp_phaser_init(sp_data *sp, sp_phaser *p);
-int sp_phaser_compute(sp_data *sp, sp_phaser *p, 
-	SPFLOAT *in1, SPFLOAT *in2, SPFLOAT *out1, SPFLOAT *out2);
+int ut_phaser_create(ut_phaser **p);
+int ut_phaser_destroy(ut_phaser **p);
+int ut_phaser_init(ut_data *ut, ut_phaser *p);
+int ut_phaser_compute(ut_data *ut, ut_phaser *p, 
+	UTFLOAT *in1, UTFLOAT *in2, UTFLOAT *out1, UTFLOAT *out2);

@@ -10,53 +10,53 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_panst *panst;
-    sp_osc *osc;
-    sp_osc *lfo;
-    sp_ftbl *ft;
+    ut_panst *panst;
+    ut_osc *osc;
+    ut_osc *lfo;
+    ut_ftbl *ft;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, outL = 0, outR = 0, lfo = 0;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp_osc_compute(sp, ud->lfo, NULL, &lfo);
+    UTFLOAT osc = 0, outL = 0, outR = 0, lfo = 0;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut_osc_compute(ut, ud->lfo, NULL, &lfo);
     ud->panst->pan = lfo;
 
-    sp_panst_compute(sp, ud->panst, &osc, &osc, &outL, &outR);
-    sp_out(sp, 0, outL);
-    sp_out(sp, 1, outR);
+    ut_panst_compute(ut, ud->panst, &osc, &osc, &outL, &outR);
+    ut_out(ut, 0, outL);
+    ut_out(ut, 1, outR);
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_createn(&sp, 2);
+    ut_data *ut;
+    ut_createn(&ut, 2);
 
-    sp_panst_create(&ud.panst);
-    sp_osc_create(&ud.osc);
-    sp_osc_create(&ud.lfo);
-    sp_ftbl_create(sp, &ud.ft, 2048);
+    ut_panst_create(&ud.panst);
+    ut_osc_create(&ud.osc);
+    ut_osc_create(&ud.lfo);
+    ut_ftbl_create(ut, &ud.ft, 2048);
 
-    sp_panst_init(sp, ud.panst);
+    ut_panst_init(ut, ud.panst);
     ud.panst->type = 0;
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
-    sp_osc_init(sp, ud.lfo, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
+    ut_osc_init(ut, ud.lfo, ud.ft, 0);
     ud.lfo->amp = 1;
     ud.lfo->freq = 0.5;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_panst_destroy(&ud.panst);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_osc_destroy(&ud.lfo);
+    ut_panst_destroy(&ud.panst);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_osc_destroy(&ud.lfo);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

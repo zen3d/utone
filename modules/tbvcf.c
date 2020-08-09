@@ -20,28 +20,28 @@
 #define M_PI		3.14159265358979323846	/* pi */
 #endif
 
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_tbvcf_create(sp_tbvcf **p)
+int ut_tbvcf_create(ut_tbvcf **p)
 {
-    *p = malloc(sizeof(sp_tbvcf));
-    return SP_OK;
+    *p = malloc(sizeof(ut_tbvcf));
+    return UT_OK;
 }
 
-int sp_tbvcf_destroy(sp_tbvcf **p)
+int ut_tbvcf_destroy(ut_tbvcf **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tbvcf_init(sp_data *sp, sp_tbvcf *p)
+int ut_tbvcf_init(ut_data *ut, ut_tbvcf *p)
 {
     p->fco = 500.0;
     p->res = 0.8;
     p->dist = 2.0;
     p->asym = 0.5;
 
-    p->sr = sp->sr;
+    p->sr = ut->sr;
     p->onedsr = 1.0 / p->sr;
 
     p->iskip = 0.0;
@@ -52,18 +52,18 @@ int sp_tbvcf_init(sp_data *sp, sp_tbvcf *p)
     p->rezcod = p->res;
 
 
-    return SP_OK;
+    return UT_OK;
 }
 
 /* TODO: clean up code here. */
-int sp_tbvcf_compute(sp_data *sp, sp_tbvcf *p, SPFLOAT *in, SPFLOAT *out)
+int ut_tbvcf_compute(ut_data *ut, ut_tbvcf *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT x;
-    SPFLOAT fco, res, dist, asym;
-    SPFLOAT y = p->y, y1 = p->y1, y2 = p->y2;
+    UTFLOAT x;
+    UTFLOAT fco, res, dist, asym;
+    UTFLOAT y = p->y, y1 = p->y1, y2 = p->y2;
     /* The initialisations are fake to fool compiler warnings */
-    SPFLOAT ih, fdbk, d, ad;
-    SPFLOAT fc=0.0, fco1=0.0, q=0.0, q1=0.0;
+    UTFLOAT ih, fdbk, d, ad;
+    UTFLOAT fc=0.0, fco1=0.0, q=0.0, q1=0.0;
 
     ih  = 0.001; /* ih is the incremental factor */
 
@@ -74,10 +74,10 @@ int sp_tbvcf_compute(sp_data *sp, sp_tbvcf *p, SPFLOAT *in, SPFLOAT *out)
     asymptr = p->asym; */
 
  /* Get the values for the k-rate variables
-    fco  = (SPFLOAT)*fcoptr;
-    res  = (SPFLOAT)*resptr;
-    dist = (SPFLOAT)*distptr;
-    asym = (SPFLOAT)*asymptr; */
+    fco  = (UTFLOAT)*fcoptr;
+    res  = (UTFLOAT)*resptr;
+    dist = (UTFLOAT)*distptr;
+    asym = (UTFLOAT)*asymptr; */
 
     /* This should work in sp world */
     fco = p->fco;
@@ -108,5 +108,5 @@ int sp_tbvcf_compute(sp_data *sp, sp_tbvcf *p, SPFLOAT *in, SPFLOAT *out)
     *out = (y*fc/1000.0*(1.0 + q1)*3.2);
 
     p->y = y; p->y1 = y1; p->y2 = y2;
-    return SP_OK;
+    return UT_OK;
 }

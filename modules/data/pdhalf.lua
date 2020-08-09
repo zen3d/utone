@@ -7,17 +7,17 @@ sptbl["pdhalf"] = {
     },
 
     func = {
-        create = "sp_pdhalf_create",
-        destroy = "sp_pdhalf_destroy",
-        init = "sp_pdhalf_init",
-        compute = "sp_pdhalf_compute",
+        create = "ut_pdhalf_create",
+        destroy = "ut_pdhalf_destroy",
+        init = "ut_pdhalf_init",
+        compute = "ut_pdhalf_compute",
     },
 
     params = {
         optional = {
             {
                 name = "amount",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Amount of distortion, within the range [-1, 1]. 0 is no distortion.",
                 default = 0
             },

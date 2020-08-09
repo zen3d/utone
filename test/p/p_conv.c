@@ -1,35 +1,35 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "config.h"
 
 int main() {
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 12345);
-    sp->sr = SR;
-    sp->len = sp->sr * LEN;
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 12345);
+    ut->sr = SR;
+    ut->len = ut->sr * LEN;
     uint32_t t, u;
-    SPFLOAT in = 0, out = 0;
-    sp_ftbl *ft;
+    UTFLOAT in = 0, out = 0;
+    ut_ftbl *ft;
 
-    sp_conv *unit[NUM];
+    ut_conv *unit[NUM];
 
-    sp_ftbl_loadfile(sp, &ft, SAMPDIR "oneart.wav");
+    ut_ftbl_loadfile(ut, &ft, SAMPDIR "oneart.wav");
 
     for(u = 0; u < NUM; u++) { 
-        sp_conv_create(&unit[u]);
-        sp_conv_init(sp, unit[u], ft, 2048);
+        ut_conv_create(&unit[u]);
+        ut_conv_init(ut, unit[u], ft, 2048);
     }
 
-    for(t = 0; t < sp->len; t++) {
-        for(u = 0; u < NUM; u++) sp_conv_compute(sp, unit[u], &in, &out);
+    for(t = 0; t < ut->len; t++) {
+        for(u = 0; u < NUM; u++) ut_conv_compute(ut, unit[u], &in, &out);
     }
 
-    for(u = 0; u < NUM; u++) sp_conv_destroy(&unit[u]);
+    for(u = 0; u < NUM; u++) ut_conv_destroy(&unit[u]);
 
-    sp_ftbl_destroy(&ft);
-    sp_destroy(&sp);
+    ut_ftbl_destroy(&ft);
+    ut_destroy(&ut);
     return 0;
 }
 

@@ -7,17 +7,17 @@ sptbl["clip"] = {
     },
 
     func = {
-        create = "sp_clip_create",
-        destroy = "sp_clip_destroy",
-        init = "sp_clip_init",
-        compute = "sp_clip_compute",
+        create = "ut_clip_create",
+        destroy = "ut_clip_destroy",
+        init = "ut_clip_init",
+        compute = "ut_clip_compute",
     },
 
     params = {
         optional = {
             {
                 name = "lim",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "threshold / limiting value.",
                 default = 1.0
             },

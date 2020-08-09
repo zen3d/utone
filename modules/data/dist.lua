@@ -7,35 +7,35 @@ sptbl["dist"] = {
     },
 
     func = {
-        create = "sp_dist_create",
-        destroy = "sp_dist_destroy",
-        init = "sp_dist_init",
-        compute = "sp_dist_compute",
+        create = "ut_dist_create",
+        destroy = "ut_dist_destroy",
+        init = "ut_dist_init",
+        compute = "ut_dist_compute",
     },
 
     params = {
         optional = {
             {
                 name = "pregain",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Gain applied before waveshaping.",
                 default = 2.0
             },
             {
                 name = "postgain",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Gain applied after waveshaping",
                 default = 0.5
             },
             {
                 name = "shape1",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Shape of the positive part of the signal. A value of 0 gets a flat clip.",
                 default = 0
             },
             {
                 name = "shape2",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Like shape1, only for the negative part of the signal.",
                 default = 0
             },

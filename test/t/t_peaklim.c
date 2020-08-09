@@ -1,44 +1,44 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_peaklim *peaklim;
-    sp_diskin *diskin;
+    ut_peaklim *peaklim;
+    ut_diskin *diskin;
 } UserData;
 
-int t_peaklim(sp_test *tst, sp_data *sp, const char *hash) 
+int t_peaklim(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT diskin = 0, peaklim = 0;
+    UTFLOAT diskin = 0, peaklim = 0;
 
     UserData ud;
-    sp_srand(sp, 1234567);
+    ut_srand(ut, 1234567);
 
-    sp_peaklim_create(&ud.peaklim);
-    sp_diskin_create(&ud.diskin);
+    ut_peaklim_create(&ud.peaklim);
+    ut_diskin_create(&ud.diskin);
 
-    sp_peaklim_init(sp, ud.peaklim);
+    ut_peaklim_init(ut, ud.peaklim);
     ud.peaklim->atk = 0.1;
     ud.peaklim->rel = 0.1;
     ud.peaklim->thresh = -30;
-    sp_diskin_init(sp, ud.diskin, SAMPDIR "oneart.wav");
+    ut_diskin_init(ut, ud.diskin, SAMPDIR "oneart.wav");
 
     for(n = 0; n < tst->size; n++) {
         diskin = 0; peaklim = 0;
-        sp_diskin_compute(sp, ud.diskin, NULL, &diskin);
-        sp_peaklim_compute(sp, ud.peaklim, &diskin, &peaklim);
-        sp_test_add_sample(tst, peaklim);
+        ut_diskin_compute(ut, ud.diskin, NULL, &diskin);
+        ut_peaklim_compute(ut, ud.peaklim, &diskin, &peaklim);
+        ut_test_add_sample(tst, peaklim);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_peaklim_destroy(&ud.peaklim);
-    sp_diskin_destroy(&ud.diskin);
+    ut_peaklim_destroy(&ud.peaklim);
+    ut_diskin_destroy(&ud.diskin);
 
-    if(fail) return SP_NOT_OK;
+    if(fail) return UT_NOT_OK;
     /* fail by default */
-    else return SP_OK;
+    else return UT_OK;
 }

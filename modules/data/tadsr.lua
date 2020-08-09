@@ -7,35 +7,35 @@ sptbl["tadsr"] = {
     },
 
     func = {
-        create = "sp_tadsr_create",
-        destroy = "sp_tadsr_destroy",
-        init = "sp_tadsr_init",
-        compute = "sp_tadsr_compute",
+        create = "ut_tadsr_create",
+        destroy = "ut_tadsr_destroy",
+        init = "ut_tadsr_init",
+        compute = "ut_tadsr_compute",
     },
 
     params = {
         optional = {
             {
                 name = "atk",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Attack time",
                 default = 0.1
             },
             {
                 name = "dec",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Decay time",
                 default = 0.1
             },
             {
                 name = "sus",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Sustain Level",
                 default = 0.5
             },
             {
                 name = "rel",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="release",
                 default = 0.5
             },

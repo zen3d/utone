@@ -1,36 +1,36 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_diskin *diskin;
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_diskin *diskin;
+    ut_osc *osc;
+    ut_ftbl *ft; 
 } UserData;
 
-int t_diskin(sp_test *tst, sp_data *sp, const char *hash) 
+int t_diskin(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
-    SPFLOAT diskin = 0;
+    UTFLOAT diskin = 0;
 
-    sp_srand(sp, 1234567);
+    ut_srand(ut, 1234567);
     UserData ud;
 
-    sp_diskin_create(&ud.diskin);
-    sp_diskin_init(sp, ud.diskin, SAMPDIR "oneart.wav");
+    ut_diskin_create(&ud.diskin);
+    ut_diskin_init(ut, ud.diskin, SAMPDIR "oneart.wav");
 
     for(n = 0; n < tst->size; n++) {
         diskin = 0;
-        sp_diskin_compute(sp, ud.diskin, NULL, &diskin);
-        sp_test_add_sample(tst, diskin);
+        ut_diskin_compute(ut, ud.diskin, NULL, &diskin);
+        ut_test_add_sample(tst, diskin);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_diskin_destroy(&ud.diskin);
+    ut_diskin_destroy(&ud.diskin);
 
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

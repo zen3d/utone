@@ -7,23 +7,23 @@ sptbl["dust"] = {
     },
 
     func = {
-        create = "sp_dust_create",
-        destroy = "sp_dust_destroy",
-        init = "sp_dust_init",
-        compute = "sp_dust_compute",
+        create = "ut_dust_create",
+        destroy = "ut_dust_destroy",
+        init = "ut_dust_init",
+        compute = "ut_dust_compute",
     },
 
     params = {
         optional = {
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "",
                 default = 0.3
             },
             {
                 name = "density",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "",
                 default = 10
             },

@@ -25,7 +25,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  4*4*4*2
  */
 
-#ifndef SOUNDPIPE_H
+#ifndef UTONE_H
 
 struct kiss_fft_state{
     int nfft;

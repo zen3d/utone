@@ -12,21 +12,21 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_lpf18_create(sp_lpf18 **p)
+int ut_lpf18_create(ut_lpf18 **p)
 {
-    *p = malloc(sizeof(sp_lpf18));
-    return SP_OK;
+    *p = malloc(sizeof(ut_lpf18));
+    return UT_OK;
 }
 
-int sp_lpf18_destroy(sp_lpf18 **p)
+int ut_lpf18_destroy(ut_lpf18 **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_lpf18_init(sp_data *sp, sp_lpf18 *p)
+int ut_lpf18_init(ut_data *ut, ut_lpf18 *p)
 {
     p->cutoff = 1000;
     p->res = 0.8;
@@ -36,25 +36,25 @@ int sp_lpf18_init(sp_data *sp, sp_lpf18 *p)
     p->ay2 = 0.0;
     p->aout = 0.0;
     p->lastin = 0.0;
-    p->onedsr = 1.0 / sp->sr;
-    return SP_OK;
+    p->onedsr = 1.0 / ut->sr;
+    return UT_OK;
 }
 
-int sp_lpf18_compute(sp_data *sp, sp_lpf18 *p, SPFLOAT *in, SPFLOAT *out)
+int ut_lpf18_compute(ut_data *ut, ut_lpf18 *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT ay1 = p->ay1;
-    SPFLOAT ay2 = p->ay2;
-    SPFLOAT aout = p->aout;
-    SPFLOAT lastin = p->lastin;
+    UTFLOAT ay1 = p->ay1;
+    UTFLOAT ay2 = p->ay2;
+    UTFLOAT aout = p->aout;
+    UTFLOAT lastin = p->lastin;
     double value = 0.0;
     int   flag = 1;
-    SPFLOAT lfc=0, lrs=0, kres=0, kfcn=0, kp=0, kp1=0,  kp1h=0;
+    UTFLOAT lfc=0, lrs=0, kres=0, kfcn=0, kp=0, kp1=0,  kp1h=0;
     double lds = 0.0;
 
-    SPFLOAT fco, res, dist;
-    SPFLOAT ax1  = lastin;
-    SPFLOAT ay11 = ay1;
-    SPFLOAT ay31 = ay2;
+    UTFLOAT fco, res, dist;
+    UTFLOAT ax1  = lastin;
+    UTFLOAT ay11 = ay1;
+    UTFLOAT ay31 = ay2;
     fco = p->cutoff;
     res = p->res;
     dist = p->dist;
@@ -93,5 +93,5 @@ int sp_lpf18_compute(sp_data *sp, sp_lpf18 *p, SPFLOAT *in, SPFLOAT *out)
     p->ay2 = ay2;
     p->aout = aout;
     p->lastin = lastin;
-    return SP_OK;
+    return UT_OK;
 }

@@ -11,33 +11,33 @@
  */
 
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_phasor_create(sp_phasor **p)
+int ut_phasor_create(ut_phasor **p)
 {
-    *p = malloc(sizeof(sp_phasor));
-    return SP_OK;
+    *p = malloc(sizeof(ut_phasor));
+    return UT_OK;
 }
 
-int sp_phasor_destroy(sp_phasor **p)
+int ut_phasor_destroy(ut_phasor **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_phasor_init(sp_data *sp, sp_phasor *p, SPFLOAT iphs)
+int ut_phasor_init(ut_data *ut, ut_phasor *p, UTFLOAT iphs)
 {
     p->freq = 440;
     p->phs = iphs;
     p->curphs = iphs;
-    p->onedsr = 1.0 / sp->sr;
-    return SP_OK;
+    p->onedsr = 1.0 / ut->sr;
+    return UT_OK;
 }
 
-int sp_phasor_compute(sp_data *sp, sp_phasor *p, SPFLOAT *in, SPFLOAT *out)
+int ut_phasor_compute(ut_data *ut, ut_phasor *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT phase;
-    SPFLOAT incr;
+    UTFLOAT phase;
+    UTFLOAT incr;
 
     phase = p->curphs;
     incr = p->freq * p->onedsr;
@@ -49,5 +49,5 @@ int sp_phasor_compute(sp_data *sp, sp_phasor *p, SPFLOAT *in, SPFLOAT *out)
         phase += 1.0;
     }
     p->curphs = phase;
-    return SP_OK;
+    return UT_OK;
 }

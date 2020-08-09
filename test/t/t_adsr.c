@@ -1,29 +1,29 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_adsr *adsr;
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_adsr *adsr;
+    ut_osc *osc;
+    ut_ftbl *ft; 
 } UserData;
 
-int t_adsr(sp_test *tst, sp_data *sp, const char *hash) 
+int t_adsr(ut_test *tst, ut_data *ut, const char *hash) 
 {
-    sp_srand(sp, 12345);
+    ut_srand(ut, 12345);
     uint32_t n;
     int fail = 0;
     UserData ud; 
-    sp_adsr_create(&ud.adsr);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 8192);
-    SPFLOAT osc = 0, adsr = 0, gate = 0;
+    ut_adsr_create(&ud.adsr);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 8192);
+    UTFLOAT osc = 0, adsr = 0, gate = 0;
     
 
-    sp_adsr_init(sp, ud.adsr);
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_adsr_init(ut, ud.adsr);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
     ud.osc->amp = 0.5;
 
 
@@ -35,21 +35,21 @@ int t_adsr(sp_test *tst, sp_data *sp, const char *hash)
         } else {
             gate = 0;
         }
-        sp_adsr_compute(sp, ud.adsr, &gate, &adsr);
-        sp_osc_compute(sp, ud.osc, NULL, &osc);
-        sp_test_add_sample(tst, adsr * osc);
+        ut_adsr_compute(ut, ud.adsr, &gate, &adsr);
+        ut_osc_compute(ut, ud.osc, NULL, &osc);
+        ut_test_add_sample(tst, adsr * osc);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
     /* destroy functions here */
 
-    sp_adsr_destroy(&ud.adsr);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
+    ut_adsr_destroy(&ud.adsr);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
 
-    if(fail) return SP_NOT_OK;
+    if(fail) return UT_NOT_OK;
     /* fail by default */
-    else return SP_OK;
+    else return UT_OK;
 
 }

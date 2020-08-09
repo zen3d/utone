@@ -7,7 +7,7 @@ sptbl["gen_composite"] = {
     },
 
     func = {
-        name = "sp_gen_composite",
+        name = "ut_gen_composite",
     },
 
     params = {

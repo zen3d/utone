@@ -5,7 +5,7 @@
 #ifndef NO_LIBSNDFILE
 #include <sndfile.h>
 #endif
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846	/* pi */
@@ -14,44 +14,44 @@
 #define tpd360  0.0174532925199433
 
 /* initialize constants in ftable */
-int sp_ftbl_init(sp_data *sp, sp_ftbl *ft, size_t size)
+int ut_ftbl_init(ut_data *ut, ut_ftbl *ft, size_t size)
 {
     ft->size = size;
-    ft->sicvt = 1.0 * SP_FT_MAXLEN / sp->sr;
-    ft->lobits = log2(SP_FT_MAXLEN / size);
+    ft->sicvt = 1.0 * UT_FT_MAXLEN / ut->sr;
+    ft->lobits = log2(UT_FT_MAXLEN / size);
     ft->lomask = (1<<ft->lobits) - 1;
     ft->lodiv = 1.0 / (1<<ft->lobits);
     ft->del = 1;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_ftbl_create(sp_data *sp, sp_ftbl **ft, size_t size)
+int ut_ftbl_create(ut_data *ut, ut_ftbl **ft, size_t size)
 {
-    *ft = malloc(sizeof(sp_ftbl));
-    sp_ftbl *ftp = *ft;
-    ftp->tbl = malloc(sizeof(SPFLOAT) * (size + 1));
-    memset(ftp->tbl, 0, sizeof(SPFLOAT) * (size + 1));
+    *ft = malloc(sizeof(ut_ftbl));
+    ut_ftbl *ftp = *ft;
+    ftp->tbl = malloc(sizeof(UTFLOAT) * (size + 1));
+    memset(ftp->tbl, 0, sizeof(UTFLOAT) * (size + 1));
    
-    sp_ftbl_init(sp, ftp, size);
-    return SP_OK;
+    ut_ftbl_init(ut, ftp, size);
+    return UT_OK;
 }
 
-int sp_ftbl_bind(sp_data *sp, sp_ftbl **ft, SPFLOAT *tbl, size_t size)
+int ut_ftbl_bind(ut_data *ut, ut_ftbl **ft, UTFLOAT *tbl, size_t size)
 {
-    *ft = malloc(sizeof(sp_ftbl));
-    sp_ftbl *ftp = *ft;
+    *ft = malloc(sizeof(ut_ftbl));
+    ut_ftbl *ftp = *ft;
     ftp->tbl = tbl;
-    sp_ftbl_init(sp, ftp, size);
+    ut_ftbl_init(ut, ftp, size);
     ftp->del = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_ftbl_destroy(sp_ftbl **ft)
+int ut_ftbl_destroy(ut_ftbl **ft)
 {
-    sp_ftbl *ftp = *ft;
+    ut_ftbl *ftp = *ft;
     if(ftp->del) free(ftp->tbl);
     free(*ft);
-    return SP_OK;
+    return UT_OK;
 }
 
 /* TODO: handle spaces at beginning of string */
@@ -75,7 +75,7 @@ static char * tokenize(char **next, int *size)
     return token;
 }
 
-int sp_gen_vals(sp_data *sp, sp_ftbl *ft, const char *string)
+int ut_gen_vals(ut_data *ut, ut_ftbl *ft, const char *string)
 {
     int size = strlen(string);
     char *str = malloc(sizeof(char) * size + 1);
@@ -86,7 +86,7 @@ int sp_gen_vals(sp_data *sp, sp_ftbl *ft, const char *string)
     while(size > 0) {
         out = tokenize(&str, &size);
         if(ft->size < j + 1){
-            ft->tbl = realloc(ft->tbl, sizeof(SPFLOAT) * (ft->size + 2));
+            ft->tbl = realloc(ft->tbl, sizeof(UTFLOAT) * (ft->size + 2));
             /* zero out new tables */
             ft->tbl[ft->size] = 0;
             ft->tbl[ft->size + 1] = 0;
@@ -96,24 +96,24 @@ int sp_gen_vals(sp_data *sp, sp_ftbl *ft, const char *string)
         j++;
     }
   
-    sp_ftbl_init(sp, ft, ft->size);
+    ut_ftbl_init(ut, ft, ft->size);
     free(ptr); 
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_gen_sine(sp_data *sp, sp_ftbl *ft)
+int ut_gen_sine(ut_data *ut, ut_ftbl *ft)
 {
     unsigned long i;
-    SPFLOAT step = 2 * M_PI / ft->size;
+    UTFLOAT step = 2 * M_PI / ft->size;
     for(i = 0; i < ft->size; i++){
         ft->tbl[i] = sin(i * step);
     }
-    return SP_OK;
+    return UT_OK;
 }
 
 #ifndef NO_LIBSNDFILE
 /*TODO: add error checking, make tests */
-int sp_gen_file(sp_data *sp, sp_ftbl *ft, const char *filename)
+int ut_gen_file(ut_data *ut, ut_ftbl *ft, const char *filename)
 {
     SF_INFO info;
     memset(&info, 0, sizeof(SF_INFO));
@@ -125,25 +125,25 @@ int sp_gen_file(sp_data *sp, sp_ftbl *ft, const char *filename)
     sf_readf_float(snd, ft->tbl, ft->size);
 #endif
     sf_close(snd);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_ftbl_loadfile(sp_data *sp, sp_ftbl **ft, const char *filename)
+int ut_ftbl_loadfile(ut_data *ut, ut_ftbl **ft, const char *filename)
 {
-    *ft = malloc(sizeof(sp_ftbl));
-    sp_ftbl *ftp = *ft;
+    *ft = malloc(sizeof(ut_ftbl));
+    ut_ftbl *ftp = *ft;
     SF_INFO info;
     memset(&info, 0, sizeof(SF_INFO));
     info.format = 0;
     SNDFILE *snd = sf_open(filename, SFM_READ, &info);
     if(snd == NULL) {
-        return SP_NOT_OK;
+        return UT_NOT_OK;
     }
     size_t size = info.frames * info.channels;
 
-    ftp->tbl = malloc(sizeof(SPFLOAT) * (size + 1));
+    ftp->tbl = malloc(sizeof(UTFLOAT) * (size + 1));
 
-    sp_ftbl_init(sp, ftp, size);
+    ut_ftbl_init(ut, ftp, size);
 
 #ifdef USE_DOUBLE
     sf_readf_double(snd, ftp->tbl, ftp->size);
@@ -151,21 +151,21 @@ int sp_ftbl_loadfile(sp_data *sp, sp_ftbl **ft, const char *filename)
     sf_readf_float(snd, ftp->tbl, ftp->size);
 #endif
     sf_close(snd);
-    return SP_OK;
+    return UT_OK;
 }
 #endif
 
 /* port of GEN10 from Csound */
-int sp_gen_sinesum(sp_data *sp, sp_ftbl *ft, const char *argstring)
+int ut_gen_sinesum(ut_data *ut, ut_ftbl *ft, const char *argstring)
 {
-    sp_ftbl *args;
-    sp_ftbl_create(sp, &args, 1);
-    sp_gen_vals(sp, args, argstring);
+    ut_ftbl *args;
+    ut_ftbl_create(ut, &args, 1);
+    ut_gen_vals(ut, args, argstring);
 
     int32_t phs;
-    SPFLOAT amp;
+    UTFLOAT amp;
     int32_t flen = (int32_t)ft->size;
-    SPFLOAT tpdlen = 2.0 * M_PI / (SPFLOAT) flen;
+    UTFLOAT tpdlen = 2.0 * M_PI / (UTFLOAT) flen;
 
     int32_t i, n;
 
@@ -179,28 +179,28 @@ int sp_gen_sinesum(sp_data *sp, sp_ftbl *ft, const char *argstring)
             }
         }
     }
-    sp_ftbl_destroy(&args);
-    return SP_OK;
+    ut_ftbl_destroy(&args);
+    return UT_OK;
 }
 
-int sp_gen_line(sp_data *sp, sp_ftbl *ft, const char *argstring)
+int ut_gen_line(ut_data *ut, ut_ftbl *ft, const char *argstring)
 {
     uint16_t i, n = 0, seglen;
-    SPFLOAT incr, amp = 0;
-    SPFLOAT x1, x2, y1, y2;
-    sp_ftbl *args;
-    sp_ftbl_create(sp, &args, 1);
-    sp_gen_vals(sp, args, argstring);
+    UTFLOAT incr, amp = 0;
+    UTFLOAT x1, x2, y1, y2;
+    ut_ftbl *args;
+    ut_ftbl_create(ut, &args, 1);
+    ut_gen_vals(ut, args, argstring);
 
     if((args->size % 2) == 1 || args->size == 1) {
         fprintf(stderr, "Error: not enough arguments for gen_line.\n");
-        sp_ftbl_destroy(&args);
-        return SP_NOT_OK;
+        ut_ftbl_destroy(&args);
+        return UT_NOT_OK;
     } else if(args->size == 2) {
         for(i = 0; i < ft->size; i++) {
             ft->tbl[i] = args->tbl[1];
         }
-        return SP_OK;
+        return UT_OK;
     }
 
     x1 = args->tbl[0];
@@ -215,7 +215,7 @@ int sp_gen_line(sp_data *sp, sp_ftbl *ft, const char *argstring)
         }
 
         seglen = (x2 - x1);
-        incr = (SPFLOAT)(y2 - y1) / (seglen - 1);
+        incr = (UTFLOAT)(y2 - y1) / (seglen - 1);
         amp = y1;
 
         while(seglen != 0){
@@ -232,28 +232,28 @@ int sp_gen_line(sp_data *sp, sp_ftbl *ft, const char *argstring)
         x1 = x2;
     }
 
-    sp_ftbl_destroy(&args);
-    return SP_OK;
+    ut_ftbl_destroy(&args);
+    return UT_OK;
 }
 
-int sp_gen_xline(sp_data *sp, sp_ftbl *ft, const char *argstring)
+int ut_gen_xline(ut_data *ut, ut_ftbl *ft, const char *argstring)
 {
     uint16_t i, n = 0, seglen;
-    SPFLOAT mult, amp = 0;
-    SPFLOAT x1, x2, y1, y2;
-    sp_ftbl *args;
-    sp_ftbl_create(sp, &args, 1);
-    sp_gen_vals(sp, args, argstring);
+    UTFLOAT mult, amp = 0;
+    UTFLOAT x1, x2, y1, y2;
+    ut_ftbl *args;
+    ut_ftbl_create(ut, &args, 1);
+    ut_gen_vals(ut, args, argstring);
 
     if((args->size % 2) == 1 || args->size == 1) {
         fprintf(stderr, "Error: not enough arguments for gen_line.\n");
-        sp_ftbl_destroy(&args);
-        return SP_NOT_OK;
+        ut_ftbl_destroy(&args);
+        return UT_NOT_OK;
     } else if(args->size == 2) {
         for(i = 0; i < ft->size; i++) {
             ft->tbl[i] = args->tbl[1];
         }
-        return SP_OK;
+        return UT_OK;
     }
 
     x1 = args->tbl[0];
@@ -277,7 +277,7 @@ int sp_gen_xline(sp_data *sp, sp_ftbl *ft, const char *argstring)
 
         seglen = (uint32_t)(x2 - x1);
         mult = (y2 / y1);
-        mult = pow(mult, (SPFLOAT)1.0 / seglen);
+        mult = pow(mult, (UTFLOAT)1.0 / seglen);
         amp = y1;
 
         while(seglen != 0){
@@ -294,50 +294,50 @@ int sp_gen_xline(sp_data *sp, sp_ftbl *ft, const char *argstring)
         x1 = x2;
     }
 
-    sp_ftbl_destroy(&args);
-    return SP_OK;
+    ut_ftbl_destroy(&args);
+    return UT_OK;
 
 }
 
 
-static SPFLOAT gaussrand(sp_randmt *p, SPFLOAT scale)
+static UTFLOAT gaussrand(ut_randmt *p, UTFLOAT scale)
 {
     int64_t r1 = -((int64_t)0xFFFFFFFFU * 6);
     int n = 12;
-    SPFLOAT x;
+    UTFLOAT x;
 
     do {
-      r1 += (int64_t)sp_randmt_compute(p);
+      r1 += (int64_t)ut_randmt_compute(p);
     } while (--n);
 
-    x = (SPFLOAT)r1;
-    return (SPFLOAT)(x * ((SPFLOAT)scale * (1.0 / (3.83 * 4294967295.03125))));
+    x = (UTFLOAT)r1;
+    return (UTFLOAT)(x * ((UTFLOAT)scale * (1.0 / (3.83 * 4294967295.03125))));
 }
 
-int sp_gen_gauss(sp_data *sp, sp_ftbl *ft, SPFLOAT scale, uint32_t seed)
+int ut_gen_gauss(ut_data *ut, ut_ftbl *ft, UTFLOAT scale, uint32_t seed)
 {
     int n;
 
-    sp_randmt rand;
+    ut_randmt rand;
 
-    sp_randmt_seed(&rand, NULL, seed);
+    ut_randmt_seed(&rand, NULL, seed);
 
     for(n = 0; n < ft->size; n++) {
         ft->tbl[n] = gaussrand(&rand, scale);
     }
 
-    return SP_OK;
+    return UT_OK;
 }
 
 /* based off of GEN 19 */
-int sp_gen_composite(sp_data *sp, sp_ftbl *ft, const char *argstring)
+int ut_gen_composite(ut_data *ut, ut_ftbl *ft, const char *argstring)
 {
-    SPFLOAT phs, inc, amp, dc, tpdlen = 2 * M_PI/ (SPFLOAT) ft->size;
+    UTFLOAT phs, inc, amp, dc, tpdlen = 2 * M_PI/ (UTFLOAT) ft->size;
     int i, n;
     
-    sp_ftbl *args;
-    sp_ftbl_create(sp, &args, 1);
-    sp_gen_vals(sp, args, argstring);
+    ut_ftbl *args;
+    ut_ftbl_create(ut, &args, 1);
+    ut_gen_vals(ut, args, argstring);
 
     for(n = 0; n < args->size; n += 4) {
         inc = args->tbl[n] * tpdlen;
@@ -346,20 +346,20 @@ int sp_gen_composite(sp_data *sp, sp_ftbl *ft, const char *argstring)
         dc = args->tbl[n + 3];
 
         for (i = 0; i <ft->size ; i++) {
-            ft->tbl[i] += (SPFLOAT) (sin(phs) * amp + dc);
+            ft->tbl[i] += (UTFLOAT) (sin(phs) * amp + dc);
             if ((phs += inc) >= 2 * M_PI) phs -= 2 * M_PI;
         }
     }
 
-    sp_ftbl_destroy(&args);
-    return SP_OK;
+    ut_ftbl_destroy(&args);
+    return UT_OK;
 }
 
-int sp_gen_rand(sp_data *sp, sp_ftbl *ft, const char *argstring)
+int ut_gen_rand(ut_data *ut, ut_ftbl *ft, const char *argstring)
 {
-    sp_ftbl *args;
-    sp_ftbl_create(sp, &args, 1);
-    sp_gen_vals(sp, args, argstring);
+    ut_ftbl *args;
+    ut_ftbl_create(ut, &args, 1);
+    ut_gen_vals(ut, args, argstring);
     int n, pos = 0, i, size = 0;
 
     for(n = 0; n < args->size; n += 2) {
@@ -374,18 +374,18 @@ int sp_gen_rand(sp_data *sp, sp_ftbl *ft, const char *argstring)
     if(pos <= ft->size) {
         ft->size = pos;
     }
-    sp_ftbl_destroy(&args);
-    return SP_OK;
+    ut_ftbl_destroy(&args);
+    return UT_OK;
 }
 
-int sp_gen_triangle(sp_data *sp, sp_ftbl *ft)
+int ut_gen_triangle(ut_data *ut, ut_ftbl *ft)
 {
     unsigned int i;
     unsigned int counter;
-    SPFLOAT incr;
+    UTFLOAT incr;
     int step;
 
-    incr = 1.0f / (SPFLOAT)ft->size;
+    incr = 1.0f / (UTFLOAT)ft->size;
     incr *= 2;
 
     step = 1;
@@ -401,5 +401,5 @@ int sp_gen_triangle(sp_data *sp, sp_ftbl *ft)
         counter += step;
     }
 
-    return SP_OK;
+    return UT_OK;
 }

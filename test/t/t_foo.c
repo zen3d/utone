@@ -1,9 +1,9 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
-int t_foo(sp_test *tst, sp_data *sp, const char *hash) 
+int t_foo(ut_test *tst, ut_data *ut, const char *hash) 
 {
     uint32_t n;
     int fail = 0;
@@ -12,14 +12,14 @@ int t_foo(sp_test *tst, sp_data *sp, const char *hash)
 
     for(n = 0; n < tst->size; n++) {
         /* compute samples and add to test buffer */
-        sp_test_add_sample(tst, 0);
+        ut_test_add_sample(tst, 0);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
     /* destroy functions here */
 
-    if(fail) return SP_NOT_OK;
+    if(fail) return UT_NOT_OK;
     /* fail by default */
-    else return SP_NOT_OK;
+    else return UT_NOT_OK;
 }

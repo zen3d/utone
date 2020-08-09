@@ -7,71 +7,71 @@ sptbl["phaser"] = {
     },
 
     func = {
-        create = "sp_phaser_create",
-        destroy = "sp_phaser_destroy",
-        init = "sp_phaser_init",
-        compute = "sp_phaser_compute",
+        create = "ut_phaser_create",
+        destroy = "ut_phaser_destroy",
+        init = "ut_phaser_init",
+        compute = "ut_phaser_compute",
     },
 
     params = {
         optional = {
             {
                 name = "MaxNotch1Freq",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description = "Between 20 and 10000",
                 default = 800 
             },
             {
                 name = "MinNotch1Freq",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Between 20 and 5000",
                 default = 100
             },
             {
                 name = "Notch_width",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Between 10 and 5000",
                 default = 1000
             },
             {
                 name = "NotchFreq",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Between 1.1 and 4",
                 default = 1.5 
             },
             {
                 name = "VibratoMode",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="1 or 0",
                 default = 1
             },
             {
                 name = "depth",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Between 0 and 1",
                 default = 1
             },
             {
                 name = "feedback_gain",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Between 0 and 1",
                 default = 0
             },
             {
                 name = "invert",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="1 or 0",
                 default = 0
             },
             {
                 name = "level",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="-60 to 10 dB",
                 default = 0
             },
             {
                 name = "lfobpm",
-                type = "SPFLOAT*",
+                type = "UTFLOAT*",
                 description ="Between 24 and 360",
                 default = 30
             },

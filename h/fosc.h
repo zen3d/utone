@@ -1,10 +1,10 @@
-typedef struct sp_fosc{
-    SPFLOAT amp, freq, car, mod, indx, iphs;
+typedef struct ut_fosc{
+    UTFLOAT amp, freq, car, mod, indx, iphs;
     int32_t mphs, cphs;
-    sp_ftbl *ft;
-} sp_fosc;
+    ut_ftbl *ft;
+} ut_fosc;
 
-int sp_fosc_create(sp_fosc **p);
-int sp_fosc_destroy(sp_fosc **p);
-int sp_fosc_init(sp_data *sp, sp_fosc *p, sp_ftbl *ft);
-int sp_fosc_compute(sp_data *sp, sp_fosc *p, SPFLOAT *in, SPFLOAT *out);
+int ut_fosc_create(ut_fosc **p);
+int ut_fosc_destroy(ut_fosc **p);
+int ut_fosc_init(ut_data *ut, ut_fosc *p, ut_ftbl *ft);
+int ut_fosc_compute(ut_data *ut, ut_fosc *p, UTFLOAT *in, UTFLOAT *out);

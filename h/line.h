@@ -1,11 +1,11 @@
 typedef struct {
-    SPFLOAT a, dur, b;
-    SPFLOAT val, incr; 
+    UTFLOAT a, dur, b;
+    UTFLOAT val, incr; 
     uint32_t sdur, stime;
     int init;
-} sp_line;
+} ut_line;
 
-int sp_line_create(sp_line **p);
-int sp_line_destroy(sp_line **p);
-int sp_line_init(sp_data *sp, sp_line *p);
-int sp_line_compute(sp_data *sp, sp_line *p, SPFLOAT *in, SPFLOAT *out);
+int ut_line_create(ut_line **p);
+int ut_line_destroy(ut_line **p);
+int ut_line_init(ut_data *ut, ut_line *p);
+int ut_line_compute(ut_data *ut, ut_line *p, UTFLOAT *in, UTFLOAT *out);

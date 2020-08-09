@@ -1,34 +1,34 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_timer_create(sp_timer **p)
+int ut_timer_create(ut_timer **p)
 {
-    *p = malloc(sizeof(sp_timer));
-    return SP_OK;
+    *p = malloc(sizeof(ut_timer));
+    return UT_OK;
 }
 
-int sp_timer_destroy(sp_timer **p)
+int ut_timer_destroy(ut_timer **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_timer_init(sp_data *sp, sp_timer *p)
+int ut_timer_init(ut_data *ut, ut_timer *p)
 {
     p->mode = 0;
     p->pos = 0;
     p->time = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_timer_compute(sp_data *sp, sp_timer *p, SPFLOAT *in, SPFLOAT *out)
+int ut_timer_compute(ut_data *ut, ut_timer *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(*in != 0) {
         if(p->mode == 0) {
             p->pos = 0;
             p->mode = 1;
         } else if(p->mode == 1) {
-            p->time = (SPFLOAT) p->pos / sp->sr;
+            p->time = (UTFLOAT) p->pos / ut->sr;
             p->mode = 0;
         }
     }
@@ -38,5 +38,5 @@ int sp_timer_compute(sp_data *sp, sp_timer *p, SPFLOAT *in, SPFLOAT *out)
     }
 
     *out = p->time;
-    return SP_OK;
+    return UT_OK;
 }

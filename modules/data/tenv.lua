@@ -7,29 +7,29 @@ sptbl["tenv"] = {
     },
 
     func = {
-        create = "sp_tenv_create",
-        destroy = "sp_tenv_destroy",
-        init = "sp_tenv_init",
-        compute = "sp_tenv_compute",
+        create = "ut_tenv_create",
+        destroy = "ut_tenv_destroy",
+        init = "ut_tenv_init",
+        compute = "ut_tenv_compute",
     },
 
     params = {
         optional = {
             {
                 name = "atk",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Attack time, in seconds.",
                 default = 0.1
             },
             {
                 name = "hold",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Hold time, in seconds.",
                 default = 0.3
             },
             {
                 name = "rel",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Release time, in seconds.",
                 default = 0.2
             },

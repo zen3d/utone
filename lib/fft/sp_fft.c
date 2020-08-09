@@ -1,12 +1,12 @@
-void sp_fft_init(sp_fft *fft, int M)
+void ut_fft_init(ut_fft *fft, int M)
 {
-    SPFLOAT *utbl;
+    UTFLOAT *utbl;
     int16_t *BRLow;
     int16_t *BRLowCpx;
     int i;
 
     /* init cos table */
-    utbl = (SPFLOAT*) malloc((POW2(M) / 4 + 1) * sizeof(SPFLOAT));
+    utbl = (UTFLOAT*) malloc((POW2(M) / 4 + 1) * sizeof(UTFLOAT));
     fftCosInit(M, utbl);
 
     BRLowCpx =
@@ -23,17 +23,17 @@ void sp_fft_init(sp_fft *fft, int M)
     fft->utbl = utbl;
 }
 
-void sp_fftr(sp_fft *fft, SPFLOAT *buf, int FFTsize)
+void ut_fftr(ut_fft *fft, UTFLOAT *buf, int FFTsize)
 {
-    SPFLOAT *Utbl;
+    UTFLOAT *Utbl;
     int16_t *BRLow;
     int   M = log2(FFTsize);
     rffts1(buf, M, fft->utbl, fft->BRLow);
 }
 
-void sp_fft_cpx(sp_fft *fft, SPFLOAT *buf, int FFTsize)
+void ut_fft_cpx(ut_fft *fft, UTFLOAT *buf, int FFTsize)
 {
-    SPFLOAT *Utbl;
+    UTFLOAT *Utbl;
     int16_t *BRLow;
     int   M = log2(FFTsize);
     ffts1(buf, M, fft->utbl, fft->BRLowCpx);
@@ -41,15 +41,15 @@ void sp_fft_cpx(sp_fft *fft, SPFLOAT *buf, int FFTsize)
 
 
 
-void sp_ifftr(sp_fft *fft, SPFLOAT *buf, int FFTsize)
+void ut_ifftr(ut_fft *fft, UTFLOAT *buf, int FFTsize)
 {
-    SPFLOAT *Utbl;
+    UTFLOAT *Utbl;
     int16_t *BRLow;
     int   M = log2(FFTsize);
     riffts1(buf, M, fft->utbl, fft->BRLow);
 }
 
-void sp_fft_destroy(sp_fft *fft) 
+void ut_fft_destroy(ut_fft *fft) 
 {
     free(fft->utbl);
     free(fft->BRLow);

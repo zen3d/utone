@@ -1,63 +1,63 @@
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct{
-    sp_osc *osc;
-    sp_ftbl *ft;
-    sp_metro *mt;
-    sp_tenv *te;
-    sp_rpt *rpt;
-    sp_maygate *mg;
+    ut_osc *osc;
+    ut_ftbl *ft;
+    ut_metro *mt;
+    ut_tenv *te;
+    ut_rpt *rpt;
+    ut_maygate *mg;
 } UserData;
 
-void compute(sp_data *sp, void *udata){
+void compute(ut_data *ut, void *udata){
     UserData *ud = udata;
-    SPFLOAT met, osc, env, rpt, maygate, trig, dry;
-    sp_metro_compute(sp, ud->mt, NULL, &met);
-    sp_tenv_compute(sp, ud->te, &met, &env);
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
+    UTFLOAT met, osc, env, rpt, maygate, trig, dry;
+    ut_metro_compute(ut, ud->mt, NULL, &met);
+    ut_tenv_compute(ut, ud->te, &met, &env);
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
     dry = osc * env;
-    sp_maygate_compute(sp, ud->mg, &met, &maygate);
+    ut_maygate_compute(ut, ud->mg, &met, &maygate);
     trig = met * maygate;
-    sp_rpt_compute(sp, ud->rpt, &trig, &dry, &rpt);
-    sp->out[0] = rpt;
+    ut_rpt_compute(ut, ud->rpt, &trig, &dry, &rpt);
+    ut->out[0] = rpt;
 }
 
 int main(){
-    sp_data *sp;
+    ut_data *ut;
     UserData ud;
-    sp_create(&sp);
+    ut_create(&ut);
     int tempo = 120;
-    sp_rpt_create(&ud.rpt);
-    sp_maygate_create(&ud.mg);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 4096);
-    sp_metro_create(&ud.mt);
-    sp_tenv_create(&ud.te);
+    ut_rpt_create(&ud.rpt);
+    ut_maygate_create(&ud.mg);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 4096);
+    ut_metro_create(&ud.mt);
+    ut_tenv_create(&ud.te);
 
 
-    sp_maygate_init(sp, ud.mg);
+    ut_maygate_init(ut, ud.mg);
     ud.mg->prob = 0.5;
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
-    sp_metro_init(sp, ud.mt);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
+    ut_metro_init(ut, ud.mt);
     ud.mt->freq = tempo / 60.0;
-    sp_rpt_init(sp, ud.rpt, 1.0);
+    ut_rpt_init(ut, ud.rpt, 1.0);
     ud.rpt->bpm = tempo;
     ud.rpt->div = 8;
     ud.rpt->rep = 4;
-    sp_tenv_init(sp, ud.te);
+    ut_tenv_init(ut, ud.te);
     ud.te->atk = 0.001;
     ud.te->hold = 0.1;
     ud.te->rel =  0.1;
 
-    sp_process(sp, &ud, compute);
+    ut_process(ut, &ud, compute);
 
-    sp_tenv_destroy(&ud.te);
-    sp_metro_destroy(&ud.mt);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_rpt_destroy(&ud.rpt);
+    ut_tenv_destroy(&ud.te);
+    ut_metro_destroy(&ud.mt);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_rpt_destroy(&ud.rpt);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

@@ -1,9 +1,9 @@
-typedef struct sp_count{
+typedef struct ut_count{
     int32_t count, curcount;
     int mode;
-} sp_count;
+} ut_count;
 
-int sp_count_create(sp_count **p);
-int sp_count_destroy(sp_count **p);
-int sp_count_init(sp_data *sp, sp_count *p);
-int sp_count_compute(sp_data *sp, sp_count *p, SPFLOAT *in, SPFLOAT *out);
+int ut_count_create(ut_count **p);
+int ut_count_destroy(ut_count **p);
+int ut_count_init(ut_data *ut, ut_count *p);
+int ut_count_compute(ut_data *ut, ut_count *p, UTFLOAT *in, UTFLOAT *out);

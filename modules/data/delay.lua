@@ -7,17 +7,17 @@ sptbl["delay"] = {
     },
 
     func = {
-        create = "sp_delay_create",
-        destroy = "sp_delay_destroy",
-        init = "sp_delay_init",
-        compute = "sp_delay_compute",
+        create = "ut_delay_create",
+        destroy = "ut_delay_destroy",
+        init = "ut_delay_init",
+        compute = "ut_delay_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "time",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Delay time, in seconds.",
                 default = 1.0
             }
@@ -26,7 +26,7 @@ sptbl["delay"] = {
         optional = {
             {
                 name = "feedback",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Feedback amount. Should be a value between 0-1.",
                 default = 0.0
             }

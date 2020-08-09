@@ -7,17 +7,17 @@ sptbl["allpass"] = {
     },
 
     func = {
-        create = "sp_allpass_create",
-        destroy = "sp_allpass_destroy",
-        init = "sp_allpass_init",
-        compute = "sp_allpass_compute",
+        create = "ut_allpass_create",
+        destroy = "ut_allpass_destroy",
+        init = "ut_allpass_init",
+        compute = "ut_allpass_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "looptime",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "The loop time of the filter, in seconds. This can also be thought of as the delay time.",
                 default = 0.1
             }
@@ -26,7 +26,7 @@ sptbl["allpass"] = {
         optional = {
             {
                 name = "revtime",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "The reverberation time, in seconds (RT-60).",
                 default = 3.5
             },

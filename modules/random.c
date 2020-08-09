@@ -1,31 +1,31 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_random_create(sp_random **p)
+int ut_random_create(ut_random **p)
 {
-    *p = malloc(sizeof(sp_random));
-    return SP_OK;
+    *p = malloc(sizeof(ut_random));
+    return UT_OK;
 }
 
-int sp_random_destroy(sp_random **p)
+int ut_random_destroy(ut_random **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_random_init(sp_data *sp, sp_random *p)
+int ut_random_init(ut_data *ut, ut_random *p)
 {
     p->min = -1;
     p->max = 1;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_random_compute(sp_data *sp, sp_random *p, SPFLOAT *in, SPFLOAT *out)
+int ut_random_compute(ut_data *ut, ut_random *p, UTFLOAT *in, UTFLOAT *out)
 {
     /* Send the signal's input to the output */
-    SPFLOAT rnd = ((sp_rand(sp) % RAND_MAX) / (RAND_MAX * 1.0));
+    UTFLOAT rnd = ((ut_rand(ut) % RAND_MAX) / (RAND_MAX * 1.0));
     rnd *= (p->max - p->min);
     rnd += p->min;
     *out = rnd;
-    return SP_OK;
+    return UT_OK;
 }

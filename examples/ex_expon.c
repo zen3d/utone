@@ -1,55 +1,55 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_expon *line;
-    sp_osc *osc;
-    sp_ftbl *ft; 
-    sp_dmetro *dm;
+    ut_expon *line;
+    ut_osc *osc;
+    ut_ftbl *ft; 
+    ut_dmetro *dm;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, line = 0, dm = 0;
-    sp_dmetro_compute(sp, ud->dm, NULL, &dm);
-    sp_expon_compute(sp, ud->line, &dm, &line);
+    UTFLOAT osc = 0, line = 0, dm = 0;
+    ut_dmetro_compute(ut, ud->dm, NULL, &dm);
+    ut_expon_compute(ut, ud->line, &dm, &line);
     ud->osc->freq = line;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp->out[0] = osc;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut->out[0] = osc;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_expon_create(&ud.line);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_dmetro_create(&ud.dm);
+    ut_expon_create(&ud.line);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_dmetro_create(&ud.dm);
 
-    sp_expon_init(sp, ud.line);
+    ut_expon_init(ut, ud.line);
 
     ud.line->a = 100;
     ud.line->b = 400;
     ud.line->dur = 1;
 
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
-    sp_dmetro_init(sp, ud.dm);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
+    ut_dmetro_init(ut, ud.dm);
     ud.dm->time = 2;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_expon_destroy(&ud.line);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_dmetro_destroy(&ud.dm);
+    ut_expon_destroy(&ud.line);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_dmetro_destroy(&ud.dm);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

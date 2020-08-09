@@ -1,35 +1,35 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_dmetro_create(sp_dmetro **p)
+int ut_dmetro_create(ut_dmetro **p)
 {
-    *p = malloc(sizeof(sp_dmetro));
-    return SP_OK;
+    *p = malloc(sizeof(ut_dmetro));
+    return UT_OK;
 }
 
-int sp_dmetro_destroy(sp_dmetro **p)
+int ut_dmetro_destroy(ut_dmetro **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_dmetro_init(sp_data *sp, sp_dmetro *p)
+int ut_dmetro_init(ut_data *ut, ut_dmetro *p)
 {
     p->counter = 0;
     p->time = 1.0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_dmetro_compute(sp_data *sp, sp_dmetro *p, SPFLOAT *in, SPFLOAT *out)
+int ut_dmetro_compute(ut_data *ut, ut_dmetro *p, UTFLOAT *in, UTFLOAT *out)
 {
     *out = 0; 
 
     if(p->counter == 0) {
         *out = 1.0;
-        p->counter = (int)(sp->sr * p->time) + 1;
+        p->counter = (int)(ut->sr * p->time) + 1;
     }
 
     p->counter--; 
 
-    return SP_OK;
+    return UT_OK;
 }

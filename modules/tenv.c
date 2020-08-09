@@ -1,25 +1,25 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_tenv_create(sp_tenv **p)
+int ut_tenv_create(ut_tenv **p)
 {
-    *p = malloc(sizeof(sp_tenv));
-    sp_tenv *pp = *p;
-    sp_tevent_create(&pp->te);
-    return SP_OK;
+    *p = malloc(sizeof(ut_tenv));
+    ut_tenv *pp = *p;
+    ut_tevent_create(&pp->te);
+    return UT_OK;
 }
 
-int sp_tenv_destroy(sp_tenv **p)
+int ut_tenv_destroy(ut_tenv **p)
 {
-    sp_tenv *pp = *p;
-    sp_tevent_destroy(&pp->te);
+    ut_tenv *pp = *p;
+    ut_tevent_destroy(&pp->te);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-static void sp_tenv_reinit(void *ud)
+static void ut_tenv_reinit(void *ud)
 {
-    sp_tenv *env = ud;
+    ut_tenv *env = ud;
     env->pos = 0;
     env->atk_end = env->sr * env->atk;
     env->rel_start = env->sr * (env->atk + env->hold);
@@ -28,10 +28,10 @@ static void sp_tenv_reinit(void *ud)
     env->totaldur = env->sr * (env->atk + env->hold + env->rel);
 }
 
-static void sp_tenv_comp(void *ud, SPFLOAT *out)
+static void ut_tenv_comp(void *ud, UTFLOAT *out)
 {
-    sp_tenv *env = ud;
-    SPFLOAT sig = 0;
+    ut_tenv *env = ud;
+    UTFLOAT sig = 0;
     uint32_t pos = env->pos;
     *out = 0.0;
     if(pos < env->atk_end){
@@ -58,7 +58,7 @@ static void sp_tenv_comp(void *ud, SPFLOAT *out)
     env->last = sig;
 }
 
-int sp_tenv_init(sp_data *sp, sp_tenv *p)
+int ut_tenv_init(ut_data *ut, ut_tenv *p)
 {
     p->pos = 0;
     p->last = 0;
@@ -68,18 +68,18 @@ int sp_tenv_init(sp_data *sp, sp_tenv *p)
     p->sigmode = 0;
     p->input = 0;
 
-    p->sr = sp->sr;
+    p->sr = ut->sr;
     p->atk_end = p->sr * p->atk;
     p->rel_start = p->sr * (p->atk + p->hold);
     p->atk_slp = 1.0 / p->atk_end;
     p->rel_slp = -1.0 / (p->sr * p->rel);
     p->totaldur = p->sr * (p->atk + p->hold + p->rel);
-    sp_tevent_init(sp, p->te, sp_tenv_reinit, sp_tenv_comp, p);
-    return SP_OK;
+    ut_tevent_init(ut, p->te, ut_tenv_reinit, ut_tenv_comp, p);
+    return UT_OK;
 }
 
-int sp_tenv_compute(sp_data *sp, sp_tenv *p, SPFLOAT *in, SPFLOAT *out)
+int ut_tenv_compute(ut_data *ut, ut_tenv *p, UTFLOAT *in, UTFLOAT *out)
 {
-    sp_tevent_compute(sp, p->te, in, out);
-    return SP_OK;
+    ut_tevent_compute(ut, p->te, in, out);
+    return UT_OK;
 }

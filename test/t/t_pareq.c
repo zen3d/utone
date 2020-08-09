@@ -1,43 +1,43 @@
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
 typedef struct {
-    sp_pareq *pareq;
-    sp_noise *noise;
-    sp_ftbl *ft; 
+    ut_pareq *pareq;
+    ut_noise *noise;
+    ut_ftbl *ft; 
 } UserData;
 
-int t_pareq(sp_test *tst, sp_data *sp, const char *hash) 
+int t_pareq(ut_test *tst, ut_data *ut, const char *hash) 
 {
-    sp_srand(sp, 0); 
+    ut_srand(ut, 0); 
     uint32_t n;
     int fail = 0;
 
     UserData ud;
 
-    sp_pareq_create(&ud.pareq);
-    sp_noise_create(&ud.noise);
+    ut_pareq_create(&ud.pareq);
+    ut_noise_create(&ud.noise);
 
-    sp_pareq_init(sp, ud.pareq);
+    ut_pareq_init(ut, ud.pareq);
     ud.pareq->fc = 500;
-    sp_noise_init(sp, ud.noise);
+    ut_noise_init(ut, ud.noise);
     ud.noise->amp = 0.4;
 
     for(n = 0; n < tst->size; n++) {
-        SPFLOAT noise = 0, pareq = 0;
-        sp_noise_compute(sp, ud.noise, NULL, &noise);
-        sp_pareq_compute(sp, ud.pareq, &noise, &pareq);
-        sp->out[0] = pareq;
-        sp_test_add_sample(tst, sp->out[0]);
+        UTFLOAT noise = 0, pareq = 0;
+        ut_noise_compute(ut, ud.noise, NULL, &noise);
+        ut_pareq_compute(ut, ud.pareq, &noise, &pareq);
+        ut->out[0] = pareq;
+        ut_test_add_sample(tst, ut->out[0]);
     }
 
-    fail = sp_test_verify(tst, hash);
+    fail = ut_test_verify(tst, hash);
 
-    sp_pareq_destroy(&ud.pareq);
-    sp_noise_destroy(&ud.noise);
+    ut_pareq_destroy(&ud.pareq);
+    ut_noise_destroy(&ud.noise);
  
-    if(fail) return SP_NOT_OK;
-    else return SP_OK;
+    if(fail) return UT_NOT_OK;
+    else return UT_OK;
 }

@@ -1,31 +1,31 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "config.h"
 
 int main() {
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 12345);
-    sp->sr = SR;
-    sp->len = sp->sr * LEN;
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 12345);
+    ut->sr = SR;
+    ut->len = ut->sr * LEN;
     uint32_t t, u;
-    SPFLOAT in = 0, out = 0;
+    UTFLOAT in = 0, out = 0;
 
-    sp_bar *unit[NUM];
+    ut_bar *unit[NUM];
 
     for(u = 0; u < NUM; u++) { 
-        sp_bar_create(&unit[u]);
-        sp_bar_init(sp, unit[u], 3, 0.0001);
+        ut_bar_create(&unit[u]);
+        ut_bar_init(ut, unit[u], 3, 0.0001);
     }
 
-    for(t = 0; t < sp->len; t++) {
-        for(u = 0; u < NUM; u++) sp_bar_compute(sp, unit[u], &in, &out);
+    for(t = 0; t < ut->len; t++) {
+        for(u = 0; u < NUM; u++) ut_bar_compute(ut, unit[u], &in, &out);
     }
 
-    for(u = 0; u < NUM; u++) sp_bar_destroy(&unit[u]);
+    for(u = 0; u < NUM; u++) ut_bar_destroy(&unit[u]);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }
 

@@ -7,17 +7,17 @@ sptbl["sdelay"] = {
     },
 
     func = {
-        create = "sp_sdelay_create",
-        destroy = "sp_sdelay_destroy",
-        init = "sp_sdelay_init",
-        compute = "sp_sdelay_compute",
+        create = "ut_sdelay_create",
+        destroy = "ut_sdelay_destroy",
+        init = "ut_sdelay_init",
+        compute = "ut_sdelay_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "size",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Size of delay (in samples)",
                 default = "128"
             },

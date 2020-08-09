@@ -1,14 +1,14 @@
 typedef struct {
     void *faust;
     int argpos;
-    SPFLOAT *args[3];
-    SPFLOAT *atk;
-    SPFLOAT *rel;
-    SPFLOAT *bwratio;
-} sp_vocoder;
+    UTFLOAT *args[3];
+    UTFLOAT *atk;
+    UTFLOAT *rel;
+    UTFLOAT *bwratio;
+} ut_vocoder;
 
-int sp_vocoder_create(sp_vocoder **p);
-int sp_vocoder_destroy(sp_vocoder **p);
-int sp_vocoder_init(sp_data *sp, sp_vocoder *p);
-int sp_vocoder_compute(sp_data *sp, sp_vocoder *p, SPFLOAT *source, SPFLOAT *excite, SPFLOAT *out);
+int ut_vocoder_create(ut_vocoder **p);
+int ut_vocoder_destroy(ut_vocoder **p);
+int ut_vocoder_init(ut_data *ut, ut_vocoder *p);
+int ut_vocoder_compute(ut_data *ut, ut_vocoder *p, UTFLOAT *source, UTFLOAT *excite, UTFLOAT *out);
 

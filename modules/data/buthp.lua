@@ -7,17 +7,17 @@ sptbl["buthp"] = {
     },
 
     func = {
-        create = "sp_buthp_create",
-        destroy = "sp_buthp_destroy",
-        init = "sp_buthp_init",
-        compute = "sp_buthp_compute",
+        create = "ut_buthp_create",
+        destroy = "ut_buthp_destroy",
+        init = "ut_buthp_init",
+        compute = "ut_buthp_compute",
     },
 
     params = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Cutoff Frequency.",
                 default = 1000
             },

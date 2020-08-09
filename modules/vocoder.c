@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "CUI.h"
 
 #define max(a,b) ((a < b) ? b : a)
@@ -8,7 +8,7 @@
 
 
 #ifndef FAUSTFLOAT
-#define FAUSTFLOAT SPFLOAT
+#define FAUSTFLOAT UTFLOAT
 #endif  
 
 static float faustpower2_f(float value) {
@@ -1077,27 +1077,27 @@ static void computevocoder(vocoder* dsp, int count, FAUSTFLOAT** inputs, FAUSTFL
 
 static void addHorizontalSlider(void* ui_interface, const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
 {
-    sp_vocoder *p = ui_interface;
+    ut_vocoder *p = ui_interface;
     p->args[p->argpos] = zone;
     p->argpos++;
 }
 
-int sp_vocoder_create(sp_vocoder **p)
+int ut_vocoder_create(ut_vocoder **p)
 {
-    *p = malloc(sizeof(sp_vocoder));
-    return SP_OK;
+    *p = malloc(sizeof(ut_vocoder));
+    return UT_OK;
 }
 
-int sp_vocoder_destroy(sp_vocoder **p)
+int ut_vocoder_destroy(ut_vocoder **p)
 {
-    sp_vocoder *pp = *p;
+    ut_vocoder *pp = *p;
     vocoder *dsp = pp->faust;
     deletevocoder (dsp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_vocoder_init(sp_data *sp, sp_vocoder *p)
+int ut_vocoder_init(ut_data *ut, ut_vocoder *p)
 {
     vocoder *dsp = newvocoder(); 
     UIGlue UI;
@@ -1105,7 +1105,7 @@ int sp_vocoder_init(sp_data *sp, sp_vocoder *p)
     UI.addHorizontalSlider= addHorizontalSlider;
     UI.uiInterface = p;
     buildUserInterfacevocoder(dsp, &UI);
-    initvocoder(dsp, sp->sr);
+    initvocoder(dsp, ut->sr);
 
      
     p->atk = p->args[0]; 
@@ -1113,15 +1113,15 @@ int sp_vocoder_init(sp_data *sp, sp_vocoder *p)
     p->bwratio = p->args[2];
 
     p->faust = dsp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_vocoder_compute(sp_data *sp, sp_vocoder *p, SPFLOAT *source, SPFLOAT *excite, SPFLOAT *out)
+int ut_vocoder_compute(ut_data *ut, ut_vocoder *p, UTFLOAT *source, UTFLOAT *excite, UTFLOAT *out)
 {
 
     vocoder *dsp = p->faust;
-    SPFLOAT *faust_out[] = {out};
-    SPFLOAT *faust_in[] = {source, excite};
+    UTFLOAT *faust_out[] = {out};
+    UTFLOAT *faust_in[] = {source, excite};
     computevocoder(dsp, 1, faust_in, faust_out);
-    return SP_OK;
+    return UT_OK;
 }

@@ -48,7 +48,7 @@ extern "C" {
 # endif
 #endif
 
-#ifndef SOUNDPIPE_H
+#ifndef UTONE_H
 
 typedef struct {
     kiss_fft_scalar r;

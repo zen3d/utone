@@ -32,23 +32,23 @@ init function if you need to do things like create delay lines.
 
 ```
 typedef struct {
-    SPFLOAT gain;
-} sp_gain;
+    UTFLOAT gain;
+} ut_gain;
 ```
 
 ## The Module File
 
 ```
-int sp_gain_init(sp_data *sp, sp_gain *p)
+int ut_gain_init(ut_data *sp, ut_gain *p)
 {
     p->gain = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_gain_compute(sp_data *sp, sp_gain *p, SPFLOAT *in, SPFLOAT *out)
+int ut_gain_compute(ut_data *sp, ut_gain *p, UTFLOAT *in, UTFLOAT *out)
 {
     *out = *in * p->gain;
-    return SP_OK;
+    return UT_OK;
 }
 ```
 
@@ -58,46 +58,46 @@ int sp_gain_compute(sp_data *sp, sp_gain *p, SPFLOAT *in, SPFLOAT *out)
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_gain *gain;
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_gain *gain;
+    ut_osc *osc;
+    ut_ftbl *ft; 
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *sp, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, gain = 0;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp_gain_compute(sp, ud->gain, &osc, &gain);
+    UTFLOAT osc = 0, gain = 0;
+    ut_osc_compute(sp, ud->osc, NULL, &osc);
+    ut_gain_compute(sp, ud->gain, &osc, &gain);
     sp->out[0] = gain;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *sp;
+    ut_create(&sp);
 
-    sp_gain_create(&ud.gain);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
+    ut_gain_create(&ud.gain);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(sp, &ud.ft, 2048);
 
     ud.gain->gain = 0.3;
 
-    sp_gain_init(sp, ud.gain);
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft);
+    ut_gain_init(sp, ud.gain);
+    ut_gen_sine(sp, ud.ft);
+    ut_osc_init(sp, ud.osc, ud.ft);
 
     sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut_process(sp, &ud, process);
 
-    sp_gain_destroy(&ud.gain);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
+    ut_gain_destroy(&ud.gain);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
 
-    sp_destroy(&sp);
+    ut_destroy(&sp);
     return 0;
 }
 ```
@@ -114,17 +114,17 @@ sptbl["gain"] = {
     },
     
     func = {
-        create = "sp_gain_create",
-        destroy = "sp_gain_destroy",
-        init = "sp_gain_init",
-        compute = "sp_gain_compute"
+        create = "ut_gain_create",
+        destroy = "ut_gain_destroy",
+        init = "ut_gain_init",
+        compute = "ut_gain_compute"
     },
     
     params = {
         optional = {
             {
                 name = "gain",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Sets the gain",
                 default = 0
             },

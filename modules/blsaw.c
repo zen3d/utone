@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "CUI.h"
 
 #define max(a,b) ((a < b) ? b : a)
@@ -119,27 +119,27 @@ void computeblsaw(blsaw* dsp, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outpu
 
 static void addHorizontalSlider(void* ui_interface, const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
 {
-    sp_blsaw *p = ui_interface;
+    ut_blsaw *p = ui_interface;
     p->args[p->argpos] = zone;
     p->argpos++;
 }
 
-int sp_blsaw_create(sp_blsaw **p)
+int ut_blsaw_create(ut_blsaw **p)
 {
-    *p = malloc(sizeof(sp_blsaw));
-    return SP_OK;
+    *p = malloc(sizeof(ut_blsaw));
+    return UT_OK;
 }
 
-int sp_blsaw_destroy(sp_blsaw **p)
+int ut_blsaw_destroy(ut_blsaw **p)
 {
-    sp_blsaw *pp = *p;
+    ut_blsaw *pp = *p;
     blsaw *dsp = pp->ud;
     deleteblsaw (dsp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_blsaw_init(sp_data *sp, sp_blsaw *p)
+int ut_blsaw_init(ut_data *ut, ut_blsaw *p)
 {
     blsaw *dsp = newblsaw();
     UIGlue UI;
@@ -147,25 +147,25 @@ int sp_blsaw_init(sp_data *sp, sp_blsaw *p)
     UI.addHorizontalSlider= addHorizontalSlider;
     UI.uiInterface = p;
     buildUserInterfaceblsaw(dsp, &UI);
-    initblsaw(dsp, sp->sr);
+    initblsaw(dsp, ut->sr);
 
 
     p->freq = p->args[0];
     p->amp = p->args[1];
 
     p->ud = dsp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_blsaw_compute(sp_data *sp, sp_blsaw *p, SPFLOAT *in, SPFLOAT *out)
+int ut_blsaw_compute(ut_data *ut, ut_blsaw *p, UTFLOAT *in, UTFLOAT *out)
 {
 
     blsaw *dsp = p->ud;
-    SPFLOAT out1 = 0;
-    SPFLOAT *faust_out[] = {&out1};
-    SPFLOAT *faust_in[] = {in};
+    UTFLOAT out1 = 0;
+    UTFLOAT *faust_out[] = {&out1};
+    UTFLOAT *faust_in[] = {in};
     computeblsaw(dsp, 1, faust_in, faust_out);
 
     *out = out1;
-    return SP_OK;
+    return UT_OK;
 }

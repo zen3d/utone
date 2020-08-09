@@ -1,11 +1,11 @@
 typedef struct {
-    SPFLOAT incr;
-    SPFLOAT index;
+    UTFLOAT incr;
+    UTFLOAT index;
     int32_t sample_index;
-    SPFLOAT value;
-} sp_fold;
+    UTFLOAT value;
+} ut_fold;
 
-int sp_fold_create(sp_fold **p);
-int sp_fold_destroy(sp_fold **p);
-int sp_fold_init(sp_data *sp, sp_fold *p);
-int sp_fold_compute(sp_data *sp, sp_fold *p, SPFLOAT *in, SPFLOAT *out);
+int ut_fold_create(ut_fold **p);
+int ut_fold_destroy(ut_fold **p);
+int ut_fold_init(ut_data *ut, ut_fold *p);
+int ut_fold_compute(ut_data *ut, ut_fold *p, UTFLOAT *in, UTFLOAT *out);

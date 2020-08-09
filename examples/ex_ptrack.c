@@ -1,67 +1,67 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_ptrack *ptrack;
-    sp_osc *osc;
-    sp_ftbl *ft;
-    sp_blsaw *sig;
-    sp_randh *randh;
-    sp_port *port;
+    ut_ptrack *ptrack;
+    ut_osc *osc;
+    ut_ftbl *ft;
+    ut_blsaw *sig;
+    ut_randh *randh;
+    ut_port *port;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT freq = 0, amp = 0, sig = 0, randh = 0, osc = 0;
-    SPFLOAT portfreq = 0;
-    sp_randh_compute(sp, ud->randh, NULL, &randh);
-    sp_port_compute(sp, ud->port, &randh, &portfreq);
+    UTFLOAT freq = 0, amp = 0, sig = 0, randh = 0, osc = 0;
+    UTFLOAT portfreq = 0;
+    ut_randh_compute(ut, ud->randh, NULL, &randh);
+    ut_port_compute(ut, ud->port, &randh, &portfreq);
     *ud->sig->freq = portfreq;
-    sp_blsaw_compute(sp, ud->sig, NULL, &sig);
-    sp_ptrack_compute(sp, ud->ptrack, &sig, &freq, &amp);
+    ut_blsaw_compute(ut, ud->sig, NULL, &sig);
+    ut_ptrack_compute(ut, ud->ptrack, &sig, &freq, &amp);
     ud->osc->freq = freq * 2;
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
-    sp->out[0] = (osc + sig * 0.1) * 0.5;
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
+    ut->out[0] = (osc + sig * 0.1) * 0.5;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_ptrack_create(&ud.ptrack);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 4096);
-    sp_blsaw_create(&ud.sig);
-    sp_randh_create(&ud.randh);
-    sp_port_create(&ud.port);
+    ut_ptrack_create(&ud.ptrack);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 4096);
+    ut_blsaw_create(&ud.sig);
+    ut_randh_create(&ud.randh);
+    ut_port_create(&ud.port);
 
-    sp_ptrack_init(sp, ud.ptrack, 512, 20);
-    sp_randh_init(sp, ud.randh);
+    ut_ptrack_init(ut, ud.ptrack, 512, 20);
+    ut_randh_init(ut, ud.randh);
     ud.randh->max = 500;
     ud.randh->min = 200;
     ud.randh->freq = 6;
-    sp_port_init(sp, ud.port, 0.005);
+    ut_port_init(ut, ud.port, 0.005);
 
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
 
-    sp_blsaw_init(sp, ud.sig);
+    ut_blsaw_init(ut, ud.sig);
     *ud.sig->amp = 0.5;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_blsaw_destroy(&ud.sig);
-    sp_randh_destroy(&ud.randh);
-    sp_ptrack_destroy(&ud.ptrack);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_port_destroy(&ud.port);
+    ut_blsaw_destroy(&ud.sig);
+    ut_randh_destroy(&ud.randh);
+    ut_ptrack_destroy(&ud.ptrack);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_port_destroy(&ud.port);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

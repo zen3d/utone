@@ -1,54 +1,54 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_smoothdelay *smoothdelay;
-    sp_osc *osc;
-    sp_ftbl *ft; 
-    sp_diskin *diskin;
+    ut_smoothdelay *smoothdelay;
+    ut_osc *osc;
+    ut_ftbl *ft; 
+    ut_diskin *diskin;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT osc = 0, smoothdelay = 0, diskin = 0;
-    sp_diskin_compute(sp, ud->diskin, NULL, &diskin);
-    sp_osc_compute(sp, ud->osc, NULL, &osc);
+    UTFLOAT osc = 0, smoothdelay = 0, diskin = 0;
+    ut_diskin_compute(ut, ud->diskin, NULL, &diskin);
+    ut_osc_compute(ut, ud->osc, NULL, &osc);
     osc = 0.1 + (0.5 * (1 + osc)) * 0.8;
     ud->smoothdelay->del = osc;
-    sp_smoothdelay_compute(sp, ud->smoothdelay, &diskin, &smoothdelay);
-    sp->out[0] = diskin + smoothdelay;
+    ut_smoothdelay_compute(ut, ud->smoothdelay, &diskin, &smoothdelay);
+    ut->out[0] = diskin + smoothdelay;
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_smoothdelay_create(&ud.smoothdelay);
-    sp_osc_create(&ud.osc);
-    sp_ftbl_create(sp, &ud.ft, 2048);
-    sp_diskin_create(&ud.diskin);
+    ut_smoothdelay_create(&ud.smoothdelay);
+    ut_osc_create(&ud.osc);
+    ut_ftbl_create(ut, &ud.ft, 2048);
+    ut_diskin_create(&ud.diskin);
 
-    sp_smoothdelay_init(sp, ud.smoothdelay, 1.0, 1024);
+    ut_smoothdelay_init(ut, ud.smoothdelay, 1.0, 1024);
     ud.smoothdelay->feedback = 0.5;
     ud.smoothdelay->del = 0.1;
-    sp_gen_sine(sp, ud.ft);
-    sp_osc_init(sp, ud.osc, ud.ft, 0);
+    ut_gen_sine(ut, ud.ft);
+    ut_osc_init(ut, ud.osc, ud.ft, 0);
     ud.osc->freq = 0.2;
     ud.osc->amp = 1.0;
-    sp_diskin_init(sp, ud.diskin, "oneart.wav");
+    ut_diskin_init(ut, ud.diskin, "oneart.wav");
 
-    sp->len = 44100 * 10;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 10;
+    ut_process(ut, &ud, process);
 
-    sp_smoothdelay_destroy(&ud.smoothdelay);
-    sp_ftbl_destroy(&ud.ft);
-    sp_osc_destroy(&ud.osc);
-    sp_diskin_destroy(&ud.diskin);
+    ut_smoothdelay_destroy(&ud.smoothdelay);
+    ut_ftbl_destroy(&ud.ft);
+    ut_osc_destroy(&ud.osc);
+    ut_diskin_destroy(&ud.diskin);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

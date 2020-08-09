@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "CUI.h"
 
 #ifndef FAUSTFLOAT
@@ -302,34 +302,34 @@ void computephaser(phaser* dsp, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** out
 
 static void addHorizontalSlider(void* ui_interface, const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
 {
-    sp_phaser *p = ui_interface;
+    ut_phaser *p = ui_interface;
     p->args[p->argpos] = zone;
     p->argpos++;
 }
 
 static void addCheckButton (void* ui_interface, const char* label, FAUSTFLOAT* zone)
 {
-    sp_phaser *p = ui_interface;
+    ut_phaser *p = ui_interface;
     p->args[p->argpos] = zone;
     p->argpos++;
 }
 
-int sp_phaser_create(sp_phaser **p)
+int ut_phaser_create(ut_phaser **p)
 {
-    *p = malloc(sizeof(sp_phaser));
-    return SP_OK;
+    *p = malloc(sizeof(ut_phaser));
+    return UT_OK;
 }
 
-int sp_phaser_destroy(sp_phaser **p)
+int ut_phaser_destroy(ut_phaser **p)
 {
-    sp_phaser *pp = *p;
+    ut_phaser *pp = *p;
     phaser *dsp = pp->faust;
     deletephaser (dsp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_phaser_init(sp_data *sp, sp_phaser *p)
+int ut_phaser_init(ut_data *ut, ut_phaser *p)
 {
     phaser *dsp = newphaser(); 
     UIGlue UI;
@@ -338,7 +338,7 @@ int sp_phaser_init(sp_data *sp, sp_phaser *p)
     UI.addCheckButton = addCheckButton;
     UI.uiInterface = p;
     buildUserInterfacephaser(dsp, &UI);
-    initphaser(dsp, sp->sr);
+    initphaser(dsp, ut->sr);
 
      
     p->MaxNotch1Freq = p->args[0]; 
@@ -353,15 +353,15 @@ int sp_phaser_init(sp_data *sp, sp_phaser *p)
     p->lfobpm = p->args[9];
 
     p->faust = dsp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_phaser_compute(sp_data *sp, sp_phaser *p, 
-	SPFLOAT *in1, SPFLOAT *in2, SPFLOAT *out1, SPFLOAT *out2) 
+int ut_phaser_compute(ut_data *ut, ut_phaser *p, 
+	UTFLOAT *in1, UTFLOAT *in2, UTFLOAT *out1, UTFLOAT *out2) 
 {
     phaser *dsp = p->faust;
-    SPFLOAT *faust_out[] = {out1, out2};
-    SPFLOAT *faust_in[] = {in1, in2};
+    UTFLOAT *faust_out[] = {out1, out2};
+    UTFLOAT *faust_in[] = {in1, in2};
     computephaser(dsp, 1, faust_in, faust_out);
-    return SP_OK;
+    return UT_OK;
 }

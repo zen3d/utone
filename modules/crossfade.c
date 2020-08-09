@@ -1,26 +1,26 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_crossfade_create(sp_crossfade **p)
+int ut_crossfade_create(ut_crossfade **p)
 {
-    *p = malloc(sizeof(sp_crossfade));
-    return SP_OK;
+    *p = malloc(sizeof(ut_crossfade));
+    return UT_OK;
 }
 
-int sp_crossfade_destroy(sp_crossfade **p)
+int ut_crossfade_destroy(ut_crossfade **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_crossfade_init(sp_data *sp, sp_crossfade *p)
+int ut_crossfade_init(ut_data *ut, ut_crossfade *p)
 {
     p->pos = 0.5;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_crossfade_compute(sp_data *sp, sp_crossfade *p, SPFLOAT *in1, SPFLOAT *in2, SPFLOAT *out)
+int ut_crossfade_compute(ut_data *ut, ut_crossfade *p, UTFLOAT *in1, UTFLOAT *in2, UTFLOAT *out)
 {
     *out = *in2 * p->pos + *in1 * (1 - p->pos);
-    return SP_OK;
+    return UT_OK;
 }

@@ -1,8 +1,8 @@
 typedef struct {
-    SPFLOAT bar;
-} sp_foo;
+    UTFLOAT bar;
+} ut_foo;
 
-int sp_foo_create(sp_foo **p);
-int sp_foo_destroy(sp_foo **p);
-int sp_foo_init(sp_data *sp, sp_foo *p);
-int sp_foo_compute(sp_data *sp, sp_foo *p, SPFLOAT *in, SPFLOAT *out);
+int ut_foo_create(ut_foo **p);
+int ut_foo_destroy(ut_foo **p);
+int ut_foo_init(ut_data *ut, ut_foo *p);
+int ut_foo_compute(ut_data *ut, ut_foo *p, UTFLOAT *in, UTFLOAT *out);

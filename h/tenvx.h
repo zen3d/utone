@@ -1,13 +1,13 @@
-typedef struct sp_tenvx{
-    SPFLOAT atk, rel, hold;
-    SPFLOAT patk, prel;
+typedef struct ut_tenvx{
+    UTFLOAT atk, rel, hold;
+    UTFLOAT patk, prel;
     uint32_t count;
-    SPFLOAT a_a, b_a;
-    SPFLOAT a_r, b_r;
-    SPFLOAT y;
-} sp_tenvx;
+    UTFLOAT a_a, b_a;
+    UTFLOAT a_r, b_r;
+    UTFLOAT y;
+} ut_tenvx;
 
-int sp_tenvx_create(sp_tenvx **p);
-int sp_tenvx_destroy(sp_tenvx **p);
-int sp_tenvx_init(sp_data *sp, sp_tenvx *p);
-int sp_tenvx_compute(sp_data *sp, sp_tenvx *p, SPFLOAT *in, SPFLOAT *out);
+int ut_tenvx_create(ut_tenvx **p);
+int ut_tenvx_destroy(ut_tenvx **p);
+int ut_tenvx_init(ut_data *ut, ut_tenvx *p);
+int ut_tenvx_compute(ut_data *ut, ut_tenvx *p, UTFLOAT *in, UTFLOAT *out);

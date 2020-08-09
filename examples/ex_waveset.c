@@ -1,40 +1,40 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_waveset *waveset;
-    sp_diskin *diskin;
+    ut_waveset *waveset;
+    ut_diskin *diskin;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT wav = 0, waveset = 0;
-    sp_diskin_compute(sp, ud->diskin, NULL, &wav);
-    sp_waveset_compute(sp, ud->waveset, &wav, &waveset);
-    sp_out(sp, 0, waveset);
+    UTFLOAT wav = 0, waveset = 0;
+    ut_diskin_compute(ut, ud->diskin, NULL, &wav);
+    ut_waveset_compute(ut, ud->waveset, &wav, &waveset);
+    ut_out(ut, 0, waveset);
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_waveset_create(&ud.waveset);
-    sp_diskin_create(&ud.diskin);
+    ut_waveset_create(&ud.waveset);
+    ut_diskin_create(&ud.diskin);
 
-    sp_waveset_init(sp, ud.waveset, 1.0);
+    ut_waveset_init(ut, ud.waveset, 1.0);
     ud.waveset->rep = 3.0;
-    sp_diskin_init(sp, ud.diskin, "oneart.wav");
+    ut_diskin_init(ut, ud.diskin, "oneart.wav");
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_waveset_destroy(&ud.waveset);
-    sp_diskin_destroy(&ud.diskin);
+    ut_waveset_destroy(&ud.waveset);
+    ut_diskin_destroy(&ud.diskin);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

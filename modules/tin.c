@@ -1,31 +1,31 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_tin_create(sp_tin **p)
+int ut_tin_create(ut_tin **p)
 {
-    *p = malloc(sizeof(sp_tin));
-    return SP_OK;
+    *p = malloc(sizeof(ut_tin));
+    return UT_OK;
 }
 
-int sp_tin_destroy(sp_tin **p)
+int ut_tin_destroy(ut_tin **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tin_init(sp_data *sp, sp_tin *p)
+int ut_tin_init(ut_data *ut, ut_tin *p)
 {
     p->fp = stdin; 
     p->val = 0;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_tin_compute(sp_data *sp, sp_tin *p, SPFLOAT *in, SPFLOAT *out)
+int ut_tin_compute(ut_data *ut, ut_tin *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(*in) {
-        fread(&p->val, sizeof(SPFLOAT), 1, p->fp);
+        fread(&p->val, sizeof(UTFLOAT), 1, p->fp);
     }
 
     *out = p->val;
-    return SP_OK;
+    return UT_OK;
 }

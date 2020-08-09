@@ -7,10 +7,10 @@ sptbl["spa"] = {
     },
 
     func = {
-        create = "sp_spa_create",
-        destroy = "sp_spa_destroy",
-        init = "sp_spa_init",
-        compute = "sp_spa_compute",
+        create = "ut_uta_create",
+        destroy = "ut_uta_destroy",
+        init = "ut_uta_init",
+        compute = "ut_uta_compute",
     },
 
     params = {
@@ -28,7 +28,7 @@ sptbl["spa"] = {
     modtype = "module",
 
     description = [[Stream a Soundpipe Audio File
-Similar to sp_diskin, sp_spa will stream a file in the internal soundpipe
+Similar to ut_diskin, ut_uta will stream a file in the internal utone
 audio format. Such a format is useful for instances where you need to read
 audio files, but can't use libsndfile. 
 ]],

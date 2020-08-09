@@ -7,17 +7,17 @@ sptbl["smoothdelay"] = {
     },
 
     func = {
-        create = "sp_smoothdelay_create",
-        destroy = "sp_smoothdelay_destroy",
-        init = "sp_smoothdelay_init",
-        compute = "sp_smoothdelay_compute",
+        create = "ut_smoothdelay_create",
+        destroy = "ut_smoothdelay_destroy",
+        init = "ut_smoothdelay_init",
+        compute = "ut_smoothdelay_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "maxdel",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Maximum delay time (in seconds)",
                 default = 1.0
             },
@@ -32,13 +32,13 @@ sptbl["smoothdelay"] = {
         optional = {
             {
                 name = "feedback",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="",
                 default = 0.1
             },
             {
                 name = "del",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "",
                 default = 0.5
             },

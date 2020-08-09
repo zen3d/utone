@@ -1,19 +1,19 @@
 typedef struct {
-    SPFLOAT atk;
-    SPFLOAT dec;
-    SPFLOAT sus;
-    SPFLOAT rel;
+    UTFLOAT atk;
+    UTFLOAT dec;
+    UTFLOAT sus;
+    UTFLOAT rel;
     uint32_t timer;
     uint32_t atk_time;
-    SPFLOAT a;
-    SPFLOAT b;
-    SPFLOAT y;
-    SPFLOAT x;
-    SPFLOAT prev;
+    UTFLOAT a;
+    UTFLOAT b;
+    UTFLOAT y;
+    UTFLOAT x;
+    UTFLOAT prev;
     int mode;
-} sp_adsr;
+} ut_adsr;
 
-int sp_adsr_create(sp_adsr **p);
-int sp_adsr_destroy(sp_adsr **p);
-int sp_adsr_init(sp_data *sp, sp_adsr *p);
-int sp_adsr_compute(sp_data *sp, sp_adsr *p, SPFLOAT *in, SPFLOAT *out);
+int ut_adsr_create(ut_adsr **p);
+int ut_adsr_destroy(ut_adsr **p);
+int ut_adsr_init(ut_data *ut, ut_adsr *p);
+int ut_adsr_compute(ut_data *ut, ut_adsr *p, UTFLOAT *in, UTFLOAT *out);

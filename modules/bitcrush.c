@@ -1,35 +1,35 @@
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 
-int sp_bitcrush_create(sp_bitcrush **p)
+int ut_bitcrush_create(ut_bitcrush **p)
 {
-    *p = malloc(sizeof(sp_bitcrush));
-    return SP_OK;
+    *p = malloc(sizeof(ut_bitcrush));
+    return UT_OK;
 }
 
-int sp_bitcrush_destroy(sp_bitcrush **p)
+int ut_bitcrush_destroy(ut_bitcrush **p)
 {
-    sp_bitcrush *pp = *p;
-    sp_fold_destroy(&pp->fold);
+    ut_bitcrush *pp = *p;
+    ut_fold_destroy(&pp->fold);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_bitcrush_init(sp_data *sp, sp_bitcrush *p)
+int ut_bitcrush_init(ut_data *ut, ut_bitcrush *p)
 {
     p->bitdepth = 8;
     p->srate = 10000;
-    sp_fold_create(&p->fold);
-    sp_fold_init(sp, p->fold);
-    return SP_OK;
+    ut_fold_create(&p->fold);
+    ut_fold_init(ut, p->fold);
+    return UT_OK;
 }
 
-int sp_bitcrush_compute(sp_data *sp, sp_bitcrush *p, SPFLOAT *in, SPFLOAT *out)
+int ut_bitcrush_compute(ut_data *ut, ut_bitcrush *p, UTFLOAT *in, UTFLOAT *out)
 {
-    SPFLOAT bits = pow(2, floor(p->bitdepth));
-    SPFLOAT foldamt = sp->sr / p->srate;
-    SPFLOAT sig;
+    UTFLOAT bits = pow(2, floor(p->bitdepth));
+    UTFLOAT foldamt = ut->sr / p->srate;
+    UTFLOAT sig;
     *out = *in * 65536.0;
     *out += 32768;
     *out *= (bits / 65536.0);
@@ -37,7 +37,7 @@ int sp_bitcrush_compute(sp_data *sp, sp_bitcrush *p, SPFLOAT *in, SPFLOAT *out)
     *out = *out * (65536.0 / bits) - 32768;
     sig = *out;
     p->fold->incr = foldamt;
-    sp_fold_compute(sp, p->fold, &sig, out);
+    ut_fold_compute(ut, p->fold, &sig, out);
     *out /= 65536.0;
-    return SP_OK;
+    return UT_OK;
 }

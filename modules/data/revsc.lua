@@ -7,23 +7,23 @@ sptbl["revsc"] = {
     },
 
     func = {
-        create = "sp_revsc_create",
-        destroy = "sp_revsc_destroy",
-        init = "sp_revsc_init",
-        compute = "sp_revsc_compute",
+        create = "ut_revsc_create",
+        destroy = "ut_revsc_destroy",
+        init = "ut_revsc_init",
+        compute = "ut_revsc_compute",
     },
 
     params = {
         optional = {
             {
                 name = "feedback",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Value between 0-1 that sets feedback value. The larger the value, the longer the decay.",
                 default = 0.97
             },
             {
                 name = "lpfreq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="low pass cutoff frequency.",
                 default = 10000
             },

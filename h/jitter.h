@@ -1,12 +1,12 @@
-typedef struct sp_jitter{
-    SPFLOAT amp, cpsMin, cpsMax;
-    SPFLOAT cps;
+typedef struct ut_jitter{
+    UTFLOAT amp, cpsMin, cpsMax;
+    UTFLOAT cps;
     int32_t phs;
     int initflag;
-    SPFLOAT num1, num2, dfdmax;
-} sp_jitter;
+    UTFLOAT num1, num2, dfdmax;
+} ut_jitter;
 
-int sp_jitter_create(sp_jitter **p);
-int sp_jitter_destroy(sp_jitter **p);
-int sp_jitter_init(sp_data *sp, sp_jitter *p);
-int sp_jitter_compute(sp_data *sp, sp_jitter *p, SPFLOAT *in, SPFLOAT *out);
+int ut_jitter_create(ut_jitter **p);
+int ut_jitter_destroy(ut_jitter **p);
+int ut_jitter_init(ut_data *ut, ut_jitter *p);
+int ut_jitter_compute(ut_data *ut, ut_jitter *p, UTFLOAT *in, UTFLOAT *out);

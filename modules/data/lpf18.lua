@@ -7,29 +7,29 @@ sptbl["lpf18"] = {
     },
 
     func = {
-        create = "sp_lpf18_create",
-        destroy = "sp_lpf18_destroy",
-        init = "sp_lpf18_init",
-        compute = "sp_lpf18_compute",
+        create = "ut_lpf18_create",
+        destroy = "ut_lpf18_destroy",
+        init = "ut_lpf18_init",
+        compute = "ut_lpf18_compute",
     },
 
     params = {
         optional = {
             {
                 name = "cutoff",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Filter cutoff frequency, in Hertz",
                 default = 1000
             },
             {
                 name = "res",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Resonance. Expects a value in the range 0-1. A value of 1.0 will self oscillate at the cutoff frequency.",
                 default = 0.8
             },
             {
                 name = "dist",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Distortion amount.",
                 default = 2
             },

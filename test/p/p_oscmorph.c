@@ -1,45 +1,45 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "config.h"
 
 int main() {
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 12345);
-    sp->sr = SR;
-    sp->len = sp->sr * LEN;
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 12345);
+    ut->sr = SR;
+    ut->len = ut->sr * LEN;
     uint32_t t, u;
-    SPFLOAT in = 0, out = 0;
+    UTFLOAT in = 0, out = 0;
 
-    sp_ftbl *ft[2];
-    sp_ftbl *ft1;
-    sp_ftbl *ft2;
+    ut_ftbl *ft[2];
+    ut_ftbl *ft1;
+    ut_ftbl *ft2;
 
-    sp_oscmorph *unit[NUM];
+    ut_oscmorph *unit[NUM];
 
-    sp_ftbl_create(sp, &ft1, 4096);
-    sp_gen_sine(sp, ft1);
-    sp_ftbl_create(sp, &ft2, 4096);
-    sp_gen_sinesum(sp, ft2, "1 1 1");
+    ut_ftbl_create(ut, &ft1, 4096);
+    ut_gen_sine(ut, ft1);
+    ut_ftbl_create(ut, &ft2, 4096);
+    ut_gen_sinesum(ut, ft2, "1 1 1");
 
     ft[0] = ft1;
     ft[1] = ft2;
 
     for(u = 0; u < NUM; u++) { 
-        sp_oscmorph_create(&unit[u]);
-        sp_oscmorph_init(sp, unit[u], ft, 2, 0);
+        ut_oscmorph_create(&unit[u]);
+        ut_oscmorph_init(ut, unit[u], ft, 2, 0);
     }
 
-    for(t = 0; t < sp->len; t++) {
-        for(u = 0; u < NUM; u++) sp_oscmorph_compute(sp, unit[u], &in, &out);
+    for(t = 0; t < ut->len; t++) {
+        for(u = 0; u < NUM; u++) ut_oscmorph_compute(ut, unit[u], &in, &out);
     }
 
-    for(u = 0; u < NUM; u++) sp_oscmorph_destroy(&unit[u]);
+    for(u = 0; u < NUM; u++) ut_oscmorph_destroy(&unit[u]);
 
-    sp_ftbl_destroy(&ft1);
-    sp_ftbl_destroy(&ft2);
-    sp_destroy(&sp);
+    ut_ftbl_destroy(&ft1);
+    ut_ftbl_destroy(&ft2);
+    ut_destroy(&ut);
     return 0;
 }
 

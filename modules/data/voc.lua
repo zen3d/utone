@@ -7,10 +7,10 @@ sptbl["voc"] = {
     },
 
     func = {
-        create = "sp_voc_create",
-        destroy = "sp_voc_destroy",
-        init = "sp_voc_init",
-        compute = "sp_voc_compute",
+        create = "ut_voc_create",
+        destroy = "ut_voc_destroy",
+        init = "ut_voc_init",
+        compute = "ut_voc_compute",
     },
 
     params = {
@@ -26,7 +26,7 @@ classic Kelly-Lochbaum
 segmented cylindrical 1d waveguide model, and the glottal pulse wave is a
 LF glottal pulse model. 
 
-The soundpipe source code for Voc is generated via ctangle, one half of the
+The utone source code for Voc is generated via ctangle, one half of the
 literate documentation system known CWEB. The CWEB are maintained in a 
 separate repository. They are hosted on github here: 
 http://www.github.com/paulbatchelor/voc

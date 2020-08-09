@@ -7,17 +7,17 @@ sptbl["posc3"] = {
     },
 
     func = {
-        create = "sp_posc3_create",
-        destroy = "sp_posc3_destroy",
-        init = "sp_posc3_init",
-        compute = "sp_posc3_compute",
+        create = "ut_posc3_create",
+        destroy = "ut_posc3_destroy",
+        init = "ut_posc3_init",
+        compute = "ut_posc3_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "tbl",
-                type = "sp_ftbl *",
+                type = "ut_ftbl *",
                 description = "Wavetable to read from. Note: the size of this table must be a power of 2.",
                 default = "N/A"
             },
@@ -25,13 +25,13 @@ sptbl["posc3"] = {
         optional = {
             {
                 name = "freq",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Frequency (in Hz)",
                 default = 440
             },
             {
                 name = "amp",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="Amplitude (typically a value between 0 and 1).",
                 default = 0.2
             },

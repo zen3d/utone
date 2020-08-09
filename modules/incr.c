@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 #ifndef max
 #define max(a, b) ((a > b) ? a : b)
@@ -10,28 +10,28 @@
 #endif
 
 
-int sp_incr_create(sp_incr **p)
+int ut_incr_create(ut_incr **p)
 {
-    *p = malloc(sizeof(sp_incr));
-    return SP_OK;
+    *p = malloc(sizeof(ut_incr));
+    return UT_OK;
 }
 
-int sp_incr_destroy(sp_incr **p)
+int ut_incr_destroy(ut_incr **p)
 {
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_incr_init(sp_data *sp, sp_incr *p, SPFLOAT val)
+int ut_incr_init(ut_data *ut, ut_incr *p, UTFLOAT val)
 {
     p->min = 0;
     p->max = 1;
     p->step = 0.1;
     p->val = val;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_incr_compute(sp_data *sp, sp_incr *p, SPFLOAT *in, SPFLOAT *out)
+int ut_incr_compute(ut_data *ut, ut_incr *p, UTFLOAT *in, UTFLOAT *out)
 {
     if(*in > 0 ) {
         p->val += p->step;
@@ -41,5 +41,5 @@ int sp_incr_compute(sp_data *sp, sp_incr *p, SPFLOAT *in, SPFLOAT *out)
         p->val = max(min(p->val, p->max), p->min);
     }
     *out = p->val;
-    return SP_OK;
+    return UT_OK;
 }

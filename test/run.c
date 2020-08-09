@@ -1,19 +1,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "md5.h"
 #include "tap.h"
 #include "test.h"
 
-#define TEST(str, desc, md5hash) int str(sp_test *tst, sp_data *sp, const char *hash);
+#define TEST(str, desc, md5hash) int str(ut_test *tst, ut_data *ut, const char *hash);
 #include "all_tests.h"
 #undef TEST
 
 #define SIZE(x) sizeof(x) / sizeof(*x)
 
 typedef struct {
-    sp_data *sp;
+    ut_data *ut;
     uint32_t size;
 } test_data;
 
@@ -30,7 +30,7 @@ static void print_help()
 int main(int argc, char *argv[])
 {
     uint32_t n;
-    sp_test_entry tests [] = {
+    ut_test_entry tests [] = {
 #define TEST(str, desc, md5hash) {str, desc, md5hash}, 
 #include "all_tests.h"
 #undef TEST
@@ -39,9 +39,9 @@ int main(int argc, char *argv[])
     int err = 0;
     unsigned int rc;
     unsigned int errcnt;
-    sp_test *tst;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_test *tst;
+    ut_data *ut;
+    ut_create(&ut);
 
     uint32_t size = 44100 * 5;
 
@@ -49,15 +49,15 @@ int main(int argc, char *argv[])
     if(argc == 1) {
         plan(SIZE(tests));
         for(n = 0; n < SIZE(tests); n++) {
-            sp_test_create(&tst, size);
-            rc = ok(tests[n].func(tst, sp, tests[n].hash)  == SP_OK, tests[n].desc);
+            ut_test_create(&tst, size);
+            rc = ok(tests[n].func(tst, ut, tests[n].hash)  == UT_OK, tests[n].desc);
 #ifdef WRITE_RAW
-            if(n != 0) sp_test_write_raw(tst, n);
+            if(n != 0) ut_test_write_raw(tst, n);
 #endif
             if(n != 0 && !rc) {
                 errcnt++; 
             }
-            sp_test_destroy(&tst);
+            ut_test_destroy(&tst);
         }
         if(errcnt > 0) {
             fprintf(stderr, "Testing resulted in %d error(s).\n", errcnt);
@@ -78,18 +78,18 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "Test number %d exceeds size\n", pos);
                 } else {
                     plan(SIZE(tests));
-                    sp_test_create(&tst, size);
-                    ok(tests[pos].func(tst, sp, tests[pos].hash)  == SP_OK, tests[pos].desc);
-                    sp_test_destroy(&tst);
+                    ut_test_create(&tst, size);
+                    ok(tests[pos].func(tst, ut, tests[pos].hash)  == UT_OK, tests[pos].desc);
+                    ut_test_destroy(&tst);
                 }
             }
         } else if (!strcmp(argv[1], "regen_header")) {
             for(n = 0; n < SIZE(tests); n++) {
-                sp_test_create(&tst, size);
+                ut_test_create(&tst, size);
                 tst->mode = HEADER;
                 tst->cur_entry = &tests[n];
-                tests[n].func(tst, sp, tests[n].hash);
-                sp_test_destroy(&tst);
+                tests[n].func(tst, ut, tests[n].hash);
+                ut_test_destroy(&tst);
             }
         } else if (!strcmp(argv[1], "render")) {
             if(argc < 3) {
@@ -100,10 +100,10 @@ int main(int argc, char *argv[])
                 if(pos > SIZE(tests)) {
                     fprintf(stderr, "Test number %d exceeds size\n", pos);
                 } else {
-                    sp_test_create(&tst, size);
-                    tests[pos].func(tst, sp, tests[pos].hash);
-                    sp_test_write_raw(tst, pos + 1);
-                    sp_test_destroy(&tst);
+                    ut_test_create(&tst, size);
+                    tests[pos].func(tst, ut, tests[pos].hash);
+                    ut_test_write_raw(tst, pos + 1);
+                    ut_test_destroy(&tst);
                 }
             }
         } else if (!strcmp(argv[1], "help")) {
@@ -113,6 +113,6 @@ int main(int argc, char *argv[])
             err = 1;
         }
     } 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return err;
 }

@@ -7,47 +7,47 @@ sptbl["biquad"] = {
     },
 
     func = {
-        create = "sp_biquad_create",
-        destroy = "sp_biquad_destroy",
-        init = "sp_biquad_init",
-        compute = "sp_biquad_compute",
+        create = "ut_biquad_create",
+        destroy = "ut_biquad_destroy",
+        init = "ut_biquad_init",
+        compute = "ut_biquad_compute",
     },
 
     params = {
         optional = {
             {
                 name = "b0",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "biquad coefficient.",
                 default = 0
             },
             {
                 name = "b1",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "biquad coefficient.",
                 default = 0
             },
             {
                 name = "b2",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "biquad coefficient.",
                 default = 0
             },
             {
                 name = "a0",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "biquad coefficient.",
                 default = 0
             },
             {
                 name = "a1",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "biquad coefficient.",
                 default = 0
             },
             {
                 name = "a2",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "biquad coefficient.",
                 default = 0
             }

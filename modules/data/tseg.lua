@@ -7,17 +7,17 @@ sptbl["tseg"] = {
     },
 
     func = {
-        create = "sp_tseg_create",
-        destroy = "sp_tseg_destroy",
-        init = "sp_tseg_init",
-        compute = "sp_tseg_compute",
+        create = "ut_tseg_create",
+        destroy = "ut_tseg_destroy",
+        init = "ut_tseg_init",
+        compute = "ut_tseg_compute",
     },
 
     params = {
         mandatory = {
             {
                 name = "ibeg",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "Beginning value.",
                 default = 0.001; 
             },
@@ -26,19 +26,19 @@ sptbl["tseg"] = {
         optional = {
             {
                 name = "end",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "End parameter to go to.",
                 default = 1.0
             },
             {
                 name = "dur",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description = "duration to rise to (in seconds).",
                 default = 1.0
             },
             {
                 name = "type",
-                type = "SPFLOAT",
+                type = "UTFLOAT",
                 description ="The type of line, which determines slope of line",
                 default = -1.0
             },

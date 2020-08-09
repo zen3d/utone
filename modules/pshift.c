@@ -1,13 +1,13 @@
 #include <stdlib.h>
 #include <math.h>
-#include "soundpipe.h"
+#include "utone.h"
 #include "CUI.h"
 
 #define max(a,b) ((a < b) ? b : a)
 #define min(a,b) ((a < b) ? a : b)
 
 #ifndef FAUSTFLOAT
-#define FAUSTFLOAT SPFLOAT
+#define FAUSTFLOAT UTFLOAT
 #endif  
 
 
@@ -100,27 +100,27 @@ static void computepshift(pshift* dsp, int count, FAUSTFLOAT** inputs, FAUSTFLOA
 
 static void addHorizontalSlider(void* ui_interface, const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
 {
-    sp_pshift *p = ui_interface;
+    ut_pshift *p = ui_interface;
     p->args[p->argpos] = zone;
     p->argpos++;
 }
 
-int sp_pshift_create(sp_pshift **p)
+int ut_pshift_create(ut_pshift **p)
 {
-    *p = malloc(sizeof(sp_pshift));
-    return SP_OK;
+    *p = malloc(sizeof(ut_pshift));
+    return UT_OK;
 }
 
-int sp_pshift_destroy(sp_pshift **p)
+int ut_pshift_destroy(ut_pshift **p)
 {
-    sp_pshift *pp = *p;
+    ut_pshift *pp = *p;
     pshift *dsp = pp->faust;
     deletepshift (dsp);
     free(*p);
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_pshift_init(sp_data *sp, sp_pshift *p)
+int ut_pshift_init(ut_data *ut, ut_pshift *p)
 {
     pshift *dsp = newpshift(); 
     UIGlue UI;
@@ -128,7 +128,7 @@ int sp_pshift_init(sp_data *sp, sp_pshift *p)
     UI.addHorizontalSlider= addHorizontalSlider;
     UI.uiInterface = p;
     buildUserInterfacepshift(dsp, &UI);
-    initpshift(dsp, sp->sr);
+    initpshift(dsp, ut->sr);
 
      
     p->shift = p->args[0]; 
@@ -136,18 +136,18 @@ int sp_pshift_init(sp_data *sp, sp_pshift *p)
     p->xfade = p->args[2];
 
     p->faust = dsp;
-    return SP_OK;
+    return UT_OK;
 }
 
-int sp_pshift_compute(sp_data *sp, sp_pshift *p, SPFLOAT *in, SPFLOAT *out) 
+int ut_pshift_compute(ut_data *ut, ut_pshift *p, UTFLOAT *in, UTFLOAT *out) 
 {
 
     pshift *dsp = p->faust;
-    SPFLOAT out1 = 0;
-    SPFLOAT *faust_out[] = {&out1};
-    SPFLOAT *faust_in[] = {in};
+    UTFLOAT out1 = 0;
+    UTFLOAT *faust_out[] = {&out1};
+    UTFLOAT *faust_in[] = {in};
     computepshift(dsp, 1, faust_in, faust_out);
 
     *out = out1;
-    return SP_OK;
+    return UT_OK;
 }

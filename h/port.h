@@ -1,11 +1,11 @@
 typedef struct{
-    SPFLOAT htime;
-    SPFLOAT c1, c2, yt1, prvhtim;
-    SPFLOAT sr, onedsr;
-}sp_port;
+    UTFLOAT htime;
+    UTFLOAT c1, c2, yt1, prvhtim;
+    UTFLOAT sr, onedsr;
+}ut_port;
 
-int sp_port_create(sp_port **p);
-int sp_port_destroy(sp_port **p);
-int sp_port_init(sp_data *sp, sp_port *p, SPFLOAT htime);
-int sp_port_compute(sp_data *sp, sp_port *p, SPFLOAT *in, SPFLOAT *out);
-int sp_port_reset(sp_data *sp, sp_port *p, SPFLOAT *in);
+int ut_port_create(ut_port **p);
+int ut_port_destroy(ut_port **p);
+int ut_port_init(ut_data *ut, ut_port *p, UTFLOAT htime);
+int ut_port_compute(ut_data *ut, ut_port *p, UTFLOAT *in, UTFLOAT *out);
+int ut_port_reset(ut_data *ut, ut_port *p, UTFLOAT *in);

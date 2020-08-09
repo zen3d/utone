@@ -7,10 +7,10 @@ sptbl["timer"] = {
     },
 
     func = {
-        create = "sp_timer_create",
-        destroy = "sp_timer_destroy",
-        init = "sp_timer_init",
-        compute = "sp_timer_compute",
+        create = "ut_timer_create",
+        destroy = "ut_timer_destroy",
+        init = "ut_timer_init",
+        compute = "ut_timer_compute",
     },
 
     params = {

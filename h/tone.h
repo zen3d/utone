@@ -1,10 +1,10 @@
 typedef struct {
-    SPFLOAT hp;
-    SPFLOAT c1, c2, yt1, prvhp;
-    SPFLOAT tpidsr;
-} sp_tone;
+    UTFLOAT hp;
+    UTFLOAT c1, c2, yt1, prvhp;
+    UTFLOAT tpidsr;
+} ut_tone;
 
-int sp_tone_create(sp_tone **t);
-int sp_tone_destroy(sp_tone **t);
-int sp_tone_init(sp_data *sp, sp_tone *t);
-int sp_tone_compute(sp_data *sp, sp_tone *t, SPFLOAT *in, SPFLOAT *out);
+int ut_tone_create(ut_tone **t);
+int ut_tone_destroy(ut_tone **t);
+int ut_tone_init(ut_data *ut, ut_tone *t);
+int ut_tone_compute(ut_data *ut, ut_tone *t, UTFLOAT *in, UTFLOAT *out);

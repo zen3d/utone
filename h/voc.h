@@ -1,39 +1,39 @@
 
-#ifndef SP_VOC
-#define SP_VOC
-typedef struct sp_voc sp_voc;
+#ifndef UT_VOC
+#define UT_VOC
+typedef struct ut_voc ut_voc;
 
-int sp_voc_create(sp_voc **voc);
-int sp_voc_destroy(sp_voc **voc);
-int sp_voc_init(sp_data *sp, sp_voc *voc);
-int sp_voc_compute(sp_data *sp, sp_voc *voc, SPFLOAT *out);
-int sp_voc_tract_compute(sp_data *sp, sp_voc *voc, SPFLOAT *in, SPFLOAT *out);
+int ut_voc_create(ut_voc **voc);
+int ut_voc_destroy(ut_voc **voc);
+int ut_voc_init(ut_data *ut, ut_voc *voc);
+int ut_voc_compute(ut_data *ut, ut_voc *voc, UTFLOAT *out);
+int ut_voc_tract_compute(ut_data *ut, ut_voc *voc, UTFLOAT *in, UTFLOAT *out);
 
-void sp_voc_set_frequency(sp_voc *voc, SPFLOAT freq);
-SPFLOAT * sp_voc_get_frequency_ptr(sp_voc *voc);
+void ut_voc_set_frequency(ut_voc *voc, UTFLOAT freq);
+UTFLOAT * ut_voc_get_frequency_ptr(ut_voc *voc);
 
-SPFLOAT* sp_voc_get_tract_diameters(sp_voc *voc);
-SPFLOAT* sp_voc_get_current_tract_diameters(sp_voc *voc);
-int sp_voc_get_tract_size(sp_voc *voc);
-SPFLOAT* sp_voc_get_nose_diameters(sp_voc *voc);
-int sp_voc_get_nose_size(sp_voc *voc);
-void sp_voc_set_tongue_shape(sp_voc *voc,
-    SPFLOAT tongue_index,
-    SPFLOAT tongue_diameter);
-void sp_voc_set_tenseness(sp_voc *voc, SPFLOAT breathiness);
-SPFLOAT * sp_voc_get_tenseness_ptr(sp_voc *voc);
-void sp_voc_set_velum(sp_voc *voc, SPFLOAT velum);
-SPFLOAT * sp_voc_get_velum_ptr(sp_voc *voc);
+UTFLOAT* ut_voc_get_tract_diameters(ut_voc *voc);
+UTFLOAT* ut_voc_get_current_tract_diameters(ut_voc *voc);
+int ut_voc_get_tract_size(ut_voc *voc);
+UTFLOAT* ut_voc_get_nose_diameters(ut_voc *voc);
+int ut_voc_get_nose_size(ut_voc *voc);
+void ut_voc_set_tongue_shape(ut_voc *voc,
+    UTFLOAT tongue_index,
+    UTFLOAT tongue_diameter);
+void ut_voc_set_tenseness(ut_voc *voc, UTFLOAT breathiness);
+UTFLOAT * ut_voc_get_tenseness_ptr(ut_voc *voc);
+void ut_voc_set_velum(ut_voc *voc, UTFLOAT velum);
+UTFLOAT * ut_voc_get_velum_ptr(ut_voc *voc);
 
-void sp_voc_set_diameters(sp_voc *voc,
+void ut_voc_set_diameters(ut_voc *voc,
     int blade_start,
     int lip_start,
     int tip_start,
-    SPFLOAT tongue_index,
-    SPFLOAT tongue_diameter,
-    SPFLOAT *diameters);
+    UTFLOAT tongue_index,
+    UTFLOAT tongue_diameter,
+    UTFLOAT *diameters);
 
-int sp_voc_get_counter(sp_voc *voc);
+int ut_voc_get_counter(ut_voc *voc);
 
 
 #endif

@@ -1,36 +1,36 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_diskin *diskin;
-    sp_osc *osc;
-    sp_ftbl *ft; 
+    ut_diskin *diskin;
+    ut_osc *osc;
+    ut_ftbl *ft; 
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT diskin = 0;
-    sp_diskin_compute(sp, ud->diskin, NULL, &diskin);
-    sp->out[0] = diskin;
+    UTFLOAT diskin = 0;
+    ut_diskin_compute(ut, ud->diskin, NULL, &diskin);
+    ut->out[0] = diskin;
 }
 
 int main() {
     srand(1234567);
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
+    ut_data *ut;
+    ut_create(&ut);
 
-    sp_diskin_create(&ud.diskin);
+    ut_diskin_create(&ud.diskin);
 
-    sp_diskin_init(sp, ud.diskin, "oneart.wav");
+    ut_diskin_init(ut, ud.diskin, "oneart.wav");
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_diskin_destroy(&ud.diskin);
+    ut_diskin_destroy(&ud.diskin);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }

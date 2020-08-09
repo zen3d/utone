@@ -1,39 +1,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_noise *ns;
-    sp_butbp *butbp;
+    ut_noise *ns;
+    ut_butbp *butbp;
     int counter;
 } UserData;
 
-void write_noise(sp_data *sp, void *udata) {
+void write_noise(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT in = 0;
-    SPFLOAT out = 0;
+    UTFLOAT in = 0;
+    UTFLOAT out = 0;
     if(ud->counter == 0) {
         ud->butbp->freq= 500 + rand() % 4000;
     }
-    sp_noise_compute(sp, ud->ns, NULL, &in);
-    sp_butbp_compute(sp, ud->butbp, &in, &sp->out[0]); 
+    ut_noise_compute(ut, ud->ns, NULL, &in);
+    ut_butbp_compute(ut, ud->butbp, &in, &ut->out[0]); 
     ud->counter = (ud->counter + 1) % 5000;
 }
 int main() {
     srand(time(NULL));
     UserData ud;
     ud.counter = 0;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_noise_create(&ud.ns);
-    sp_butbp_create(&ud.butbp);
-    sp_noise_init(sp, ud.ns);
-    sp_butbp_init(sp, ud.butbp);
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, write_noise);
-    sp_noise_destroy(&ud.ns);
-    sp_butbp_destroy(&ud.butbp);
-    sp_destroy(&sp);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_noise_create(&ud.ns);
+    ut_butbp_create(&ud.butbp);
+    ut_noise_init(ut, ud.ns);
+    ut_butbp_init(ut, ud.butbp);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, write_noise);
+    ut_noise_destroy(&ud.ns);
+    ut_butbp_destroy(&ud.butbp);
+    ut_destroy(&ut);
     return 0;
 }

@@ -1,10 +1,10 @@
 typedef struct {
-    SPFLOAT bitdepth;
-    SPFLOAT srate;
-    sp_fold *fold;
-} sp_bitcrush;
+    UTFLOAT bitdepth;
+    UTFLOAT srate;
+    ut_fold *fold;
+} ut_bitcrush;
 
-int sp_bitcrush_create(sp_bitcrush **p);
-int sp_bitcrush_destroy(sp_bitcrush **p);
-int sp_bitcrush_init(sp_data *sp, sp_bitcrush *p);
-int sp_bitcrush_compute(sp_data *sp, sp_bitcrush *p, SPFLOAT *in, SPFLOAT *out);
+int ut_bitcrush_create(ut_bitcrush **p);
+int ut_bitcrush_destroy(ut_bitcrush **p);
+int ut_bitcrush_init(ut_data *ut, ut_bitcrush *p);
+int ut_bitcrush_compute(ut_data *ut, ut_bitcrush *p, UTFLOAT *in, UTFLOAT *out);

@@ -7,13 +7,13 @@ sptbl["gen_gauss"] = {
     },
 
     func = {
-        name = "sp_gen_gauss",
+        name = "ut_gen_gauss",
     },
 
     params = {
         {
             name = "scale",
-            type = "SPFLOAT",
+            type = "UTFLOAT",
             description = [[The scale of the distribution, in the range of -/+scale]],
             default = 123456
         },

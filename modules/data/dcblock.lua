@@ -6,10 +6,10 @@ sptbl["dcblock"] = {
     },
 
     func = {
-        create = "sp_dcblock_create",
-        destroy = "sp_dcblock_destroy",
-        init = "sp_dcblock_init",
-        compute = "sp_dcblock_compute",
+        create = "ut_dcblock_create",
+        destroy = "ut_dcblock_destroy",
+        init = "ut_dcblock_init",
+        compute = "ut_dcblock_compute",
     },
 
     params = {

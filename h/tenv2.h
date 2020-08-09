@@ -1,13 +1,13 @@
 typedef struct {
     int state;
-    SPFLOAT atk, rel;
+    UTFLOAT atk, rel;
     uint32_t totaltime;
     uint32_t timer;
-    SPFLOAT slope;
-    SPFLOAT last;
-} sp_tenv2;
+    UTFLOAT slope;
+    UTFLOAT last;
+} ut_tenv2;
 
-int sp_tenv2_create(sp_tenv2 **p);
-int sp_tenv2_destroy(sp_tenv2 **p);
-int sp_tenv2_init(sp_data *sp, sp_tenv2 *p);
-int sp_tenv2_compute(sp_data *sp, sp_tenv2 *p, SPFLOAT *in, SPFLOAT *out);
+int ut_tenv2_create(ut_tenv2 **p);
+int ut_tenv2_destroy(ut_tenv2 **p);
+int ut_tenv2_init(ut_data *ut, ut_tenv2 *p);
+int ut_tenv2_compute(ut_data *ut, ut_tenv2 *p, UTFLOAT *in, UTFLOAT *out);

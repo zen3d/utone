@@ -10,51 +10,51 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "soundpipe.h"
+#include "utone.h"
 
 typedef struct {
-    sp_slice *slice;
-    sp_ftbl *vals; 
-    sp_ftbl *buf; 
-    sp_dmetro *met;
+    ut_slice *slice;
+    ut_ftbl *vals; 
+    ut_ftbl *buf; 
+    ut_dmetro *met;
 } UserData;
 
-void process(sp_data *sp, void *udata) {
+void process(ut_data *ut, void *udata) {
     UserData *ud = udata;
-    SPFLOAT slice = 0;
-    SPFLOAT dm = 0;
-    sp_dmetro_compute(sp, ud->met, NULL, &dm);
+    UTFLOAT slice = 0;
+    UTFLOAT dm = 0;
+    ut_dmetro_compute(ut, ud->met, NULL, &dm);
     ud->slice->id = 2;
-    sp_slice_compute(sp, ud->slice, &dm, &slice);
-    sp_out(sp, 0, slice);
+    ut_slice_compute(ut, ud->slice, &dm, &slice);
+    ut_out(ut, 0, slice);
 }
 
 int main() {
     UserData ud;
-    sp_data *sp;
-    sp_create(&sp);
-    sp_srand(sp, 1234567);
+    ut_data *ut;
+    ut_create(&ut);
+    ut_srand(ut, 1234567);
 
-    sp_slice_create(&ud.slice);
-    sp_ftbl_create(sp, &ud.vals, 1);
-    sp_ftbl_loadfile(sp, &ud.buf, "oneart.wav");
-    sp_dmetro_create(&ud.met);
+    ut_slice_create(&ud.slice);
+    ut_ftbl_create(ut, &ud.vals, 1);
+    ut_ftbl_loadfile(ut, &ud.buf, "oneart.wav");
+    ut_dmetro_create(&ud.met);
 
-    sp_gen_vals(sp, ud.vals, 
+    ut_gen_vals(ut, ud.vals, 
     "6770 96139 159104 228847");
 
-    sp_slice_init(sp, ud.slice, ud.vals, ud.buf);
-    sp_dmetro_init(sp, ud.met);
+    ut_slice_init(ut, ud.slice, ud.vals, ud.buf);
+    ut_dmetro_init(ut, ud.met);
     ud.met->time = 0.75;
 
-    sp->len = 44100 * 5;
-    sp_process(sp, &ud, process);
+    ut->len = 44100 * 5;
+    ut_process(ut, &ud, process);
 
-    sp_slice_destroy(&ud.slice);
-    sp_dmetro_destroy(&ud.met);
-    sp_ftbl_destroy(&ud.buf);
-    sp_ftbl_destroy(&ud.vals);
+    ut_slice_destroy(&ud.slice);
+    ut_dmetro_destroy(&ud.met);
+    ut_ftbl_destroy(&ud.buf);
+    ut_ftbl_destroy(&ud.vals);
 
-    sp_destroy(&sp);
+    ut_destroy(&ut);
     return 0;
 }
